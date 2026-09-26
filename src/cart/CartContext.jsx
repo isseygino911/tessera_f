@@ -1,0 +1,101 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+const STORAGE_KEY = 'simple_ecom_cart';
+
+const CartContext = createContext(null);
+
+function loadInitialItems() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item) =>
+        item &&
+        typeof item.productId === 'number' &&
+        typeof item.name === 'string' &&
+        typeof item.priceCents === 'number' &&
+        typeof item.qty === 'number' &&
+        typeof item.stock === 'number'
+    );
+  } catch {
+    return [];
+  }
+}
+
+function clamp(qty, stock) {
+  return Math.max(0, Math.min(qty, stock));
+}
+
+export function CartProvider({ children }) {
+  const [items, setItems] = useState(loadInitialItems);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // ignore write failures (e.g. storage disabled/full)
+    }
+  }, [items]);
+
+  const add = useCallback((product, qty) => {
+    if (!product || product.stock <= 0 || qty <= 0) return;
+
+    setItems((prev) => {
+      const existing = prev.find((item) => item.productId === product.id);
+
+      if (existing) {
+        const nextQty = clamp(existing.qty + qty, product.stock);
+        return prev.map((item) =>
+          item.productId === product.id ? { ...item, qty: nextQty, stock: product.stock } : item
+        );
+      }
+
+      const nextQty = clamp(qty, product.stock);
+      if (nextQty <= 0) return prev;
+
+      return [
+        ...prev,
+        {
+          productId: product.id,
+          name: product.name,
+          priceCents: product.priceCents,
+          qty: nextQty,
+          stock: product.stock,
+        },
+      ];
+    });
+  }, []);
+
+  const setQty = useCallback((productId, qty) => {
+    setItems((prev) =>
+      prev.map((item) => (item.productId === productId ? { ...item, qty: clamp(qty, item.stock) } : item))
+    );
+  }, []);
+
+  const remove = useCallback((productId) => {
+    setItems((prev) => prev.filter((item) => item.productId !== productId));
+  }, []);
+
+  const clear = useCallback(() => {
+    setItems([]);
+  }, []);
+
+  const totalCents = useMemo(() => items.reduce((sum, item) => sum + item.priceCents * item.qty, 0), [items]);
+
+  const value = useMemo(
+    () => ({ items, add, setQty, remove, clear, totalCents }),
+    [items, add, setQty, remove, clear, totalCents]
+  );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return ctx;
+}

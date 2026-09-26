@@ -1,0 +1,389 @@
+/* Product page sections. Shared primitives (.lux, .eyebrow, .ornament, .card, …) live in index.css. */
+
+.pd-status {
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+/* -- Gold button (filled sibling of .btn-outline) -- */
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.8rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent);
+  color: #15110a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.btn-gold:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-accent);
+}
+
+.btn-gold:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn-gold:disabled {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-faint);
+  cursor: not-allowed;
+}
+
+.btn-gold--sm {
+  min-height: 2.4rem;
+  padding: 0 1.2rem;
+}
+
+/* -- Hero -- */
+
+.pd-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-7);
+  max-width: var(--page-width);
+  min-height: calc(100svh - 72px);
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6);
+}
+
+.pd-hero__media {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(217, 180, 95, 0.07), transparent 65%);
+}
+
+.pd-hero__photo {
+  width: 84%;
+}
+
+.pd-hero__photo img,
+.pd-hero__photo .product__media-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.pd-hero__title {
+  font-size: clamp(2.8rem, 5.5vw, 4.6rem);
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.pd-hero__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.pd-hero__line > span {
+  display: inline-block;
+}
+
+.lux .pd-hero__tagline {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--color-accent);
+}
+
+/* -- Purchase block -- */
+
+.pd-buy {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.lux .pd-buy__price {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.lux .pd-buy__stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: var(--space-2) 0 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.pd-buy__stock::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+.lux .pd-buy__stock--low {
+  color: var(--color-accent);
+}
+
+.lux .pd-buy__stock--out {
+  color: var(--color-text-faint);
+}
+
+.pd-buy__stock--out::before {
+  background: var(--color-text-faint);
+  box-shadow: none;
+}
+
+.pd-buy__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.lux .pd-buy__added {
+  margin: var(--space-4) 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.pd-buy__added a {
+  color: var(--color-accent);
+}
+
+/* -- Stone selector -- */
+
+.stones {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.stones__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  width: 5.5rem;
+  padding: var(--space-2) var(--space-1) var(--space-3);
+  border: 1px solid transparent;
+  color: var(--color-text-faint);
+  text-decoration: none;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.stones__item img,
+.stones__item .product__media-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.stones__item:hover,
+.stones__item:focus-visible {
+  color: var(--color-text);
+}
+
+.stones__item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.stones__item[aria-current='page'] {
+  border-color: var(--hairline);
+  color: var(--color-accent);
+}
+
+/* -- Story -- */
+
+.story {
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.story__body {
+  max-width: 65ch;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.lux .story__body p {
+  margin: 0 0 var(--space-5);
+  font-size: 1.08rem;
+  line-height: 1.9;
+}
+
+.lux .story__lead::first-letter {
+  float: left;
+  margin: 0.08em 0.12em 0 0;
+  font-family: var(--font-display);
+  font-size: 4.4em;
+  line-height: 0.8;
+  color: var(--color-accent);
+}
+
+.story__banner {
+  position: relative;
+  height: 60svh;
+  margin: var(--space-7) 0;
+  overflow: hidden;
+  border-block: 1px solid var(--color-border);
+}
+
+.story__banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 58%;
+}
+
+.story__banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(7, 7, 10, 0.75) 80%);
+}
+
+/* -- More from the collection -- */
+
+.pd-more {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.pd-more__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+}
+
+/* -- Sticky buy bar -- */
+
+.buy-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 20;
+  border-top: 1px solid var(--hairline);
+  background: rgba(7, 7, 10, 0.92);
+  backdrop-filter: blur(12px);
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.buy-bar.is-visible {
+  transform: none;
+}
+
+.buy-bar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-6);
+}
+
+.buy-bar__thumb {
+  width: 3.2rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.buy-bar__name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-text);
+}
+
+.buy-bar__price {
+  margin-left: auto;
+  color: var(--color-text-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buy-bar {
+    transition: none;
+  }
+}
+
+/* -- Responsive -- */
+
+@media (max-width: 860px) {
+  .pd-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-4) var(--space-7);
+    text-align: center;
+  }
+
+  .pd-hero__media {
+    width: min(100%, 26rem);
+    margin: 0 auto;
+  }
+
+  .pd-buy__actions,
+  .stones {
+    justify-content: center;
+  }
+
+  .story__body {
+    padding: 0 var(--space-4);
+  }
+
+  .story__banner {
+    height: 40svh;
+  }
+
+  .pd-more {
+    padding: var(--space-7) var(--space-4);
+  }
+
+  .pd-more__grid {
+    grid-template-columns: 1fr;
+    max-width: 26rem;
+    margin: 0 auto;
+  }
+
+  .buy-bar__inner {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .buy-bar__name {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .buy-bar__price {
+    display: none;
+  }
+
+  .buy-bar__inner .btn-gold {
+    margin-left: auto;
+  }
+}
