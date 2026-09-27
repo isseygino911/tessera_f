@@ -1,0 +1,33 @@
+/* -- Trust strip (shared by landing and product pages) -- */
+
+.trust {
+  border-top: 1px solid var(--color-border);
+  background: var(--band-1);
+}
+
+.trust__grid {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-7) max(var(--space-6), calc((100% - var(--page-width)) / 2));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.trust__grid h3 {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.trust__grid p {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .trust__grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+  }
+}

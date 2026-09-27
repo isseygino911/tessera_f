@@ -1,5 +1,7 @@
 import { NavLink, Navigate, Outlet } from 'react-router-dom';
-import { useAdminAuth } from './AdminAuthContext.jsx';
+import { useAdminAuth } from '@/context/AdminAuthContext.jsx';
+
+import './admin.css';
 
 export default function AdminLayout() {
   const { status, logout } = useAdminAuth();
@@ -25,7 +27,12 @@ export default function AdminLayout() {
         <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'active' : '')}>
           Orders
         </NavLink>
-        <button type="button" className="btn-link" style={{ marginTop: 'var(--space-5)' }} onClick={logout}>
+        <button
+          type="button"
+          className="btn-link"
+          style={{ marginTop: 'var(--space-5)' }}
+          onClick={logout}
+        >
           Log out
         </button>
       </nav>

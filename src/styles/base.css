@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--band-0);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-3);
+}
+
+p {
+  line-height: 1.65;
+  color: var(--color-text-dim);
+}
+
+a {
+  color: var(--color-accent);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.app-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
+/* ============================================================
+   Luxury storefront primitives — shared by the landing and
+   product pages (wrap the page in .lux).
+   ============================================================ */
+
+.lux {
+  overflow-x: clip;
+}
+
+.lux h1,
+.lux h2,
+.lux h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+:where(.lux) p {
+  color: var(--color-text-dim);
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.lux) {
+    scroll-behavior: smooth;
+  }
+}

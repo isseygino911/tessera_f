@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import { formatPrice } from '../formatPrice.js';
-import { CARD_CHIPS } from '../productFacts.js';
+import { formatPrice } from '@/lib/formatPrice.js';
+import { CARD_CHIPS } from '@/data/productFacts.js';
 import ProductPhoto from './ProductPhoto.jsx';
+
+import './ProductCard.css';
 
 export default function ProductCard({ product }) {
   return (

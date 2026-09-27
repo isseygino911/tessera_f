@@ -1,0 +1,94 @@
+/* -- Product card -- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--band-1);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.card__media {
+  position: relative;
+  width: 100%;
+}
+
+.card__media img,
+.card__media .product__media-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .card__media img {
+  transform: translateY(-6px);
+}
+
+.card__chips {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.card__badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--band-0);
+  color: var(--color-text-dim);
+}
+
+.card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+
+.card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.card__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.card__price {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.card__tagline {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+}
+
+.card__stone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}

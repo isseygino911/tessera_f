@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import BrandMark from './BrandMark.jsx';
 
+import './SiteFooter.css';
+
 export default function SiteFooter() {
   return (
     <footer className="site-footer">
@@ -8,8 +10,8 @@ export default function SiteFooter() {
         <div>
           <h2 className="mono-label">Our Studio</h2>
           <p>
-            Crystal bead bracelets, faceted by hand one bead at a time. Three colours, each with a story
-            of its own.
+            Crystal bead bracelets, faceted by hand one bead at a time. Three colours, each with a
+            story of its own.
           </p>
         </div>
         <nav aria-label="Footer">
@@ -28,7 +30,9 @@ export default function SiteFooter() {
         </nav>
         <div>
           <h2 className="mono-label">Ordering</h2>
-          <p>Order requests only. We&apos;ll contact you ourselves to arrange payment and delivery.</p>
+          <p>
+            Order requests only. We&apos;ll contact you ourselves to arrange payment and delivery.
+          </p>
         </div>
       </div>
       <div className="site-footer__bar">

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { api } from '../../api.js';
+import { api } from '@/lib/api.js';
 
 const AdminAuthContext = createContext(null);
 
@@ -16,6 +16,9 @@ export function AdminAuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    // refresh() awaits api.adminMe() (a network call) before calling setState; this is
+    // a fetch-on-mount effect, not a synchronous state write, so it can't be moved to render phase.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refresh();
   }, [refresh]);
 
@@ -29,7 +32,11 @@ export function AdminAuthProvider({ children }) {
     setStatus('anon');
   }, []);
 
-  return <AdminAuthContext.Provider value={{ status, login, logout }}>{children}</AdminAuthContext.Provider>;
+  return (
+    <AdminAuthContext.Provider value={{ status, login, logout }}>
+      {children}
+    </AdminAuthContext.Provider>
+  );
 }
 
 export function useAdminAuth() {

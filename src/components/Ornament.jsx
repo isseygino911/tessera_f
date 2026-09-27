@@ -1,3 +1,5 @@
+import './Ornament.css';
+
 export default function Ornament(props) {
   return (
     <span className="ornament" aria-hidden="true" {...props}>

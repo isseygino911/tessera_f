@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { api } from '@/lib/api.js';
 import LandingPage from './LandingPage.jsx';
-import { api } from '../../api.js';
 
-vi.mock('../../api.js');
+vi.mock('@/lib/api.js');
 
 const amber = {
   id: 1,
@@ -78,7 +78,13 @@ describe('LandingPage', () => {
     const links = await within(section).findAllByRole('link');
     const hrefs = links.map((link) => link.getAttribute('href'));
 
-    expect(hrefs).toEqual(expect.arrayContaining(['/products/sunlit-amber', '/products/forest-emerald', '/products/ocean-topaz']));
+    expect(hrefs).toEqual(
+      expect.arrayContaining([
+        '/products/sunlit-amber',
+        '/products/forest-emerald',
+        '/products/ocean-topaz',
+      ])
+    );
 
     const amberLink = links.find((link) => link.getAttribute('href') === '/products/sunlit-amber');
     expect(amberLink).toHaveAccessibleName(expect.stringContaining('Sunlit Amber'));
@@ -126,7 +132,11 @@ describe('LandingPage', () => {
       const hrefs = links.map((link) => link.getAttribute('href'));
 
       expect(hrefs).toEqual(
-        expect.arrayContaining(['/products/sunlit-amber', '/products/forest-emerald', '/products/ocean-topaz'])
+        expect.arrayContaining([
+          '/products/sunlit-amber',
+          '/products/forest-emerald',
+          '/products/ocean-topaz',
+        ])
       );
     } finally {
       window.matchMedia = originalMatchMedia;

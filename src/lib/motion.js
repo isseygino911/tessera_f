@@ -27,6 +27,10 @@ export function scrubScale(target, trigger) {
   gsap.fromTo(
     target,
     { scale: 1.15 },
-    { scale: 1, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: 1 } }
+    {
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: 1 },
+    }
   );
 }

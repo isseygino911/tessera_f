@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { useCart } from '../../cart/CartContext.jsx';
-import SiteFooter from '../../components/SiteFooter.jsx';
-import { validateCheckout } from './checkoutValidation.js';
-import { formatPrice } from '../../formatPrice.js';
+import { api, ApiError } from '@/lib/api.js';
+import { useCart } from '@/context/CartContext.jsx';
+import SiteFooter from '@/components/SiteFooter.jsx';
+import { validateCheckout } from '@/lib/checkoutValidation.js';
+import { formatPrice } from '@/lib/formatPrice.js';
 import './shop.css';
 
 const EMPTY_FORM = {
@@ -64,7 +64,11 @@ export default function CheckoutPage() {
     } catch (err) {
       // 409 (product oversold) and other API errors already carry a useful
       // message (e.g. naming the product); anything else gets a generic one.
-      setSubmitError(err instanceof ApiError ? err.message : 'Something went wrong submitting your order. Please try again.');
+      setSubmitError(
+        err instanceof ApiError
+          ? err.message
+          : 'Something went wrong submitting your order. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -116,7 +120,9 @@ export default function CheckoutPage() {
       <div className="shop-head">
         <p className="eyebrow">Order request</p>
         <h1>Checkout</h1>
-        <p>This is an order request — we&apos;ll follow up by email to arrange payment and shipping.</p>
+        <p>
+          This is an order request — we&apos;ll follow up by email to arrange payment and shipping.
+        </p>
       </div>
 
       {submitError && (
@@ -138,7 +144,13 @@ export default function CheckoutPage() {
           {field('country', 'Country')}
           <div className="form-field form-field--full">
             <label htmlFor="note">Note (optional)</label>
-            <textarea id="note" name="note" rows={3} value={form.note} onChange={handleChange('note')} />
+            <textarea
+              id="note"
+              name="note"
+              rows={3}
+              value={form.note}
+              onChange={handleChange('note')}
+            />
           </div>
         </div>
 

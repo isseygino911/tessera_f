@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { useCart } from '../../cart/CartContext.jsx';
-import Ornament from '../../components/Ornament.jsx';
-import ProductCard from '../../components/ProductCard.jsx';
-import ProductPhoto from '../../components/ProductPhoto.jsx';
-import QtyStepper from '../../components/QtyStepper.jsx';
-import SiteFooter from '../../components/SiteFooter.jsx';
-import TrustStrip from '../../components/TrustStrip.jsx';
-import { formatPrice } from '../../formatPrice.js';
-import { photoAlt, photoUrl } from '../../photoManifest.js';
-import { SPEC_GROUPS } from '../../productFacts.js';
-import { useProductMotion } from './useProductMotion.js';
-import './product.css';
+import { api, ApiError } from '@/lib/api.js';
+import { useCart } from '@/context/CartContext.jsx';
+import Ornament from '@/components/Ornament.jsx';
+import ProductCard from '@/components/ProductCard.jsx';
+import ProductPhoto from '@/components/ProductPhoto.jsx';
+import QtyStepper from '@/components/QtyStepper.jsx';
+import SiteFooter from '@/components/SiteFooter.jsx';
+import TrustStrip from '@/components/TrustStrip.jsx';
+import { formatPrice } from '@/lib/formatPrice.js';
+import { photoAlt, photoUrl } from '@/data/photoManifest.js';
+import { SPEC_GROUPS } from '@/data/productFacts.js';
+import { useProductMotion } from '@/hooks/useProductMotion.js';
+import './ProductPage.css';
 
 function stockMessage(stock) {
   if (stock <= 0) return { text: 'Sold out', tone: 'out' };
@@ -63,13 +63,17 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [barVisible, setBarVisible] = useState(false);
+  const [prevProductId, setPrevProductId] = useState(undefined);
 
   useEffect(() => {
     let cancelled = false;
     api
       .getProducts()
       .then((data) => !cancelled && setProducts(data))
-      .catch((err) => !cancelled && setError(err instanceof ApiError ? err.message : 'Could not load products.'));
+      .catch(
+        (err) =>
+          !cancelled && setError(err instanceof ApiError ? err.message : 'Could not load products.')
+      );
     return () => {
       cancelled = true;
     };
@@ -78,9 +82,13 @@ export default function ProductPage() {
   const index = products ? products.findIndex((p) => p.slug === slug) : -1;
   const product = index >= 0 ? products[index] : null;
 
-  useEffect(() => {
+  if (product?.id !== prevProductId) {
+    setPrevProductId(product?.id);
     setQty(1);
     setAdded(false);
+  }
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [product?.id]);
 
@@ -92,7 +100,10 @@ export default function ProductPage() {
     else if (products) message = "We couldn't find that product.";
     return (
       <div className="pd-status">
-        <p className={error || products ? 'form-banner' : undefined} role={error || products ? 'alert' : undefined}>
+        <p
+          className={error || products ? 'form-banner' : undefined}
+          role={error || products ? 'alert' : undefined}
+        >
           {message}
         </p>
         {products && <Link to="/#collection">Back to the collection</Link>}
@@ -145,7 +156,9 @@ export default function ProductPage() {
 
           <div className="pd-buy" data-purchase data-pd-fade>
             <p className="pd-buy__price">{formatPrice(product.priceCents)}</p>
-            <p className={`pd-buy__stock${stock.tone ? ` pd-buy__stock--${stock.tone}` : ''}`}>{stock.text}</p>
+            <p className={`pd-buy__stock${stock.tone ? ` pd-buy__stock--${stock.tone}` : ''}`}>
+              {stock.text}
+            </p>
             <div className="pd-buy__actions">
               <QtyStepper value={qty} max={product.stock} onChange={setQty} disabled={soldOut} />
               <button type="button" className="btn-gold" disabled={soldOut} onClick={addToCart}>

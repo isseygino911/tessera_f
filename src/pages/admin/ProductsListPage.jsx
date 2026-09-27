@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { formatPrice } from '../../formatPrice.js';
+import { api, ApiError } from '@/lib/api.js';
+import { formatPrice } from '@/lib/formatPrice.js';
 
 export default function ProductsListPage() {
   const [products, setProducts] = useState(null);

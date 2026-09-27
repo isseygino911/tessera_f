@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { gsap, ScrollTrigger, MOTION_OK, revealEach } from './motion.js';
+import { gsap, ScrollTrigger, MOTION_OK, revealEach } from '@/lib/motion.js';
 
 export function useLandingMotion(rootRef, cardsReady) {
   useLayoutEffect(() => {

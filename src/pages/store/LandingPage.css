@@ -35,7 +35,8 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgb(var(--color-bg-rgb) / 0.7), transparent 40%),
+  background:
+    linear-gradient(to top, rgb(var(--color-bg-rgb) / 0.7), transparent 40%),
     linear-gradient(
       to right,
       rgb(var(--color-bg-rgb) / 0.98) 0%,
@@ -218,7 +219,9 @@
   border: 1px solid var(--color-border-strong);
   background: none;
   color: var(--color-text-dim);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .landing .rail-arrow svg {

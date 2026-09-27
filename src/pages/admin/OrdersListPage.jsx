@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { formatPrice } from '../../formatPrice.js';
+import { api, ApiError } from '@/lib/api.js';
+import { formatPrice } from '@/lib/formatPrice.js';
 
 const STATUSES = ['new', 'contacted', 'paid', 'shipped', 'cancelled'];
 
@@ -14,9 +14,14 @@ export default function OrdersListPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [orders, setOrders] = useState(null);
   const [error, setError] = useState(null);
+  const [prevStatusFilter, setPrevStatusFilter] = useState(statusFilter);
+
+  if (statusFilter !== prevStatusFilter) {
+    setPrevStatusFilter(statusFilter);
+    setOrders(null);
+  }
 
   useEffect(() => {
-    setOrders(null);
     api
       .adminGetOrders(statusFilter || undefined)
       .then(setOrders)
@@ -29,7 +34,11 @@ export default function OrdersListPage() {
         <h1>Orders</h1>
         <div className="form-field" style={{ marginBottom: 0, minWidth: '10rem' }}>
           <label htmlFor="status-filter">Status</label>
-          <select id="status-filter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select
+            id="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option value="">All</option>
             {STATUSES.map((status) => (
               <option key={status} value={status}>

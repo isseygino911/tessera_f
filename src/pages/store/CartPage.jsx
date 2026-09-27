@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useCart } from '../../cart/CartContext.jsx';
-import ProductPhoto from '../../components/ProductPhoto.jsx';
-import QtyStepper from '../../components/QtyStepper.jsx';
-import SiteFooter from '../../components/SiteFooter.jsx';
-import { formatPrice } from '../../formatPrice.js';
+import { useCart } from '@/context/CartContext.jsx';
+import ProductPhoto from '@/components/ProductPhoto.jsx';
+import QtyStepper from '@/components/QtyStepper.jsx';
+import SiteFooter from '@/components/SiteFooter.jsx';
+import { formatPrice } from '@/lib/formatPrice.js';
 import './shop.css';
 
 export default function CartPage() {
@@ -28,14 +28,26 @@ export default function CartPage() {
           <ul className="shop-lines">
             {items.map((item) => (
               <li className="shop-line" key={item.productId}>
-                <ProductPhoto slug={item.slug} name={item.name} className="blend shop-line__thumb" />
+                <ProductPhoto
+                  slug={item.slug}
+                  name={item.name}
+                  className="blend shop-line__thumb"
+                />
                 <div className="shop-line__info">
                   <span className="shop-line__name">{item.name}</span>
                   <span className="shop-line__price">{formatPrice(item.priceCents)}</span>
                 </div>
-                <QtyStepper value={item.qty} max={item.stock} onChange={(qty) => setQty(item.productId, qty)} />
+                <QtyStepper
+                  value={item.qty}
+                  max={item.stock}
+                  onChange={(qty) => setQty(item.productId, qty)}
+                />
                 <span className="shop-line__total">{formatPrice(item.priceCents * item.qty)}</span>
-                <button type="button" className="shop-line__remove" onClick={() => remove(item.productId)}>
+                <button
+                  type="button"
+                  className="shop-line__remove"
+                  onClick={() => remove(item.productId)}
+                >
                   Remove
                 </button>
               </li>

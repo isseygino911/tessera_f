@@ -27,7 +27,16 @@ describe('validateCheckout', () => {
     expect(validateCheckout(form)).toEqual({});
   });
 
-  const requiredFields = ['name', 'email', 'phone', 'addressLine1', 'city', 'region', 'postalCode', 'country'];
+  const requiredFields = [
+    'name',
+    'email',
+    'phone',
+    'addressLine1',
+    'city',
+    'region',
+    'postalCode',
+    'country',
+  ];
 
   it.each(requiredFields)('flags a missing %s', (field) => {
     const form = buildForm({ [field]: '' });
@@ -47,20 +56,26 @@ describe('validateCheckout', () => {
     expect(errors).toHaveProperty(field);
   });
 
-  it.each(['not-an-email', 'missing-at-sign.com', 'no-domain@', '@no-local.com', 'spaces in@email.com'])(
-    'flags an invalid email format: %s',
+  it.each([
+    'not-an-email',
+    'missing-at-sign.com',
+    'no-domain@',
+    '@no-local.com',
+    'spaces in@email.com',
+  ])('flags an invalid email format: %s', (email) => {
+    const errors = validateCheckout(buildForm({ email }));
+
+    expect(errors).toHaveProperty('email');
+  });
+
+  it.each(['a@b.co', 'ada.lovelace+orders@example.co.uk'])(
+    'accepts a valid email format: %s',
     (email) => {
       const errors = validateCheckout(buildForm({ email }));
 
-      expect(errors).toHaveProperty('email');
+      expect(errors).not.toHaveProperty('email');
     }
   );
-
-  it.each(['a@b.co', 'ada.lovelace+orders@example.co.uk'])('accepts a valid email format: %s', (email) => {
-    const errors = validateCheckout(buildForm({ email }));
-
-    expect(errors).not.toHaveProperty('email');
-  });
 
   it('reports one message per invalid field, not just the first', () => {
     const errors = validateCheckout(buildForm({ name: '', email: 'bad', city: '' }));

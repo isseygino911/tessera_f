@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { CartProvider } from '@/context/CartContext.jsx';
+import { api } from '@/lib/api.js';
 import ProductPage from './ProductPage.jsx';
-import { CartProvider } from '../../cart/CartContext.jsx';
-import { api } from '../../api.js';
 
-vi.mock('../../api.js');
+vi.mock('@/lib/api.js');
 
 const STORAGE_KEY = 'simple_ecom_cart';
 
@@ -72,7 +72,9 @@ describe('ProductPage', () => {
     renderProductPage();
 
     const hero = await findHero('Sunlit Amber');
-    expect(within(hero).getByRole('heading', { level: 1, name: 'Sunlit Amber' })).toBeInTheDocument();
+    expect(
+      within(hero).getByRole('heading', { level: 1, name: 'Sunlit Amber' })
+    ).toBeInTheDocument();
     expect(within(hero).getByText('Warmth you can carry')).toBeInTheDocument();
     expect(within(hero).getByText('$48.00')).toBeInTheDocument();
     expect(screen.getByText('The first paragraph of the amber story.').tagName).toBe('P');
@@ -130,13 +132,21 @@ describe('ProductPage', () => {
     const hrefs = links.map((link) => link.getAttribute('href'));
 
     expect(hrefs).toEqual(
-      expect.arrayContaining(['/products/sunlit-amber', '/products/forest-emerald', '/products/ocean-topaz'])
+      expect.arrayContaining([
+        '/products/sunlit-amber',
+        '/products/forest-emerald',
+        '/products/ocean-topaz',
+      ])
     );
 
-    const currentLink = links.find((link) => link.getAttribute('href') === '/products/sunlit-amber');
+    const currentLink = links.find(
+      (link) => link.getAttribute('href') === '/products/sunlit-amber'
+    );
     expect(currentLink).toHaveAttribute('aria-current', 'page');
 
-    const otherLink = links.find((link) => link.getAttribute('href') === '/products/forest-emerald');
+    const otherLink = links.find(
+      (link) => link.getAttribute('href') === '/products/forest-emerald'
+    );
     expect(otherLink).not.toHaveAttribute('aria-current', 'page');
   });
 
@@ -152,7 +162,9 @@ describe('ProductPage', () => {
     const links = within(section).getAllByRole('link');
     const hrefs = links.map((link) => link.getAttribute('href'));
 
-    expect(hrefs).toEqual(expect.arrayContaining(['/products/forest-emerald', '/products/ocean-topaz']));
+    expect(hrefs).toEqual(
+      expect.arrayContaining(['/products/forest-emerald', '/products/ocean-topaz'])
+    );
     expect(hrefs).not.toContain('/products/sunlit-amber');
   });
 

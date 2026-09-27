@@ -5,7 +5,13 @@ import { CartProvider, useCart } from './CartContext';
 const STORAGE_KEY = 'simple_ecom_cart';
 
 const amber = { id: 1, slug: 'sunlit-amber', name: 'Sunlit Amber', priceCents: 4800, stock: 20 };
-const emerald = { id: 2, slug: 'forest-emerald', name: 'Forest Emerald', priceCents: 4800, stock: 3 };
+const emerald = {
+  id: 2,
+  slug: 'forest-emerald',
+  name: 'Forest Emerald',
+  priceCents: 4800,
+  stock: 3,
+};
 const soldOut = { id: 3, slug: 'ocean-topaz', name: 'Ocean Topaz', priceCents: 4800, stock: 0 };
 
 function TestHarness() {

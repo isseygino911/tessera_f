@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import SiteFooter from '../../components/SiteFooter.jsx';
+import SiteFooter from '@/components/SiteFooter.jsx';
 import './shop.css';
 
 export default function ThanksPage() {
@@ -11,8 +11,8 @@ export default function ThanksPage() {
         <p className="eyebrow">Order request #{id}</p>
         <h1>Thank you</h1>
         <p>
-          Your order request <strong>#{id}</strong> has been received. We&apos;ll contact you shortly to arrange
-          payment.
+          Your order request <strong>#{id}</strong> has been received. We&apos;ll contact you
+          shortly to arrange payment.
         </p>
         <Link to="/" className="btn-outline">
           Continue browsing

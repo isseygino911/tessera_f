@@ -1,0 +1,7 @@
+/* -- Product photo fallback -- */
+
+.product__media-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--color-bg-raised), var(--color-bg) 70%);
+}

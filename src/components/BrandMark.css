@@ -1,0 +1,10 @@
+/* -- Brand mark -- */
+
+.brand-mark {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}

@@ -46,12 +46,15 @@ export const api = {
   adminGetProducts: () => request('/admin/products'),
   adminGetProduct: (id) => request(`/admin/products/${id}`),
   adminCreateProduct: (payload) => request('/admin/products', { method: 'POST', body: payload }),
-  adminUpdateProduct: (id, payload) => request(`/admin/products/${id}`, { method: 'PUT', body: payload }),
+  adminUpdateProduct: (id, payload) =>
+    request(`/admin/products/${id}`, { method: 'PUT', body: payload }),
   adminDeleteProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
 
-  adminGetOrders: (status) => request(`/admin/orders${status ? `?status=${encodeURIComponent(status)}` : ''}`),
+  adminGetOrders: (status) =>
+    request(`/admin/orders${status ? `?status=${encodeURIComponent(status)}` : ''}`),
   adminGetOrder: (id) => request(`/admin/orders/${id}`),
-  adminUpdateOrderStatus: (id, status) => request(`/admin/orders/${id}`, { method: 'PATCH', body: { status } }),
+  adminUpdateOrderStatus: (id, status) =>
+    request(`/admin/orders/${id}`, { method: 'PATCH', body: { status } }),
 };
 
 export { ApiError };

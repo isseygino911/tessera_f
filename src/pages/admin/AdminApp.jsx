@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AdminAuthProvider } from './AdminAuthContext.jsx';
+import { AdminAuthProvider } from '@/context/AdminAuthContext.jsx';
 import AdminLayout from './AdminLayout.jsx';
 import LoginPage from './LoginPage.jsx';
 import ProductsListPage from './ProductsListPage.jsx';

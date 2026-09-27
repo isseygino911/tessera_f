@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../../api.js';
-import ProductCard from '../../components/ProductCard.jsx';
-import ProductPhoto from '../../components/ProductPhoto.jsx';
-import SiteFooter from '../../components/SiteFooter.jsx';
-import TrustStrip from '../../components/TrustStrip.jsx';
-import { photoAlt, photoUrl } from '../../photoManifest.js';
-import { useLandingMotion } from './useLandingMotion.js';
-import './landing.css';
+import { api } from '@/lib/api.js';
+import ProductCard from '@/components/ProductCard.jsx';
+import ProductPhoto from '@/components/ProductPhoto.jsx';
+import SiteFooter from '@/components/SiteFooter.jsx';
+import TrustStrip from '@/components/TrustStrip.jsx';
+import { photoAlt, photoUrl } from '@/data/photoManifest.js';
+import { useLandingMotion } from '@/hooks/useLandingMotion.js';
+import './LandingPage.css';
 
 const STONES = [
   { slug: 'forest-emerald', scene: 'commute', name: 'Forest Emerald' },
@@ -96,7 +96,11 @@ export default function LandingPage() {
           <p className="mono-label">Featured</p>
           <h2>Sunlit Amber</h2>
           <p className="hero__card-sub">Warmth you can carry</p>
-          <Link to="/products/sunlit-amber" className="hero__card-link" aria-label="Discover Sunlit Amber">
+          <Link
+            to="/products/sunlit-amber"
+            className="hero__card-link"
+            aria-label="Discover Sunlit Amber"
+          >
             <span>Discover</span>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14M13 6l6 6-6 6" />
@@ -116,12 +120,22 @@ export default function LandingPage() {
           {products && !canScroll && <p className="rail-head__counter">{products.length} pieces</p>}
           {products && canScroll && (
             <div className="rail-head__nav">
-              <button type="button" className="rail-arrow" onClick={() => slide(-1)} aria-label="Previous">
+              <button
+                type="button"
+                className="rail-arrow"
+                onClick={() => slide(-1)}
+                aria-label="Previous"
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M15 5l-7 7 7 7" />
                 </svg>
               </button>
-              <button type="button" className="rail-arrow" onClick={() => slide(1)} aria-label="Next">
+              <button
+                type="button"
+                className="rail-arrow"
+                onClick={() => slide(1)}
+                aria-label="Next"
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M9 5l7 7-7 7" />
                 </svg>
@@ -157,7 +171,10 @@ export default function LandingPage() {
           {STONES.map(({ slug, scene, name }) => (
             <li key={slug} data-reveal>
               <Link to={`/products/${slug}`} className="stone-block">
-                <img src={photoUrl(slug, 'lifestyle', scene)} alt={photoAlt(slug, 'lifestyle', scene)} />
+                <img
+                  src={photoUrl(slug, 'lifestyle', scene)}
+                  alt={photoAlt(slug, 'lifestyle', scene)}
+                />
                 <span className="stone-block__scrim" aria-hidden="true" />
                 <span className="stone-block__label">
                   <span className="mono-label">Shop</span>

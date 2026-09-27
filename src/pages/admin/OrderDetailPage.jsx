@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { formatPrice } from '../../formatPrice.js';
+import { api, ApiError } from '@/lib/api.js';
+import { formatPrice } from '@/lib/formatPrice.js';
 
 const STATUSES = ['new', 'contacted', 'paid', 'shipped', 'cancelled'];
 
@@ -66,7 +66,12 @@ export default function OrderDetailPage() {
         <h1>Order #{order.id}</h1>
         <div className="form-field" style={{ marginBottom: 0, minWidth: '10rem' }}>
           <label htmlFor="status">Status</label>
-          <select id="status" value={order.status} onChange={handleStatusChange} disabled={updating}>
+          <select
+            id="status"
+            value={order.status}
+            onChange={handleStatusChange}
+            disabled={updating}
+          >
             {STATUSES.map((status) => (
               <option key={status} value={status}>
                 {status}

@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { gsap, ScrollTrigger, MOTION_OK, revealEach, scrubScale } from './motion.js';
+import { gsap, ScrollTrigger, MOTION_OK, revealEach, scrubScale } from '@/lib/motion.js';
 
 // Runs once per product shown (the stone selector swaps slug on the same
 // mounted page, so the intro replays). The buy-bar toggle is not an

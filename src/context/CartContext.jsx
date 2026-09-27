@@ -75,7 +75,9 @@ export function CartProvider({ children }) {
 
   const setQty = useCallback((productId, qty) => {
     setItems((prev) =>
-      prev.map((item) => (item.productId === productId ? { ...item, qty: clamp(qty, item.stock) } : item))
+      prev.map((item) =>
+        item.productId === productId ? { ...item, qty: clamp(qty, item.stock) } : item
+      )
     );
   }, []);
 
@@ -87,7 +89,10 @@ export function CartProvider({ children }) {
     setItems([]);
   }, []);
 
-  const totalCents = useMemo(() => items.reduce((sum, item) => sum + item.priceCents * item.qty, 0), [items]);
+  const totalCents = useMemo(
+    () => items.reduce((sum, item) => sum + item.priceCents * item.qty, 0),
+    [items]
+  );
 
   const value = useMemo(
     () => ({ items, add, setQty, remove, clear, totalCents }),

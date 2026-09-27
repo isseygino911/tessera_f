@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api, ApiError } from '../../api.js';
-import { productImage } from '../../productImage.js';
+import { api, ApiError } from '@/lib/api.js';
+import { productImage } from '@/lib/productImage.js';
 
 const EMPTY = {
   slug: '',
@@ -36,6 +36,7 @@ export default function ProductEditPage() {
 
   const [form, setForm] = useState(EMPTY);
   const [imageBroken, setImageBroken] = useState(false);
+  const [prevSlug, setPrevSlug] = useState(form.slug);
   const [loading, setLoading] = useState(!isNew);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -49,9 +50,10 @@ export default function ProductEditPage() {
       .finally(() => setLoading(false));
   }, [id, isNew]);
 
-  useEffect(() => {
+  if (form.slug !== prevSlug) {
+    setPrevSlug(form.slug);
     setImageBroken(false);
-  }, [form.slug]);
+  }
 
   const handleChange = (field) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -110,7 +112,10 @@ export default function ProductEditPage() {
               onError={() => setImageBroken(true)}
             />
           ) : (
-            <div className="image-upload-preview image-upload-preview--placeholder" aria-hidden="true" />
+            <div
+              className="image-upload-preview image-upload-preview--placeholder"
+              aria-hidden="true"
+            />
           )}
           <p className="form-hint">
             Photo is served from client/public/products/{form.slug || '<slug>'}.jpg
@@ -147,17 +152,35 @@ export default function ProductEditPage() {
 
           <div className="form-field">
             <label htmlFor="stock">Stock</label>
-            <input id="stock" type="number" min={0} value={form.stock} onChange={handleChange('stock')} required />
+            <input
+              id="stock"
+              type="number"
+              min={0}
+              value={form.stock}
+              onChange={handleChange('stock')}
+              required
+            />
           </div>
 
           <div className="form-field">
             <label htmlFor="sortOrder">Sort order</label>
-            <input id="sortOrder" type="number" value={form.sortOrder} onChange={handleChange('sortOrder')} />
+            <input
+              id="sortOrder"
+              type="number"
+              value={form.sortOrder}
+              onChange={handleChange('sortOrder')}
+            />
           </div>
 
           <div className="form-field">
             <label htmlFor="active">
-              <input id="active" type="checkbox" checked={form.active} onChange={handleChange('active')} /> Active
+              <input
+                id="active"
+                type="checkbox"
+                checked={form.active}
+                onChange={handleChange('active')}
+              />{' '}
+              Active
             </label>
           </div>
 
@@ -173,7 +196,11 @@ export default function ProductEditPage() {
         </div>
 
         <div className="product__actions" style={{ justifyContent: 'flex-end' }}>
-          <button type="button" className="btn btn-secondary" onClick={() => navigate('/admin/products')}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate('/admin/products')}
+          >
             Cancel
           </button>
           <button type="submit" className="btn btn-primary" disabled={saving}>

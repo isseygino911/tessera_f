@@ -1,3 +1,5 @@
+import './BrandMark.css';
+
 // Outline of a faceted gem, used beside the wordmark in the header and footer.
 export default function BrandMark() {
   return (

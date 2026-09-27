@@ -1,14 +1,14 @@
 import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { CartProvider } from './cart/CartContext.jsx';
-import Header from './components/Header.jsx';
-import LandingPage from './pages/store/LandingPage.jsx';
-import ProductPage from './pages/store/ProductPage.jsx';
-import CartPage from './pages/store/CartPage.jsx';
-import CheckoutPage from './pages/store/CheckoutPage.jsx';
-import ThanksPage from './pages/store/ThanksPage.jsx';
+import { CartProvider } from '@/context/CartContext.jsx';
+import Header from '@/components/Header.jsx';
+import LandingPage from '@/pages/store/LandingPage.jsx';
+import ProductPage from '@/pages/store/ProductPage.jsx';
+import CartPage from '@/pages/store/CartPage.jsx';
+import CheckoutPage from '@/pages/store/CheckoutPage.jsx';
+import ThanksPage from '@/pages/store/ThanksPage.jsx';
 
-const AdminApp = lazy(() => import('./pages/admin/AdminApp.jsx'));
+const AdminApp = lazy(() => import('@/pages/admin/AdminApp.jsx'));
 
 function StoreLayout({ children }) {
   return (

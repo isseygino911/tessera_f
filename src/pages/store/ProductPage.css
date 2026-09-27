@@ -236,7 +236,9 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
-  transition: border-color 0.3s ease, color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .pd .stones__item img,
@@ -309,7 +311,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, rgb(var(--color-bg-rgb) / 0.75) 80%);
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgb(var(--color-bg-rgb) / 0.75) 80%
+  );
 }
 
 /* -- More from the collection -- */

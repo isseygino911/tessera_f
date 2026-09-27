@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { ApiError } from '../../api.js';
-import { useAdminAuth } from './AdminAuthContext.jsx';
+import { ApiError } from '@/lib/api.js';
+import { useAdminAuth } from '@/context/AdminAuthContext.jsx';
+
+import './admin.css';
 
 export default function LoginPage() {
   const { status, login } = useAdminAuth();
@@ -45,7 +47,12 @@ export default function LoginPage() {
             autoFocus
           />
         </div>
-        <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%' }}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={submitting}
+          style={{ width: '100%' }}
+        >
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
