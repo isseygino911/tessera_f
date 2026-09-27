@@ -10,6 +10,8 @@ function loadInitialItems() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
+    // slug is optional so carts saved before it existed still restore fine;
+    // ProductPhoto falls back to its placeholder when it's missing.
     return parsed.filter(
       (item) =>
         item &&
@@ -48,7 +50,9 @@ export function CartProvider({ children }) {
       if (existing) {
         const nextQty = clamp(existing.qty + qty, product.stock);
         return prev.map((item) =>
-          item.productId === product.id ? { ...item, qty: nextQty, stock: product.stock } : item
+          item.productId === product.id
+            ? { ...item, qty: nextQty, stock: product.stock, slug: product.slug }
+            : item
         );
       }
 
@@ -63,6 +67,7 @@ export function CartProvider({ children }) {
           priceCents: product.priceCents,
           qty: nextQty,
           stock: product.stock,
+          slug: product.slug,
         },
       ];
     });

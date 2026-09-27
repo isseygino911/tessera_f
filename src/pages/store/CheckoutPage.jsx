@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../../api.js';
 import { useCart } from '../../cart/CartContext.jsx';
+import SiteFooter from '../../components/SiteFooter.jsx';
 import { validateCheckout } from './checkoutValidation.js';
 import { formatPrice } from '../../formatPrice.js';
+import './shop.css';
 
 const EMPTY_FORM = {
   name: '',
@@ -70,14 +72,18 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container">
-        <h1>Checkout</h1>
-        <div className="empty-state">
+      <div className="shop">
+        <div className="shop-head">
+          <p className="eyebrow">Order request</p>
+          <h1>Checkout</h1>
+        </div>
+        <div className="shop-empty">
           <p>Your cart is empty.</p>
-          <Link to="/" className="btn btn-secondary">
+          <Link to="/" className="btn-outline">
             Browse products
           </Link>
         </div>
+        <SiteFooter />
       </div>
     );
   }
@@ -106,9 +112,12 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="container">
-      <h1>Checkout</h1>
-      <p>This is an order request — we&apos;ll follow up by email to arrange payment and shipping.</p>
+    <div className="shop">
+      <div className="shop-head">
+        <p className="eyebrow">Order request</p>
+        <h1>Checkout</h1>
+        <p>This is an order request — we&apos;ll follow up by email to arrange payment and shipping.</p>
+      </div>
 
       {submitError && (
         <p className="form-banner" role="alert">
@@ -116,7 +125,7 @@ export default function CheckoutPage() {
         </p>
       )}
 
-      <form onSubmit={handleSubmit} noValidate>
+      <form className="shop-checkout" onSubmit={handleSubmit} noValidate>
         <div className="form-grid">
           {field('name', 'Full name')}
           {field('email', 'Email', { type: 'email' })}
@@ -133,20 +142,22 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div className="cart-summary">
-          <span>Total</span>
-          <span>{formatPrice(totalCents)}</span>
+        <div className="shop-total">
+          <span className="shop-total__label">Total</span>
+          <span className="shop-total__value">{formatPrice(totalCents)}</span>
         </div>
 
-        <div className="product__actions" style={{ justifyContent: 'flex-end', marginTop: 'var(--space-5)' }}>
-          <Link to="/cart" className="btn btn-secondary">
+        <div className="shop-actions">
+          <Link to="/cart" className="btn-outline">
             Back to cart
           </Link>
-          <button type="submit" className="btn btn-primary" disabled={submitting}>
+          <button type="submit" className="btn-gold" disabled={submitting}>
             {submitting ? 'Submitting…' : 'Submit order request'}
           </button>
         </div>
       </form>
+
+      <SiteFooter />
     </div>
   );
 }

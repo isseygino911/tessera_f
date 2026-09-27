@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '../../api.js';
 import { useCart } from '../../cart/CartContext.jsx';
-import Orbit from '../../components/Orbit.jsx';
 import Ornament from '../../components/Ornament.jsx';
 import ProductCard from '../../components/ProductCard.jsx';
 import ProductPhoto from '../../components/ProductPhoto.jsx';
 import QtyStepper from '../../components/QtyStepper.jsx';
 import SiteFooter from '../../components/SiteFooter.jsx';
+import TrustStrip from '../../components/TrustStrip.jsx';
 import { formatPrice } from '../../formatPrice.js';
+import { photoAlt, photoUrl } from '../../photoManifest.js';
+import { SPEC_GROUPS } from '../../productFacts.js';
 import { useProductMotion } from './useProductMotion.js';
 import './product.css';
 
@@ -19,6 +21,37 @@ function stockMessage(stock) {
 }
 
 const pad = (n) => String(n).padStart(2, '0');
+
+// Product-page gallery: slot 1 is the studio product shot (dark-background
+// scenes keep .blend; dish.jpg sits on a light dish, so it gets .warm-frame
+// like the lifestyle slots instead). Slots 2-3 are daylight lifestyle shots.
+// Story banner reuses one lifestyle photo per stone, tuned per-photo below.
+const GALLERY = {
+  'forest-emerald': {
+    slots: [
+      { scene: 'slate', group: 'product', treatment: 'blend' },
+      { scene: 'laptop', group: 'lifestyle', treatment: 'warm-frame' },
+      { scene: 'sketch', group: 'lifestyle', treatment: 'warm-frame' },
+    ],
+    banner: { scene: 'woodslice', group: 'product', objectPosition: '55% 40%' },
+  },
+  'ocean-topaz': {
+    slots: [
+      { scene: 'reflection', group: 'product', treatment: 'blend' },
+      { scene: 'bench', group: 'lifestyle', treatment: 'warm-frame' },
+      { scene: 'dinner', group: 'lifestyle', treatment: 'warm-frame' },
+    ],
+    banner: { scene: 'coffee', group: 'product', objectPosition: '50% 45%' },
+  },
+  'sunlit-amber': {
+    slots: [
+      { scene: 'dish', group: 'product', treatment: 'warm-frame' },
+      { scene: 'phone', group: 'lifestyle', treatment: 'warm-frame' },
+      { scene: 'railing', group: 'lifestyle', treatment: 'warm-frame', native: true },
+    ],
+    banner: { scene: 'reading', group: 'product', objectPosition: '48% 62%' },
+  },
+};
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -58,7 +91,7 @@ export default function ProductPage() {
     if (error) message = error;
     else if (products) message = "We couldn't find that product.";
     return (
-      <div className="container pd-status">
+      <div className="pd-status">
         <p className={error || products ? 'form-banner' : undefined} role={error || products ? 'alert' : undefined}>
           {message}
         </p>
@@ -85,11 +118,12 @@ export default function ProductPage() {
       </p>
     ));
 
+  const gallery = GALLERY[product.slug];
+
   return (
-    <div className="lux pd" ref={rootRef}>
+    <div className="pd" ref={rootRef}>
       <section className="pd-hero" aria-labelledby="pd-title">
         <div className="pd-hero__media">
-          <Orbit data-orbit />
           <div className="pd-hero__photo" data-pd-photo>
             <ProductPhoto slug={product.slug} name={product.name} className="blend" />
           </div>
@@ -141,6 +175,48 @@ export default function ProductPage() {
         </div>
       </section>
 
+      <TrustStrip />
+
+      {gallery && (
+        <ul className="pd-gallery">
+          {gallery.slots.map((slot) => (
+            <li
+              key={slot.scene}
+              className={`pd-gallery__item${slot.treatment === 'warm-frame' ? ' warm-frame' : ''}${
+                slot.native ? ' pd-gallery__item--native' : ''
+              }`}
+            >
+              <img
+                src={photoUrl(product.slug, slot.group, slot.scene)}
+                alt={photoAlt(product.slug, slot.group, slot.scene)}
+                className={slot.treatment === 'blend' ? 'blend' : undefined}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <section className="pd-specs" aria-labelledby="specs-title">
+        <h2 id="specs-title" className="mono-label">
+          Specifications
+        </h2>
+        <div className="pd-specs__grid">
+          {SPEC_GROUPS.map((group) => (
+            <div key={group.title} className="pd-specs__group">
+              <h3 className="mono-label">{group.title}</h3>
+              <dl>
+                {group.items.map((item) => (
+                  <div key={item.term} className="pd-specs__row">
+                    <dt>{item.term}</dt>
+                    <dd>{item.detail}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <article className="story" aria-labelledby="story-title">
         <header className="section-title section-title--center" data-reveal>
           <p className="eyebrow">In the maker&apos;s words</p>
@@ -149,9 +225,15 @@ export default function ProductPage() {
         </header>
         <div className="story__body">{renderParagraphs(paragraphs.slice(0, half), 0)}</div>
 
-        {paragraphs.length > 1 && (
+        {paragraphs.length > 1 && gallery && (
           <div className="story__banner" data-banner aria-hidden="true">
-            <ProductPhoto slug={product.slug} name="" className="story__banner-img" data-banner-img />
+            <img
+              src={photoUrl(product.slug, gallery.banner.group, gallery.banner.scene)}
+              className="story__banner-img"
+              data-banner-img
+              style={{ objectPosition: gallery.banner.objectPosition }}
+              alt=""
+            />
           </div>
         )}
 

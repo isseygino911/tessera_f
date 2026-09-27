@@ -30,11 +30,3 @@ export function scrubScale(target, trigger) {
     { scale: 1, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: 1 } }
   );
 }
-
-export function spinOrbit(target) {
-  gsap.to(target, {
-    rotate: 120,
-    ease: 'none',
-    scrollTrigger: { trigger: target, start: 'top bottom', end: 'bottom top', scrub: 1.5 },
-  });
-}

@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { gsap, ScrollTrigger, MOTION_OK, revealEach, scrubScale, spinOrbit } from './motion.js';
+import { gsap, ScrollTrigger, MOTION_OK, revealEach, scrubScale } from './motion.js';
 
 // Runs once per product shown (the stone selector swaps slug on the same
 // mounted page, so the intro replays). The buy-bar toggle is not an
@@ -20,7 +20,6 @@ export function useProductMotion(rootRef, slug, setBarVisible) {
           .from('[data-pd-ornament]', { scaleX: 0, duration: 0.8 }, '-=0.5')
           .from('[data-pd-fade]', { y: 16, opacity: 0, stagger: 0.08, duration: 0.8 }, '-=0.6');
 
-        spinOrbit('[data-orbit]');
         revealEach('[data-reveal]');
         scrubScale('[data-banner-img]', '[data-banner]');
       },

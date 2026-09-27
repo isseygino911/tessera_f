@@ -12,7 +12,7 @@ const AdminApp = lazy(() => import('./pages/admin/AdminApp.jsx'));
 
 function StoreLayout({ children }) {
   return (
-    <div className="app-shell">
+    <div className="app-shell lux">
       <Header />
       <main className="app-main">{children}</main>
     </div>
