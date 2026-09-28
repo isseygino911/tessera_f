@@ -1,0 +1,78 @@
+/* Login and signup. Siblings of the checkout flow: same shop-head eyebrow +
+   serif h1, same .form-field/.form-error primitives from primitives.css. */
+
+.auth {
+  width: min(100%, 26rem);
+  margin: 0 auto;
+  padding: calc(72px + var(--space-7)) clamp(24px, 6vw, 48px) var(--space-8);
+}
+
+.auth-head {
+  margin-bottom: var(--space-6);
+}
+
+.auth-head h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  color: var(--color-text);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form .form-field {
+  margin-bottom: var(--space-4);
+}
+
+.auth-hint {
+  margin: calc(var(--space-1) * -1) 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+  color: var(--color-text-faint);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.auth-switch {
+  margin: var(--space-6) 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+}
+
+.auth-switch a {
+  color: var(--color-text);
+}
+
+@media (max-width: 640px) {
+  .auth {
+    padding: calc(72px + var(--space-6)) clamp(20px, 6vw, 48px) var(--space-7);
+  }
+}

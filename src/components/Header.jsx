@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext.jsx';
 import { useCart } from '@/context/CartContext.jsx';
 import './styles/Header.css';
 
@@ -16,8 +17,35 @@ const NAV_LINKS = [
 // again on unmount so navigating away never leaves the header hidden.
 export default function Header() {
   const { items } = useCart();
+  const { status, user, logout } = useAuth();
   const count = items.reduce((sum, item) => sum + item.qty, 0);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const authLinks = (onNavigate) => {
+    if (status === 'loading') return null;
+    if (status === 'authed') {
+      return (
+        <>
+          <span className="site-header__user">{user.name.split(' ')[0]}</span>
+          <button
+            type="button"
+            className="site-header__signout"
+            onClick={() => {
+              onNavigate?.();
+              logout();
+            }}
+          >
+            Sign out
+          </button>
+        </>
+      );
+    }
+    return (
+      <Link to="/login" className="site-header__link" onClick={onNavigate}>
+        Sign in
+      </Link>
+    );
+  };
 
   return (
     <header className="site-header" data-site-header>
@@ -39,6 +67,7 @@ export default function Header() {
           <a href="/#order" className="site-header__shop">
             Shop <span aria-hidden="true">→</span>
           </a>
+          {authLinks()}
           <Link to="/cart" className="site-header__bag" aria-label={`Cart, ${count} items`}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 8h12l-1 12H7L6 8Z" />
@@ -75,6 +104,7 @@ export default function Header() {
             <a href="/#order" className="site-header__link" onClick={() => setMenuOpen(false)}>
               Shop →
             </a>
+            {authLinks(() => setMenuOpen(false))}
           </nav>
         </div>
       )}

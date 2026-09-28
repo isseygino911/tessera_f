@@ -1,29 +1,70 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
+import { useAuth } from '@/context/AuthContext.jsx';
 import { useCart } from '@/context/CartContext.jsx';
 import { validateCheckout } from '@/lib/checkoutValidation.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import './styles/shop.css';
 
-const EMPTY_FORM = {
-  name: '',
-  email: '',
-  phone: '',
-  addressLine1: '',
-  addressLine2: '',
-  city: '',
-  region: '',
-  postalCode: '',
-  country: '',
-  note: '',
-};
+function emptyForm(user) {
+  return {
+    name: user.name,
+    email: user.email,
+    phone: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+    note: '',
+  };
+}
 
 export default function CheckoutPage() {
+  const { items } = useCart();
+  const { status, user } = useAuth();
+
+  if (status === 'loading') {
+    return (
+      <div className="shop">
+        <p>Loading…</p>
+      </div>
+    );
+  }
+
+  if (status === 'anon') {
+    return <Navigate to="/login?returnTo=%2Fcheckout" replace />;
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="shop">
+        <div className="shop-head">
+          <p className="eyebrow">Order request</p>
+          <h1>Checkout</h1>
+        </div>
+        <div className="shop-empty">
+          <p>Your cart is empty.</p>
+          <Link to="/" className="btn-outline">
+            Browse products
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Only mounts once `status === 'authed'`, so its form state's initializer
+  // always sees the real user — no effect needed to copy name/email in later.
+  return <CheckoutForm user={user} />;
+}
+
+function CheckoutForm({ user }) {
   const { items, totalCents, clear } = useCart();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [form, setForm] = useState(() => emptyForm(user));
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -61,34 +102,21 @@ export default function CheckoutPage() {
       clear();
       navigate(`/thanks/${order.id}`);
     } catch (err) {
-      // 409 (product oversold) and other API errors already carry a useful
-      // message (e.g. naming the product); anything else gets a generic one.
-      setSubmitError(
-        err instanceof ApiError
-          ? err.message
-          : 'Something went wrong submitting your order. Please try again.'
-      );
+      if (err instanceof ApiError && err.status === 401) {
+        setSubmitError('Your session has expired. Please sign in again.');
+      } else {
+        // 409 (product oversold) and other API errors already carry a useful
+        // message (e.g. naming the product); anything else gets a generic one.
+        setSubmitError(
+          err instanceof ApiError
+            ? err.message
+            : 'Something went wrong submitting your order. Please try again.'
+        );
+      }
     } finally {
       setSubmitting(false);
     }
   };
-
-  if (items.length === 0) {
-    return (
-      <div className="shop">
-        <div className="shop-head">
-          <p className="eyebrow">Order request</p>
-          <h1>Checkout</h1>
-        </div>
-        <div className="shop-empty">
-          <p>Your cart is empty.</p>
-          <Link to="/" className="btn-outline">
-            Browse products
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const field = (name, label, { type = 'text', full = false, required = true } = {}) => (
     <div className={`form-field${full ? ' form-field--full' : ''}`}>

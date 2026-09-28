@@ -12,17 +12,18 @@ src/
   App.jsx             routes + StoreLayout
   components/         shared UI
     Header.jsx  SiteFooter.jsx  ProductCard.jsx  TrustStrip.jsx
-    QtyStepper.jsx  ProductPhoto.jsx  BrandMark.jsx
+    QtyStepper.jsx  ProductPhoto.jsx  BrandMark.jsx  GoogleSignInLink.jsx
     styles/           one CSS file per component, same name (Header.css …)
   pages/
     store/  LandingPage.jsx  ProductPage.jsx  CartPage.jsx  CheckoutPage.jsx  ThanksPage.jsx
+            LoginPage.jsx  SignupPage.jsx
             styles/  LandingPage.css  ProductPage.css
                      shop.css   (shared by the 3 checkout-flow pages)
+                     auth.css   (shared by LoginPage and SignupPage)
     admin/  AdminApp.jsx … all admin pages
-            styles/  admin.css  (imported by AdminLayout.jsx and LoginPage.jsx — LoginPage
-                     renders outside AdminLayout, so it needs it directly)
+            styles/  admin.css  (imported by AdminLayout.jsx)
   hooks/     useLanding{Hero,Reveal,Stones,Story}Motion.js  useProductMotion.js
-  context/   CartContext.jsx  AdminAuthContext.jsx
+  context/   CartContext.jsx  AuthContext.jsx
   lib/       api.js  formatPrice.js  motion.js  productImage.js  checkoutValidation.js
   data/      landingContent.js  photoManifest.js  productFacts.js
   styles/    index.css (only @imports, in order)  tokens.css  base.css  primitives.css
@@ -97,8 +98,8 @@ import './styles/ProductCard.css';
 Who may call `api` (from `lib/api.js`, the only module that calls `fetch`):
 
 - **Context** — data read by more than one page, or session-long state
-  (admin session, cart, product catalogue). Consumed only via its hook
-  (`useCart()`, `useAdminAuth()`).
+  (auth session, cart, product catalogue). Consumed only via its hook
+  (`useCart()`, `useAuth()`).
 - **Pages** — data only that page needs, and actions (submit, save, status
   change).
 - **Components** — never. Data in via props, events out via `onX` callbacks.
@@ -115,7 +116,7 @@ Rule of thumb: read by more than one page → context; otherwise → page.
 
 - `App.jsx` loads the whole `admin/` area lazily: `const AdminApp = lazy(() =>
 import('@/pages/admin/AdminApp.jsx'))`, wrapped in `<Suspense>`. This keeps
-  admin-only code (and `admin.css`, pulled in via `AdminLayout`/`LoginPage`) out
+  admin-only code (and `admin.css`, pulled in via `AdminLayout`) out
   of the storefront's main bundle — confirmed by the separate
   `AdminApp-*.js`/`AdminApp-*.css` chunks in `npm run build` output.
 - Anything imported only from inside `pages/admin/` rides along in that chunk

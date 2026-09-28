@@ -43,16 +43,16 @@ src/
 
 ## Data and state
 
-| Layer         | May call `api`                   | Owns                                                                                                |
-| ------------- | -------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `lib/api.js`  | the only file that calls `fetch` | request and error handling (`ApiError`)                                                             |
-| `context/`    | yes                              | data that several pages read, or that lasts the whole visit: admin session, cart, product catalogue |
-| `pages/`      | yes                              | data that only this page needs, and actions (submit, save, change status)                           |
-| `components/` | **never**                        | nothing fetched: data comes in as props, events go out as `onX` callbacks                           |
+| Layer         | May call `api`                   | Owns                                                                                               |
+| ------------- | -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `lib/api.js`  | the only file that calls `fetch` | request and error handling (`ApiError`)                                                            |
+| `context/`    | yes                              | data that several pages read, or that lasts the whole visit: auth session, cart, product catalogue |
+| `pages/`      | yes                              | data that only this page needs, and actions (submit, save, change status)                          |
+| `components/` | **never**                        | nothing fetched: data comes in as props, events go out as `onX` callbacks                          |
 
 - If data is read by more than one page, it belongs in context. Everything else
   stays in the page.
-- Use a context only through its hook (`useCart()`, `useAdminAuth()`), never
+- Use a context only through its hook (`useCart()`, `useAuth()`), never
   through `useContext` directly.
 - Keep state local. Derive values while rendering instead of copying them into
   state. When state has to reset because a prop changes, update it during render

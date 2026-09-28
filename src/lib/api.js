@@ -1,5 +1,5 @@
 // Single fetch wrapper for the whole app. Keeps JSON parsing, error
-// shaping, and admin cookie credentials in one place.
+// shaping, and session cookie credentials in one place.
 
 class ApiError extends Error {
   constructor(message, status, body) {
@@ -39,9 +39,11 @@ export const api = {
   getProducts: () => request('/products'),
   createOrder: (payload) => request('/orders', { method: 'POST', body: payload }),
 
-  adminLogin: (password) => request('/admin/login', { method: 'POST', body: { password } }),
-  adminLogout: () => request('/admin/logout', { method: 'POST' }),
-  adminMe: () => request('/admin/me'),
+  authSignup: (payload) => request('/auth/signup', { method: 'POST', body: payload }),
+  authLogin: ({ email, password }) =>
+    request('/auth/login', { method: 'POST', body: { email, password } }),
+  authLogout: () => request('/auth/logout', { method: 'POST' }),
+  authMe: () => request('/auth/me'),
 
   adminGetProducts: () => request('/admin/products'),
   adminGetProduct: (id) => request(`/admin/products/${id}`),

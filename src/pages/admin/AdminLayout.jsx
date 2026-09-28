@@ -1,10 +1,11 @@
-import { NavLink, Navigate, Outlet } from 'react-router-dom';
-import { useAdminAuth } from '@/context/AdminAuthContext.jsx';
+import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext.jsx';
 
 import './styles/admin.css';
 
 export default function AdminLayout() {
-  const { status, logout } = useAdminAuth();
+  const { status, user, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (status === 'loading') {
     return (
@@ -15,8 +16,22 @@ export default function AdminLayout() {
   }
 
   if (status === 'anon') {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login?returnTo=%2Fadmin" replace />;
   }
+
+  if (user.role !== 'admin') {
+    return (
+      <div className="container">
+        <p role="alert">You don&apos;t have access to the admin area.</p>
+        <Link to="/">Back to the store</Link>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <div className="admin-shell">
@@ -31,7 +46,7 @@ export default function AdminLayout() {
           type="button"
           className="btn-link"
           style={{ marginTop: 'var(--space-5)' }}
-          onClick={logout}
+          onClick={handleLogout}
         >
           Log out
         </button>

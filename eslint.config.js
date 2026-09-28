@@ -35,4 +35,10 @@ export default [
       globals: globals.vitest,
     },
   },
+  {
+    files: ['vite.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ];
