@@ -1,0 +1,218 @@
+/* -- Lab craft: "03 · Why it lasts" tabs -- */
+
+.lab-craft {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(72px + var(--space-8));
+  padding-bottom: var(--space-8);
+  scroll-margin-top: 72px;
+  background: var(--lab-bg-2);
+}
+
+.lab-craft::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgb(239 237 230 / 0.08), transparent 60%);
+  pointer-events: none;
+}
+
+.lab-craft__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+.lab-craft__title {
+  margin: 0;
+  font-family: var(--font-lab-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--lab-text);
+}
+
+.lab-craft__tablist {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: var(--space-3);
+  max-width: 100%;
+}
+
+.lab-craft__pill {
+  flex: none;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--lab-line);
+  background: transparent;
+  color: var(--lab-text-dim);
+  font-family: var(--font-lab-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.25s var(--lab-ease),
+    color 0.25s var(--lab-ease),
+    border-color 0.25s var(--lab-ease);
+}
+
+.lab-craft__pill--active {
+  background: var(--lab-text);
+  border-color: var(--lab-text);
+  color: var(--lab-bg);
+}
+
+.lab-craft__pill-label {
+  position: relative;
+  z-index: 1;
+}
+
+.lab-craft__progress-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 160px;
+  height: 1px;
+  margin-top: var(--space-2);
+  background: var(--lab-line);
+}
+
+.lab-craft__progress {
+  position: absolute;
+  inset: 0;
+  background: var(--lab-text);
+  transform-origin: left;
+  animation-name: lab-craft-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes lab-craft-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.lab-craft__stage {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  align-items: center;
+  gap: var(--space-7);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: var(--space-6);
+  text-align: left;
+  animation: lab-craft-fade 0.45s var(--lab-ease);
+}
+
+@keyframes lab-craft-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lab-craft__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lab-craft__col--label {
+  align-items: flex-start;
+}
+
+.lab-craft__col--label .brand-mark {
+  width: 28px;
+  height: 28px;
+  opacity: 0.7;
+}
+
+.lab-craft__label {
+  margin: 0;
+  font-family: var(--font-lab-wide);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--lab-text);
+}
+
+.lab-craft__col--photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lab-craft__photo {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.lab-craft__col--detail {
+  align-items: flex-start;
+}
+
+.lab-craft__count {
+  margin: 0;
+  font-family: var(--font-lab-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--lab-text-dim);
+}
+
+.lab-craft__text {
+  margin: 0;
+  font-family: var(--font-lab-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--lab-text);
+}
+
+@media (max-width: 767px) {
+  .lab-craft__stage {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    text-align: center;
+  }
+
+  .lab-craft__col--label,
+  .lab-craft__col--detail {
+    align-items: center;
+  }
+
+  .lab-craft__label {
+    font-size: clamp(28px, 9vw, 44px);
+    overflow-wrap: break-word;
+  }
+
+  .lab-craft__tablist {
+    justify-content: flex-start;
+    overflow-x: auto;
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: clamp(24px, 6vw, 120px);
+    padding-bottom: var(--space-2);
+  }
+}

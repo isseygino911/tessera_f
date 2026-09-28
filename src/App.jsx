@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { CartProvider } from '@/context/CartContext.jsx';
 import Header from '@/components/Header.jsx';
 import LandingPage from '@/pages/store/LandingPage.jsx';
+import LabLandingPage from '@/pages/store/LabLandingPage.jsx';
 import ProductPage from '@/pages/store/ProductPage.jsx';
 import CartPage from '@/pages/store/CartPage.jsx';
 import CheckoutPage from '@/pages/store/CheckoutPage.jsx';
@@ -39,6 +40,7 @@ export default function App() {
             </StoreLayout>
           }
         />
+        <Route path="/lab" element={<LabLandingPage />} />
         <Route
           path="/products/:slug"
           element={

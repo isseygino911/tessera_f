@@ -1,0 +1,31 @@
+/* -- /lab landing page -- */
+
+.lab {
+  background: var(--lab-bg);
+  color: var(--lab-text);
+  font-family: var(--font-lab-sans);
+  min-height: 100vh;
+}
+
+/* Shared by every Lab* section component. */
+.lab-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-inline: clamp(24px, 6vw, 120px);
+}
+
+.lab-eyebrow {
+  margin: 0;
+  font-family: var(--font-lab-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--lab-text-dim);
+}
+
+.lab-status {
+  padding: calc(72px + var(--space-7)) clamp(24px, 6vw, 120px) var(--space-7);
+  color: var(--lab-text-dim);
+  font-family: var(--font-lab-sans);
+}

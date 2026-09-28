@@ -1,0 +1,391 @@
+/* -- Lab stones (section map row 2) -- */
+
+.lab-stones {
+  position: relative;
+  overflow: hidden;
+  background: var(--lab-bg);
+}
+
+.lab-stones__inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-block: calc(72px + var(--space-5)) var(--space-5);
+}
+
+.lab-stones__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex: none;
+}
+
+.lab-stones__counter {
+  margin: 0;
+  font-family: var(--font-lab-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--lab-text-dim);
+}
+
+.lab-stones__heading {
+  flex: none;
+  margin: var(--space-2) 0 var(--space-3);
+  font-family: var(--font-lab-serif);
+  font-weight: 300;
+  font-size: clamp(44px, 5vw, 80px);
+  line-height: 1;
+  color: var(--lab-text);
+}
+
+.lab-stones__letter {
+  display: inline-block;
+}
+
+.lab-stones__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.lab-stones__row {
+  position: relative;
+  height: 100%;
+}
+
+/* Pinned desktop layout (useLabStonesMotion adds `lab-stones--staged`): cards
+   stack absolutely and crossfade to the active one as the pin scrubs. */
+.lab-stones--staged .lab-stones__card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  gap: var(--space-7);
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.45s var(--lab-ease),
+    visibility 0.45s var(--lab-ease);
+}
+
+.lab-stones--staged .lab-stones__card--active {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Everywhere else — mobile, and desktop under reduced motion (no pin ever
+   runs, so there is no other way to reach steps 2 and 3) — the stage is a
+   horizontal scroll-snap row instead, so all three stones stay reachable. */
+.lab-stones:not(.lab-stones--staged) .lab-stones__row {
+  display: flex;
+  height: auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: var(--space-5);
+  padding-inline: 8vw;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__card {
+  position: relative;
+  inset: auto;
+  flex: 0 0 min(84vw, 480px);
+  width: min(84vw, 480px);
+  grid-template-columns: 1fr;
+  gap: 0;
+  align-items: stretch;
+  scroll-snap-align: center;
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+  border: 1px solid var(--lab-line);
+  background: var(--lab-bg-2);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__meta {
+  padding-inline: 0;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__name {
+  white-space: normal;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__body {
+  max-width: none;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__visual {
+  order: -1;
+  height: auto;
+  min-height: 0;
+  margin-bottom: var(--space-4);
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__numeral {
+  display: none;
+}
+
+.lab-stones:not(.lab-stones--staged) .lab-stones__photo-wrap {
+  width: 60vw;
+  max-width: 100%;
+}
+
+.lab-stones__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.lab-stones__code {
+  margin: 0;
+  font-family: var(--font-lab-wide);
+  font-stretch: 125%;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: var(--lab-text);
+}
+
+.lab-stones__name {
+  white-space: nowrap;
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-lab-serif);
+  font-weight: 300;
+  font-size: clamp(56px, 6.2vw, 104px);
+  line-height: 1;
+  color: var(--lab-text);
+}
+
+.lab-stones__dot {
+  display: inline-block;
+  width: 0.12em;
+  height: 0.12em;
+  margin-left: 0.1em;
+  margin-bottom: 0.08em;
+  border-radius: 50%;
+  background: var(--stone, var(--lab-accent));
+}
+
+.lab-stones__tagline {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-lab-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 17px;
+  color: var(--lab-text-dim);
+}
+
+.lab-stones__body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  max-width: 44ch;
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-lab-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--lab-text-dim);
+}
+
+.lab-stones__rule {
+  width: 100%;
+  height: 1px;
+  margin: var(--space-3) 0;
+  background: var(--lab-line);
+}
+
+.lab-stones__specs {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.lab-stones__spec-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-family: var(--font-lab-sans);
+  font-size: 12px;
+}
+
+.lab-stones__spec-row dt {
+  color: var(--lab-text-dim);
+}
+
+.lab-stones__spec-row dd {
+  margin: 0;
+  color: var(--lab-text);
+  text-align: right;
+}
+
+.lab-stones__total {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--lab-line);
+  font-family: var(--font-lab-serif);
+  font-size: 18px;
+  color: var(--lab-text);
+}
+
+.lab-stones__link {
+  display: inline-block;
+  margin-top: var(--space-3);
+  font-family: var(--font-lab-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lab-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.lab-stones__link:hover,
+.lab-stones__link:focus-visible {
+  border-color: var(--lab-accent);
+}
+
+.lab-stones__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.lab-stones__numeral {
+  position: absolute;
+  left: 62%;
+  font-family: var(--font-lab-wide);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: 70vh;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--lab-text-dim) 35%, transparent);
+  z-index: 0;
+}
+
+.lab-stones__photo-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(56vh, 520px);
+  max-width: 90%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lab-stones__glow {
+  position: absolute;
+  inset: -25%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--stone, var(--lab-accent)) 28%, transparent),
+    transparent 70%
+  );
+}
+
+/* The product shots are lit on near-black, so `lighten` drops their
+   background into the page and the glow, and the radial mask fades the
+   photo's edges so no square or circle outline shows. */
+.lab-stones__photo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+.lab-stones__ring {
+  position: absolute;
+  inset: -6%;
+  border: 1px solid var(--lab-line);
+  border-radius: 50%;
+}
+
+.lab-stones__index {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  flex: none;
+  margin-top: var(--space-4);
+}
+
+.lab-stones__index-btn {
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: var(--font-lab-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--lab-text-dim);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.lab-stones__index-btn:hover,
+.lab-stones__index-btn:focus-visible {
+  color: var(--lab-text);
+}
+
+.lab-stones__index-btn--active {
+  color: var(--lab-accent);
+}
+
+/* Desktop + motion: useLabStonesMotion pins the whole section at exactly
+   100vh so the header row, heading, two-column stage and index all fit the
+   viewport together (see still/d-03.jpeg). */
+.lab-stones--staged {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Whenever there's no pin (mobile, or desktop under reduced motion), centre
+   the index dots under the scroll-snap row instead of the pinned layout's
+   bottom-right alignment. */
+.lab-stones:not(.lab-stones--staged) .lab-stones__index {
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 767px) {
+  .lab-stones .lab-stones__inner {
+    height: auto;
+    padding-block: calc(72px + var(--space-6)) var(--space-6);
+    padding-inline: 0;
+  }
+
+  .lab-stones__header,
+  .lab-stones__heading {
+    padding-inline: clamp(24px, 6vw, 48px);
+  }
+
+  .lab-stones__stage {
+    min-height: 0;
+  }
+
+  .lab-stones:not(.lab-stones--staged) .lab-stones__card {
+    flex-basis: min(84vw, 84%);
+    width: min(84vw, 84%);
+    max-width: 420px;
+  }
+
+  .lab-stones__name {
+    font-size: clamp(36px, 10vw, 48px);
+  }
+}

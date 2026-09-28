@@ -52,4 +52,16 @@
   --focus-ring: 0 0 0 3px rgb(var(--color-accent-rgb) / 0.55);
 
   font-family: var(--font-body);
+
+  /* -- Lab landing page (/lab): dark rebuild of drinkstill.nz's layout -- */
+  --lab-bg: #111113;
+  --lab-bg-2: #1b1c1f;
+  --lab-text: #efede6;
+  --lab-text-dim: #9c9a94;
+  --lab-line: rgb(239 237 230 / 0.15);
+  --lab-accent: var(--color-accent);
+  --font-lab-wide: 'Archivo', sans-serif;
+  --font-lab-serif: 'Source Serif 4', serif;
+  --font-lab-sans: 'Inter', sans-serif;
+  --lab-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
