@@ -9,8 +9,7 @@ const STAGED_CLASS = 'landing-stones--staged';
 // locks the section's height so nothing scrolls out from under the pin) for
 // (count - 1) * 100% of scroll, snapping through each step. `onUpdate` sets
 // the active index (never inside an effect body — it runs outside React's
-// render). Also staggers each active article's [data-stage-item] lines and
-// the heading letters once, on mount. A no-op under reduced motion or on
+// render). Also staggers the heading letters once, on mount. A no-op under reduced motion or on
 // mobile/tablet, where LandingStones renders a scroll-snap row instead.
 export function useLandingStonesMotion(rootRef, count, onStep) {
   useLayoutEffect(() => {

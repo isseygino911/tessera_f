@@ -76,6 +76,51 @@
   visibility: visible;
 }
 
+/* Step change: the incoming card's text lines fade up one after another and
+   its photo fades in; the outgoing card's drop away without delay. */
+.landing-stones--staged .landing-stones__info > *,
+.landing-stones--staged .landing-stones__visual {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.landing-stones--staged .landing-stones__visual {
+  transform: scale(0.94);
+}
+
+.landing-stones--staged .landing-stones__card--active .landing-stones__info > *,
+.landing-stones--staged .landing-stones__card--active .landing-stones__visual {
+  opacity: 1;
+  transform: none;
+  transition-duration: 0.7s;
+  transition-delay: calc(var(--i, 0) * 60ms + 120ms);
+}
+
+.landing-stones--staged .landing-stones__info > :nth-child(2) {
+  --i: 1;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(3) {
+  --i: 2;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(4) {
+  --i: 3;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(5) {
+  --i: 4;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(6) {
+  --i: 5;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(7) {
+  --i: 6;
+}
+.landing-stones--staged .landing-stones__info > :nth-child(8) {
+  --i: 7;
+}
+
 /* Everywhere else — mobile, and desktop under reduced motion (no pin ever
    runs, so there is no other way to reach steps 2 and 3) — the stage is a
    horizontal scroll-snap row instead, so all three stones stay reachable. */
@@ -350,6 +395,10 @@
 .landing-stones--staged {
   height: 100vh;
   overflow: hidden;
+  /* Ambient tint of the active stone (LandingStones sets --stone), fading
+     from one stone's colour to the next. */
+  background-color: color-mix(in srgb, var(--stone, var(--color-bg)) 10%, var(--color-bg));
+  transition: background-color 0.9s var(--ease);
 }
 
 /* Whenever there's no pin (mobile, or desktop under reduced motion), centre

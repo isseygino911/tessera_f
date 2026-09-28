@@ -20,7 +20,8 @@ const STAGE_SPEC_ROWS = SPEC_GROUPS.filter((group) => group.title !== 'Ordering'
 // of it; useLandingStonesMotion (desktop + motion only) pins the whole section
 // at exactly 100vh (header row + heading + two-column stage + index all fit in
 // the viewport together) and drives `active` via onStep, and CSS crossfades
-// the active article. Mobile and reduced-motion fall back to a horizontal
+// the active article: its text lines fade up in turn, the photo fades in, and
+// the section's ambient tint fades to the active stone's colour. Mobile and reduced-motion fall back to a horizontal
 // scroll-snap row (see LandingStones.css).
 export default function LandingStones({ products }) {
   const rootRef = useRef(null);
@@ -59,6 +60,7 @@ export default function LandingStones({ products }) {
       className="landing-stones"
       aria-labelledby="landing-stones-title"
       ref={rootRef}
+      style={{ '--stone': products[active]?.hex }}
     >
       <div className="landing-stones__inner site-container">
         <div className="landing-stones__header">
@@ -125,23 +127,19 @@ function StoneCard({ product, index, isActive }) {
       className={`landing-stones__card${isActive ? ' landing-stones__card--active' : ''}`}
       style={{ '--stone': product.hex }}
     >
-      <div className="landing-stones__info" data-stage-item>
-        <div className="landing-stones__meta" data-stage-item>
+      <div className="landing-stones__info">
+        <div className="landing-stones__meta">
           <p className="landing-stones__code">{`No.${String(index + 1).padStart(2, '0')}`}</p>
           <p className="eyebrow">{stockStatus(product.stock)}</p>
         </div>
-        <h3 className="landing-stones__name" data-stage-item>
+        <h3 className="landing-stones__name">
           {product.name}
           <span className="landing-stones__dot" aria-hidden="true" />
         </h3>
-        <p className="landing-stones__tagline" data-stage-item>
-          {product.tagline}
-        </p>
-        <p className="landing-stones__body" data-stage-item>
-          {body}
-        </p>
+        <p className="landing-stones__tagline">{product.tagline}</p>
+        <p className="landing-stones__body">{body}</p>
         <div className="landing-stones__rule" aria-hidden="true" />
-        <dl className="landing-stones__specs" data-stage-item>
+        <dl className="landing-stones__specs">
           {STAGE_SPEC_ROWS.map((row) => (
             <div key={row.term} className="landing-stones__spec-row">
               <dt>{row.term}</dt>
@@ -149,11 +147,11 @@ function StoneCard({ product, index, isActive }) {
             </div>
           ))}
         </dl>
-        <div className="landing-stones__total" data-stage-item>
+        <div className="landing-stones__total">
           <span>{'Price'}</span>
           <span>{formatPrice(product.priceCents)}</span>
         </div>
-        <Link to={`/products/${product.slug}`} className="landing-stones__link" data-stage-item>
+        <Link to={`/products/${product.slug}`} className="landing-stones__link">
           {`View ${product.name}`}
         </Link>
       </div>
