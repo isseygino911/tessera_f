@@ -8,19 +8,23 @@ import { formatPrice } from '@/lib/formatPrice.js';
 import './styles/shop.css';
 
 export default function CartPage() {
-  const { items, setQty, remove, totalCents } = useCart();
+  const { items, setQty, remove, sync, totalCents } = useCart();
   const [products, setProducts] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     api
       .getProducts()
-      .then((list) => !cancelled && setProducts(list))
+      .then((list) => {
+        if (cancelled) return;
+        setProducts(list);
+        sync(list);
+      })
       .catch(() => !cancelled && setProducts([]));
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [sync]);
 
   return (
     <div className="shop">

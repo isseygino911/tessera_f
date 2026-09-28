@@ -36,6 +36,9 @@ export default function AdminLayout() {
   return (
     <div className="admin-shell">
       <nav className="admin-nav" aria-label="Admin">
+        <NavLink to="/admin" end className={({ isActive }) => (isActive ? 'active' : '')}>
+          Dashboard
+        </NavLink>
         <NavLink to="/admin/products" className={({ isActive }) => (isActive ? 'active' : '')}>
           Products
         </NavLink>

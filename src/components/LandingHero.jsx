@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { HERO } from '@/data/landingContent.js';
 import { formatPrice } from '@/lib/formatPrice.js';
+import { mainImage } from '@/lib/productImages.js';
 import { useLandingHeroMotion } from '@/hooks/useLandingHeroMotion.js';
 import ProductPhoto from './ProductPhoto.jsx';
 import './styles/LandingHero.css';
@@ -15,7 +16,8 @@ import './styles/LandingHero.css';
 export default function LandingHero({ products }) {
   const rootRef = useRef(null);
   const minPriceCents = Math.min(...products.map((product) => product.priceCents));
-  const heroProduct = products.find((product) => product.slug === 'sunlit-amber');
+  // The first active product with a photo, so hiding a product never leaves the hero empty.
+  const heroProduct = products.find(mainImage);
 
   useLandingHeroMotion(rootRef);
 
@@ -48,7 +50,7 @@ export default function LandingHero({ products }) {
           data-hero-line
           aria-hidden="true"
         >
-          {HERO.lineRight}
+          {`${products.length} stones · Hand-faceted`}
         </p>
 
         <div className="landing-hero__copy" data-hero-copy>

@@ -69,7 +69,7 @@ export default function LandingPage() {
 
       {ready && <LandingStory product={products[0]} />}
 
-      <LandingQuotes />
+      {ready && <LandingQuotes products={products} />}
 
       {ready && <LandingOrder products={products} />}
     </div>

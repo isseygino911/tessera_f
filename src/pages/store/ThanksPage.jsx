@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { orderNumber } from '@/lib/orderNumber.js';
 import './styles/shop.css';
 
 export default function ThanksPage() {
@@ -7,11 +8,11 @@ export default function ThanksPage() {
   return (
     <div className="shop">
       <div className="shop-thanks">
-        <p className="eyebrow">Order #{id}</p>
+        <p className="eyebrow">Order {orderNumber(id)}</p>
         <h1>Thank you</h1>
         <p>
-          Your order <strong>#{id}</strong> has been received. We&apos;ll email you to confirm it
-          and again when it ships.
+          Your order <strong>{orderNumber(id)}</strong> has been received. We&apos;ll email you to
+          confirm it and again when it ships.
         </p>
         <Link to="/" className="btn-outline">
           Continue browsing

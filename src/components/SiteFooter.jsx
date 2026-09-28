@@ -20,8 +20,8 @@ export default function SiteFooter() {
         <div>
           <h3 className="eyebrow">Our Studio</h3>
           <p>
-            Crystal bead bracelets, faceted by hand one bead at a time. Three colours, each with a
-            story of its own.
+            Crystal bead bracelets, faceted by hand one bead at a time. Every colour with a story of
+            its own.
           </p>
         </div>
         <nav aria-label="Footer">

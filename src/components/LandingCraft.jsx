@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react';
 import { CRAFT_TABS } from '@/data/landingContent.js';
-import { imageByName } from '@/lib/productImages.js';
+import { galleryImages, imageByName } from '@/lib/productImages.js';
 import { MOTION_OK } from '@/lib/motion.js';
 import BrandMark from './BrandMark.jsx';
 import './styles/LandingCraft.css';
@@ -19,7 +19,11 @@ export default function LandingCraft({ products }) {
 
   const active = CRAFT_TABS[activeIndex];
   const activeProduct = products?.find((product) => product.slug === active.photo.slug);
-  const activeImage = imageByName(activeProduct, active.photo.name);
+  // When the tab's product is hidden, fall back to another active product's gallery photo.
+  const fallbackImages = products?.flatMap(galleryImages) ?? [];
+  const activeImage =
+    imageByName(activeProduct, active.photo.name) ??
+    fallbackImages[activeIndex % fallbackImages.length];
 
   function scrollTabIntoView(index) {
     const strip = tablistRef.current;

@@ -15,6 +15,13 @@ vi.mock('@/lib/api.js', async (importOriginal) => {
   };
 });
 
+const emptySummary = {
+  newOrders: 0,
+  revenueThisMonthCents: 0,
+  lowStock: [],
+  recentOrders: [],
+};
+
 function renderAdminApp({ initialEntries = ['/admin'] } = {}) {
   return render(
     <AuthProvider>
@@ -32,6 +39,7 @@ beforeEach(() => {
   vi.mocked(api.authMe).mockReset();
   vi.mocked(api.adminGetProducts)?.mockReset?.();
   vi.mocked(api.adminGetOrders)?.mockReset?.();
+  vi.mocked(api.adminGetSummary)?.mockReset?.();
 });
 
 describe('AdminApp', () => {
@@ -57,23 +65,33 @@ describe('AdminApp', () => {
     );
   });
 
-  it('renders the admin layout for a signed-in admin', async () => {
+  it('renders the dashboard at /admin for a signed-in admin, with Dashboard, Products and Orders in the nav', async () => {
     vi.mocked(api.authMe).mockResolvedValue({
       user: { id: 1, email: 'admin@admin.com', name: 'Admin', avatarUrl: null, role: 'admin' },
     });
-    if (api.adminGetProducts) {
-      vi.mocked(api.adminGetProducts).mockResolvedValue([]);
-    }
-    if (api.adminGetOrders) {
-      vi.mocked(api.adminGetOrders).mockResolvedValue([]);
-    }
+    vi.mocked(api.adminGetSummary).mockResolvedValue(emptySummary);
 
     renderAdminApp();
 
     await waitFor(() =>
       expect(screen.getByRole('navigation', { name: 'Admin' })).toBeInTheDocument()
     );
-    expect(screen.getByRole('link', { name: 'Products' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Orders' })).toBeInTheDocument();
+    const nav = screen.getByRole('navigation', { name: 'Admin' });
+    const navLinkNames = Array.from(nav.querySelectorAll('a')).map((a) => a.textContent);
+    expect(navLinkNames).toEqual(['Dashboard', 'Products', 'Orders']);
+
+    await waitFor(() => expect(api.adminGetSummary).toHaveBeenCalled());
+  });
+
+  it('opens the empty add-product form at /admin/products/new without loading a product', async () => {
+    vi.mocked(api.authMe).mockResolvedValue({
+      user: { id: 1, email: 'admin@admin.com', name: 'Admin', avatarUrl: null, role: 'admin' },
+    });
+
+    renderAdminApp({ initialEntries: ['/admin/products/new'] });
+
+    expect(await screen.findByRole('heading', { name: 'Add product' })).toBeInTheDocument();
+    expect(screen.getByText('Save the product to add photos.')).toBeInTheDocument();
+    expect(api.adminGetProduct).not.toHaveBeenCalled();
   });
 });

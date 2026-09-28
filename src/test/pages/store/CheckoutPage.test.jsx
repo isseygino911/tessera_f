@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthContext.jsx';
 import { CartProvider } from '@/context/CartContext.jsx';
 import { validateCheckout } from '@/lib/checkoutValidation.js';
 import CheckoutPage from '@/pages/store/CheckoutPage.jsx';
+import ThanksPage from '@/pages/store/ThanksPage.jsx';
 
 // Keep the real ApiError class (its constructor sets `message`/`status`);
 // only replace the `api` functions with mocks.
@@ -18,6 +19,7 @@ vi.mock('@/lib/api.js', async (importOriginal) => {
 });
 
 const STORAGE_KEY = 'simple_ecom_cart';
+const ORDER_ID = '3f2a9c1b-7d4e-4a1a-9c3e-1234567890ab';
 
 const authedUser = {
   id: 1,
@@ -43,6 +45,7 @@ function renderCheckoutPage({ initialEntries = ['/checkout'] } = {}) {
           <Routes>
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<p>login page</p>} />
+            <Route path="/thanks/:id" element={<ThanksPage />} />
           </Routes>
         </MemoryRouter>
       </CartProvider>
@@ -63,6 +66,30 @@ const cartItem = (overrides = {}) => ({
   slug: 'sunlit-amber',
   ...overrides,
 });
+
+const validForm = {
+  phone: '555-0100',
+  addressLine1: '1 Analytical Engine Way',
+  city: 'London',
+  region: 'LDN',
+  postalCode: 'W1A 1AA',
+  country: 'UK',
+};
+
+function fillRequiredFields() {
+  fireEvent.change(screen.getByLabelText('Phone'), { target: { value: validForm.phone } });
+  fireEvent.change(screen.getByLabelText('Address line 1'), {
+    target: { value: validForm.addressLine1 },
+  });
+  fireEvent.change(screen.getByLabelText('City'), { target: { value: validForm.city } });
+  fireEvent.change(screen.getByLabelText('State / region'), {
+    target: { value: validForm.region },
+  });
+  fireEvent.change(screen.getByLabelText('Postal code'), {
+    target: { value: validForm.postalCode },
+  });
+  fireEvent.change(screen.getByLabelText('Country'), { target: { value: validForm.country } });
+}
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -155,5 +182,18 @@ describe('CheckoutPage', () => {
     );
     expect(screen.queryByLabelText('Full name')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Place order' })).not.toBeInTheDocument();
+  });
+
+  it('navigates to /thanks/<uuid> using the id returned by createOrder', async () => {
+    vi.mocked(api.authMe).mockResolvedValue({ user: authedUser });
+    vi.mocked(api.createOrder).mockResolvedValue({ id: ORDER_ID });
+    seedCart([cartItem()]);
+
+    renderCheckoutPage();
+    await waitFor(() => expect(screen.getByLabelText('Full name')).toHaveValue('Ada Lovelace'));
+    fillRequiredFields();
+    fireEvent.click(screen.getByRole('button', { name: 'Place order' }));
+
+    await waitFor(() => expect(screen.getAllByText('#3F2A9C1B').length).toBeGreaterThan(0));
   });
 });

@@ -68,11 +68,18 @@ export const api = {
   adminDeleteImage: (productId, imageId) =>
     request(`/admin/products/${productId}/images/${imageId}`, { method: 'DELETE' }),
 
-  adminGetOrders: (status) =>
-    request(`/admin/orders${status ? `?status=${encodeURIComponent(status)}` : ''}`),
+  adminGetOrders: ({ status, q, page } = {}) => {
+    const params = new URLSearchParams();
+    if (status) params.set('status', status);
+    if (q) params.set('q', q);
+    if (page) params.set('page', page);
+    const query = params.toString();
+    return request(`/admin/orders${query ? `?${query}` : ''}`);
+  },
   adminGetOrder: (id) => request(`/admin/orders/${id}`),
-  adminUpdateOrderStatus: (id, status) =>
-    request(`/admin/orders/${id}`, { method: 'PATCH', body: { status } }),
+  adminUpdateOrder: (id, data) => request(`/admin/orders/${id}`, { method: 'PATCH', body: data }),
+
+  adminGetSummary: () => request('/admin/summary'),
 };
 
 export { ApiError };

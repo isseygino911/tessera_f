@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CartProvider } from '@/context/CartContext.jsx';
 import { api } from '@/lib/api.js';
@@ -129,14 +129,18 @@ describe('CartPage', () => {
     expect(emeraldImg).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/main.jpg');
   });
 
-  it('shows a placeholder for a cart line whose product is not in the loaded catalogue', async () => {
-    api.getProducts.mockResolvedValue([emeraldProduct]);
-    seedCart([cartItem({ productId: 1, name: 'Sunlit Amber' })]);
+  it('drops lines for products no longer on sale and picks up the current price', async () => {
+    api.getProducts.mockResolvedValue([{ ...emeraldProduct, priceCents: 6000 }]);
+    seedCart([
+      cartItem({ productId: 1, name: 'Sunlit Amber' }),
+      cartItem({ productId: 2, name: 'Forest Emerald', priceCents: 5200 }),
+    ]);
 
     renderCartPage();
 
-    await screen.findByText('Sunlit Amber');
-    expect(screen.queryByRole('img', { name: 'Sunlit Amber' })).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('Sunlit Amber')).not.toBeInTheDocument());
+    expect(screen.getByText('Forest Emerald')).toBeInTheDocument();
+    expect(screen.getAllByText(formatPrice(6000)).length).toBeGreaterThan(0);
   });
 
   it('shows a placeholder for every line when the catalogue fails to load', async () => {

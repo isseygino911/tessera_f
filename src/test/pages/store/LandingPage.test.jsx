@@ -291,6 +291,39 @@ describe('LandingPage', () => {
     });
   });
 
+  describe('when Sunlit Amber is not on sale', () => {
+    beforeEach(() => {
+      api.getProducts.mockResolvedValue([emerald, topaz]);
+    });
+
+    it('shows the next product with a photo in the hero, and counts only the stones on sale', async () => {
+      renderLanding();
+
+      await screen.findByRole('heading', { level: 1 });
+      const heroPhoto = document.querySelector('.landing-hero__photo-wrap img');
+      expect(heroPhoto).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/main.jpg');
+      expect(screen.getByText('2 stones · Hand-faceted')).toBeInTheDocument();
+    });
+
+    it("falls back to another product's gallery photo for a craft tab tied to Sunlit Amber", async () => {
+      renderLanding();
+
+      // CRAFT_TABS[0] points at Sunlit Amber's 'dish' photo.
+      const image = await screen.findByRole('img', {
+        name: 'Forest Emerald bracelet on a dark slate dish',
+      });
+      expect(image).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/slate.jpg');
+    });
+
+    it('leaves out the Sunlit Amber quote', async () => {
+      renderLanding();
+
+      await screen.findByRole('heading', { level: 1 });
+      expect(document.querySelectorAll('blockquote')).toHaveLength(2);
+      expect(screen.queryByText('Sunlit Amber', { selector: 'cite' })).not.toBeInTheDocument();
+    });
+  });
+
   it('does not render its own header or footer landmarks (owned by the layout)', async () => {
     api.getProducts.mockResolvedValue(products);
 

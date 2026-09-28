@@ -1,25 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
+import { formatDate } from '@/lib/formatDate.js';
 import { formatPrice } from '@/lib/formatPrice.js';
+import { orderNumber } from '@/lib/orderNumber.js';
 
 const STATUSES = ['new', 'contacted', 'paid', 'shipped', 'cancelled'];
-
-function formatDate(value) {
-  if (!value) return '';
-  return new Date(value).toLocaleString();
-}
 
 export default function OrderDetailPage() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [note, setNote] = useState('');
+  const [savingNote, setSavingNote] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
 
   const load = () => {
     api
       .adminGetOrder(id)
-      .then(setOrder)
+      .then((loaded) => {
+        setOrder(loaded);
+        setNote(loaded.adminNote ?? '');
+      })
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load order.'));
   };
 
@@ -30,12 +33,27 @@ export default function OrderDetailPage() {
     setUpdating(true);
     setError(null);
     try {
-      await api.adminUpdateOrderStatus(id, status);
+      await api.adminUpdateOrder(id, { status });
       load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to update status.');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleNoteSubmit = async (e) => {
+    e.preventDefault();
+    setSavingNote(true);
+    setNoteSaved(false);
+    setError(null);
+    try {
+      await api.adminUpdateOrder(id, { adminNote: note });
+      setNoteSaved(true);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Failed to save note.');
+    } finally {
+      setSavingNote(false);
     }
   };
 
@@ -63,7 +81,7 @@ export default function OrderDetailPage() {
       </p>
 
       <div className="toolbar">
-        <h1>Order #{order.id}</h1>
+        <h1>Order {orderNumber(order.id)}</h1>
         <div className="form-field" style={{ marginBottom: 0, minWidth: '10rem' }}>
           <label htmlFor="status">Status</label>
           <select
@@ -123,6 +141,28 @@ export default function OrderDetailPage() {
           <p>{order.note}</p>
         </>
       )}
+
+      <h2>Internal note</h2>
+      <form onSubmit={handleNoteSubmit} className="form-field">
+        <label htmlFor="admin-note">Internal note</label>
+        <textarea
+          id="admin-note"
+          rows={4}
+          value={note}
+          onChange={(e) => {
+            setNote(e.target.value);
+            setNoteSaved(false);
+          }}
+        />
+        <button type="submit" className="btn btn-secondary" disabled={savingNote}>
+          {savingNote ? 'Saving…' : 'Save note'}
+        </button>
+        {noteSaved && (
+          <p role="status" className="form-hint">
+            Note saved.
+          </p>
+        )}
+      </form>
 
       <h2>Items</h2>
       <table className="data-table">

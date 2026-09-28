@@ -2,10 +2,12 @@ import { useId } from 'react';
 import { QUOTES } from '@/data/landingContent.js';
 import './styles/LandingQuotes.css';
 
-// "05 / In the maker's words": 3 pull-quotes taken verbatim from the
+// "05 / In the maker's words": pull-quotes taken verbatim from the
 // products' own story copy, each cited to its stone.
-export default function LandingQuotes() {
+export default function LandingQuotes({ products }) {
   const headingId = useId();
+  // Only quote stones that are on sale.
+  const quotes = QUOTES.filter((quote) => products.some((product) => product.slug === quote.slug));
 
   return (
     <section className="landing-quotes" aria-labelledby={headingId}>
@@ -16,7 +18,7 @@ export default function LandingQuotes() {
         </h2>
 
         <div className="landing-quotes__grid">
-          {QUOTES.map((quote) => (
+          {quotes.map((quote) => (
             <blockquote key={quote.slug} className="landing-quotes__quote" data-reveal>
               <p className="landing-quotes__text">&ldquo;{quote.text}&rdquo;</p>
               <cite className="landing-quotes__cite">{quote.name}</cite>

@@ -85,6 +85,20 @@ export function CartProvider({ children }) {
     setItems((prev) => prev.filter((item) => item.productId !== productId));
   }, []);
 
+  // Refreshes the saved lines from the live catalogue: drops products that are
+  // no longer on sale and picks up the current name, price and stock.
+  const sync = useCallback((products) => {
+    setItems((prev) =>
+      prev.flatMap((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        const qty = product ? clamp(item.qty, product.stock) : 0;
+        if (qty <= 0) return [];
+        const { name, priceCents, stock, slug } = product;
+        return [{ ...item, name, priceCents, stock, slug, qty }];
+      })
+    );
+  }, []);
+
   const clear = useCallback(() => {
     setItems([]);
   }, []);
@@ -95,8 +109,8 @@ export function CartProvider({ children }) {
   );
 
   const value = useMemo(
-    () => ({ items, add, setQty, remove, clear, totalCents }),
-    [items, add, setQty, remove, clear, totalCents]
+    () => ({ items, add, setQty, remove, sync, clear, totalCents }),
+    [items, add, setQty, remove, sync, clear, totalCents]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

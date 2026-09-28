@@ -8,9 +8,8 @@ import { TRUST, SPEC_GROUPS } from './productFacts.js';
 export const HERO = {
   eyebrow: '01 / The Collection',
   title: 'Hand-faceted crystal, cut to hold the light.',
-  lede: 'Three bracelets, hand-faceted bead by bead until each one catches light from every angle.',
+  lede: 'Crystal bracelets, hand-faceted bead by bead until each one catches light from every angle.',
   lineLeft: 'Cut to hold the light.',
-  lineRight: 'Three stones · Hand-faceted',
 };
 
 const fit = SPEC_GROUPS.find((group) => group.title === 'Fit');
@@ -75,7 +74,7 @@ export const QUOTES = [
 export const HOW_IT_WORKS = [
   {
     title: 'Choose',
-    text: 'Crystal bead bracelets, faceted by hand one bead at a time. Three colours, each with a story of its own.',
+    text: 'Crystal bead bracelets, faceted by hand one bead at a time. Every colour with a story of its own.',
   },
   {
     title: 'Order',
