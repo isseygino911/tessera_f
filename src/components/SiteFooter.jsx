@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import BrandMark from './BrandMark.jsx';
 
-import './SiteFooter.css';
+import './styles/SiteFooter.css';
 
 export default function SiteFooter() {
   return (

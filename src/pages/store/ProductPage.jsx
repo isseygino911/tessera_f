@@ -12,7 +12,7 @@ import { formatPrice } from '@/lib/formatPrice.js';
 import { photoAlt, photoUrl } from '@/data/photoManifest.js';
 import { SPEC_GROUPS } from '@/data/productFacts.js';
 import { useProductMotion } from '@/hooks/useProductMotion.js';
-import './ProductPage.css';
+import './styles/ProductPage.css';
 
 function stockMessage(stock) {
   if (stock <= 0) return { text: 'Sold out', tone: 'out' };

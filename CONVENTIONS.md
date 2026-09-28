@@ -10,23 +10,24 @@ formatted.
 src/
   main.jsx            entry: imports styles/index.css, renders <App/>
   App.jsx             routes + StoreLayout
-  components/         shared UI; each component's CSS sits next to it with the same name
-    Header.jsx  Header.css   SiteFooter.jsx  SiteFooter.css   ProductCard.jsx  ProductCard.css
-    TrustStrip.jsx  TrustStrip.css   QtyStepper.jsx  QtyStepper.css   ProductPhoto.jsx  ProductPhoto.css
-    BrandMark.jsx  BrandMark.css   Ornament.jsx  Ornament.css
+  components/         shared UI
+    Header.jsx  SiteFooter.jsx  ProductCard.jsx  TrustStrip.jsx
+    QtyStepper.jsx  ProductPhoto.jsx  BrandMark.jsx  Ornament.jsx
+    styles/           one CSS file per component, same name (Header.css …)
   pages/
-    store/  LandingPage.jsx  LandingPage.css  LandingPage.test.jsx
-            ProductPage.jsx  ProductPage.css  ProductPage.test.jsx
-            CartPage.jsx  CheckoutPage.jsx  ThanksPage.jsx  shop.css   (shared by the 3 checkout-flow pages)
-    admin/  AdminApp.jsx … all admin pages  admin.css   (today's "Admin" block from index.css;
-            imported by AdminLayout.jsx and LoginPage.jsx — the two admin entry points that
-            render outside AdminLayout's own children still need it directly)
+    store/  LandingPage.jsx  ProductPage.jsx  CartPage.jsx  CheckoutPage.jsx  ThanksPage.jsx
+            styles/  LandingPage.css  ProductPage.css
+                     shop.css   (shared by the 3 checkout-flow pages)
+    admin/  AdminApp.jsx … all admin pages
+            styles/  admin.css  (imported by AdminLayout.jsx and LoginPage.jsx — LoginPage
+                     renders outside AdminLayout, so it needs it directly)
   hooks/     useLandingMotion.js  useProductMotion.js
-  context/   CartContext.jsx  CartContext.test.jsx  AdminAuthContext.jsx
-  lib/       api.js  formatPrice.js  motion.js  productImage.js  checkoutValidation.js (+ .test.js)
+  context/   CartContext.jsx  AdminAuthContext.jsx
+  lib/       api.js  formatPrice.js  motion.js  productImage.js  checkoutValidation.js
   data/      photoManifest.js  productFacts.js
   styles/    index.css (only @imports, in order)  tokens.css  base.css  primitives.css
-  test/      setup.js
+  test/      setup.js + all tests, mirroring src/ paths
+             (test/pages/store/LandingPage.test.jsx tests pages/store/LandingPage.jsx)
 ```
 
 ## Where does my new file go?
@@ -45,10 +46,11 @@ src/
 - Components and pages: PascalCase `.jsx`.
 - Modules (`lib/`, `data/`): camelCase `.js`.
 - Hooks: `useX.js`.
-- A CSS file takes the exact name of the component or page it styles
-  (`ProductCard.jsx` → `ProductCard.css`).
-- CSS shared by several pages in the same area lives at the folder level with
-  a lowercase name (`shop.css`, `admin.css`).
+- CSS lives in a `styles/` subfolder next to the files it styles, and takes the
+  exact name of the component or page (`ProductCard.jsx` →
+  `styles/ProductCard.css`). Global CSS is the only CSS in `src/styles/`.
+- CSS shared by several pages in the same area lives in that folder's
+  `styles/` with a lowercase name (`shop.css`, `admin.css`).
 
 ## CSS
 
@@ -63,7 +65,7 @@ src/
   class is used from more than one area (e.g. `.product__actions` styles the
   store product page's buy row and is reused by the admin product form), it
   belongs in `primitives.css`, not in either page's CSS.
-- Every component or page imports its own `.css` file directly.
+- Every component or page imports its own `./styles/X.css` file directly.
 - Class names use BEM: `block__el--mod`.
 - Page CSS is scoped under that page's root class (`.landing`, `.pd`, `.shop`,
   `.admin-shell`) — never bare element selectors at page scope.
@@ -72,27 +74,43 @@ src/
 
 ## Imports
 
-Order, top to bottom, with a blank line between groups:
+Order, top to bottom, with no blank lines between groups:
 
 1. External packages
-2. `@/…` absolute imports
+2. `@/…` absolute imports (anything outside the current folder — never `../`)
 3. Same-folder relative imports
 4. The CSS import (always last)
 
 ```js
 import { useEffect, useState } from 'react';
-
-import { getProduct } from '@/lib/api.js';
+import { api } from '@/lib/api.js';
 import { formatPrice } from '@/lib/formatPrice.js';
-
 import ProductPhoto from './ProductPhoto.jsx';
-
-import './ProductPage.css';
+import './styles/ProductCard.css';
 ```
 
 - `@/` maps to `src/` (configured in `vite.config.js` `resolve.alias` and
   mirrored in `jsconfig.json` `paths` so editors resolve it too).
 - Keep explicit file extensions on imports, as the codebase does today.
+
+## Data and state
+
+Who may call `api` (from `lib/api.js`, the only module that calls `fetch`):
+
+- **Context** — data read by more than one page, or session-long state
+  (admin session, cart, product catalogue). Consumed only via its hook
+  (`useCart()`, `useAdminAuth()`).
+- **Pages** — data only that page needs, and actions (submit, save, status
+  change).
+- **Components** — never. Data in via props, events out via `onX` callbacks.
+
+Rule of thumb: read by more than one page → context; otherwise → page.
+
+- Keep state local; derive values during render instead of mirroring them in
+  state. Resetting state when a prop changes happens during render (`prevX`
+  pattern), not in an effect.
+- Every data view renders loading, error, and empty states.
+- No data/state library (React Query, Redux, …) without asking.
 
 ## Code splitting
 
@@ -111,7 +129,9 @@ import('@/pages/admin/AdminApp.jsx'))`, wrapped in `<Suspense>`. This keeps
 
 ## Tests
 
-- Colocated next to the file under test: `X.test.jsx` / `X.test.js`.
+- All tests live in `src/test/`, mirroring the path of the file under test:
+  `pages/store/ProductPage.jsx` → `test/pages/store/ProductPage.test.jsx`.
+- Tests import the code under test with `@/…` paths, never relative ones.
 - Written with Vitest and React Testing Library.
 
 ## Formatting and linting

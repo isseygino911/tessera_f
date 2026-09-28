@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateCheckout } from './checkoutValidation';
+import { validateCheckout } from '@/lib/checkoutValidation.js';
 
 function buildForm(overrides = {}) {
   return {

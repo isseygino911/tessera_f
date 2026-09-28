@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { CartProvider, useCart } from './CartContext';
+import { CartProvider, useCart } from '@/context/CartContext.jsx';
 
 const STORAGE_KEY = 'simple_ecom_cart';
 

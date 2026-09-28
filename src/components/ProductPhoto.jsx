@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { productImage } from '@/lib/productImage.js';
 
-import './ProductPhoto.css';
+import './styles/ProductPhoto.css';
 
 export default function ProductPhoto({ slug, name, className = '', ...rest }) {
   const [broken, setBroken] = useState(false);

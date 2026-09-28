@@ -3,7 +3,7 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from '@/context/CartContext.jsx';
 import { api } from '@/lib/api.js';
-import ProductPage from './ProductPage.jsx';
+import ProductPage from '@/pages/store/ProductPage.jsx';
 
 vi.mock('@/lib/api.js');
 

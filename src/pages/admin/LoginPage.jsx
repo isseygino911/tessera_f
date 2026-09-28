@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { ApiError } from '@/lib/api.js';
 import { useAdminAuth } from '@/context/AdminAuthContext.jsx';
 
-import './admin.css';
+import './styles/admin.css';
 
 export default function LoginPage() {
   const { status, login } = useAdminAuth();

@@ -4,7 +4,7 @@ import ProductPhoto from '@/components/ProductPhoto.jsx';
 import QtyStepper from '@/components/QtyStepper.jsx';
 import SiteFooter from '@/components/SiteFooter.jsx';
 import { formatPrice } from '@/lib/formatPrice.js';
-import './shop.css';
+import './styles/shop.css';
 
 export default function CartPage() {
   const { items, setQty, remove, totalCents } = useCart();

@@ -3,7 +3,7 @@ import { formatPrice } from '@/lib/formatPrice.js';
 import { CARD_CHIPS } from '@/data/productFacts.js';
 import ProductPhoto from './ProductPhoto.jsx';
 
-import './ProductCard.css';
+import './styles/ProductCard.css';
 
 export default function ProductCard({ product }) {
   return (

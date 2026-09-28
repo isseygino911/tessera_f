@@ -1,7 +1,7 @@
 import { NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useAdminAuth } from '@/context/AdminAuthContext.jsx';
 
-import './admin.css';
+import './styles/admin.css';
 
 export default function AdminLayout() {
   const { status, logout } = useAdminAuth();

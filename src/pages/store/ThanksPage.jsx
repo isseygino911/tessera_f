@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import SiteFooter from '@/components/SiteFooter.jsx';
-import './shop.css';
+import './styles/shop.css';
 
 export default function ThanksPage() {
   const { id } = useParams();

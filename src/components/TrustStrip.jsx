@@ -1,6 +1,6 @@
 import { TRUST } from '@/data/productFacts.js';
 
-import './TrustStrip.css';
+import './styles/TrustStrip.css';
 
 export default function TrustStrip() {
   return (

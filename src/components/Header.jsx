@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/context/CartContext.jsx';
 import BrandMark from './BrandMark.jsx';
 
-import './Header.css';
+import './styles/Header.css';
 
 // On the landing page the header floats over the hero and turns solid once
 // the visitor scrolls; everywhere else it stays solid.

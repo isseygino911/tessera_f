@@ -1,4 +1,4 @@
-import './QtyStepper.css';
+import './styles/QtyStepper.css';
 
 export default function QtyStepper({ value, min = 1, max, onChange, disabled = false }) {
   const clamp = (n) => {

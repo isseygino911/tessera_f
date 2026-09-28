@@ -7,7 +7,7 @@ import SiteFooter from '@/components/SiteFooter.jsx';
 import TrustStrip from '@/components/TrustStrip.jsx';
 import { photoAlt, photoUrl } from '@/data/photoManifest.js';
 import { useLandingMotion } from '@/hooks/useLandingMotion.js';
-import './LandingPage.css';
+import './styles/LandingPage.css';
 
 const STONES = [
   { slug: 'forest-emerald', scene: 'commute', name: 'Forest Emerald' },

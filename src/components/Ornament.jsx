@@ -1,4 +1,4 @@
-import './Ornament.css';
+import './styles/Ornament.css';
 
 export default function Ornament(props) {
   return (

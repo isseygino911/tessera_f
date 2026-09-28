@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { api } from '@/lib/api.js';
-import LandingPage from './LandingPage.jsx';
+import LandingPage from '@/pages/store/LandingPage.jsx';
 
 vi.mock('@/lib/api.js');
 

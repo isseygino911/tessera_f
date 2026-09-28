@@ -5,7 +5,7 @@ import { useCart } from '@/context/CartContext.jsx';
 import SiteFooter from '@/components/SiteFooter.jsx';
 import { validateCheckout } from '@/lib/checkoutValidation.js';
 import { formatPrice } from '@/lib/formatPrice.js';
-import './shop.css';
+import './styles/shop.css';
 
 const EMPTY_FORM = {
   name: '',
