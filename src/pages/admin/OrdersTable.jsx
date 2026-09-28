@@ -10,8 +10,8 @@ export default function OrdersTable({ orders }) {
         <tr>
           <th>ID</th>
           <th>Customer</th>
-          <th>Items</th>
-          <th>Total</th>
+          <th className="num">Items</th>
+          <th className="num">Total</th>
           <th>Status</th>
           <th>Placed</th>
           <th></th>
@@ -20,16 +20,16 @@ export default function OrdersTable({ orders }) {
       <tbody>
         {orders.map((order) => (
           <tr key={order.id}>
-            <td>{orderNumber(order.id)}</td>
+            <td className="admin-order-id">{orderNumber(order.id)}</td>
             <td>{order.customerName}</td>
-            <td>{order.itemCount}</td>
-            <td>{formatPrice(order.totalCents)}</td>
+            <td className="num">{order.itemCount}</td>
+            <td className="num">{formatPrice(order.totalCents)}</td>
             <td>
               <span className={`status-pill status-pill--${order.status}`}>{order.status}</span>
             </td>
             <td>{formatDate(order.createdAt)}</td>
             <td>
-              <Link to={`/admin/orders/${order.id}`} className="btn-link">
+              <Link to={`/admin/orders/${order.id}`} className="admin-link">
                 View
               </Link>
             </td>

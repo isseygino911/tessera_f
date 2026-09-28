@@ -75,6 +75,30 @@ describe('OrderDetailPage', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Note saved.');
   });
 
+  it('renders a product thumbnail for an item with an imageUrl', async () => {
+    vi.mocked(api.adminGetOrder).mockResolvedValue({
+      ...baseOrder,
+      items: [
+        {
+          productId: 1,
+          productName: 'Sunlit Amber',
+          unitPriceCents: 4800,
+          quantity: 2,
+          imageUrl: 'https://s3.test/products/sunlit-amber/main.jpg',
+        },
+      ],
+    });
+
+    const { container } = renderOrderDetail();
+
+    await waitFor(() =>
+      expect(container.querySelector('img')).toHaveAttribute(
+        'src',
+        'https://s3.test/products/sunlit-amber/main.jpg'
+      )
+    );
+  });
+
   it('changes the status via the Status select, calling adminUpdateOrder', async () => {
     vi.mocked(api.adminGetOrder).mockResolvedValue(baseOrder);
     vi.mocked(api.adminUpdateOrder).mockResolvedValue({ ...baseOrder, status: 'contacted' });

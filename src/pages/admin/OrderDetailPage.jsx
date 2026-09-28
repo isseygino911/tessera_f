@@ -75,14 +75,15 @@ export default function OrderDetailPage() {
   return (
     <div>
       <p>
-        <Link to="/admin/orders" className="btn-link">
+        <Link to="/admin/orders" className="admin-link">
           &larr; Back to orders
         </Link>
       </p>
 
-      <div className="toolbar">
+      <div className="admin-head">
+        <p className="eyebrow">Order</p>
         <h1>Order {orderNumber(order.id)}</h1>
-        <div className="form-field" style={{ marginBottom: 0, minWidth: '10rem' }}>
+        <div className="form-field">
           <label htmlFor="status">Status</label>
           <select
             id="status"
@@ -107,88 +108,101 @@ export default function OrderDetailPage() {
 
       <p>Placed {formatDate(order.createdAt)}</p>
 
-      <h2>Customer</h2>
-      <p>
-        {customerName}
-        <br />
-        {email}
-        {phone && (
-          <>
+      <div className="admin-grid">
+        <div>
+          <h2>Customer</h2>
+          <p>
+            {customerName}
             <br />
-            {phone}
-          </>
-        )}
-      </p>
-
-      <h2>Shipping address</h2>
-      <p>
-        {order.addressLine1}
-        {order.addressLine2 && (
-          <>
-            <br />
-            {order.addressLine2}
-          </>
-        )}
-        <br />
-        {order.city}, {order.region} {order.postalCode}
-        <br />
-        {order.country}
-      </p>
-
-      {order.note && (
-        <>
-          <h2>Note</h2>
-          <p>{order.note}</p>
-        </>
-      )}
-
-      <h2>Internal note</h2>
-      <form onSubmit={handleNoteSubmit} className="form-field">
-        <label htmlFor="admin-note">Internal note</label>
-        <textarea
-          id="admin-note"
-          rows={4}
-          value={note}
-          onChange={(e) => {
-            setNote(e.target.value);
-            setNoteSaved(false);
-          }}
-        />
-        <button type="submit" className="btn btn-secondary" disabled={savingNote}>
-          {savingNote ? 'Saving…' : 'Save note'}
-        </button>
-        {noteSaved && (
-          <p role="status" className="form-hint">
-            Note saved.
+            {email}
+            {phone && (
+              <>
+                <br />
+                {phone}
+              </>
+            )}
           </p>
+        </div>
+
+        <div>
+          <h2>Shipping address</h2>
+          <p>
+            {order.addressLine1}
+            {order.addressLine2 && (
+              <>
+                <br />
+                {order.addressLine2}
+              </>
+            )}
+            <br />
+            {order.city}, {order.region} {order.postalCode}
+            <br />
+            {order.country}
+          </p>
+        </div>
+
+        {order.note && (
+          <div>
+            <h2>Note</h2>
+            <p>{order.note}</p>
+          </div>
         )}
-      </form>
+
+        <div>
+          <h2>Internal note</h2>
+          <form onSubmit={handleNoteSubmit} className="form-field">
+            <label htmlFor="admin-note">Internal note</label>
+            <textarea
+              id="admin-note"
+              rows={4}
+              value={note}
+              onChange={(e) => {
+                setNote(e.target.value);
+                setNoteSaved(false);
+              }}
+            />
+            <button type="submit" className="btn-outline" disabled={savingNote}>
+              {savingNote ? 'Saving…' : 'Save note'}
+            </button>
+            {noteSaved && (
+              <p role="status" className="form-hint">
+                Note saved.
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
 
       <h2>Items</h2>
       <table className="data-table">
         <thead>
           <tr>
             <th>Product</th>
-            <th>Unit price</th>
-            <th>Qty</th>
-            <th>Line total</th>
+            <th className="num">Unit price</th>
+            <th className="num">Qty</th>
+            <th className="num">Line total</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item) => (
             <tr key={item.productId}>
-              <td>{item.productName}</td>
-              <td>{formatPrice(item.unitPriceCents)}</td>
-              <td>{item.quantity}</td>
-              <td>{formatPrice(item.unitPriceCents * item.quantity)}</td>
+              <td>
+                <span className="order-item">
+                  {item.imageUrl && <img className="table-thumb" src={item.imageUrl} alt="" />}
+                  {item.productName}
+                </span>
+              </td>
+              <td className="num">{formatPrice(item.unitPriceCents)}</td>
+              <td className="num">{item.quantity}</td>
+              <td className="num">{formatPrice(item.unitPriceCents * item.quantity)}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="cart-summary">
-        <span>Total</span>
-        <span>{formatPrice(total)}</span>
+      <div className="shop-total">
+        <span className="shop-total__label">Total</span>
+        <span className="shop-total__value">{formatPrice(total)}</span>
       </div>
     </div>
   );

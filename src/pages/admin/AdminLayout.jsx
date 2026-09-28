@@ -9,7 +9,7 @@ export default function AdminLayout() {
 
   if (status === 'loading') {
     return (
-      <div className="container">
+      <div className="shop">
         <p>Loading…</p>
       </div>
     );
@@ -21,9 +21,11 @@ export default function AdminLayout() {
 
   if (user.role !== 'admin') {
     return (
-      <div className="container">
+      <div className="shop">
         <p role="alert">You don&apos;t have access to the admin area.</p>
-        <Link to="/">Back to the store</Link>
+        <Link to="/" className="btn-outline">
+          Back to the store
+        </Link>
       </div>
     );
   }
@@ -35,25 +37,27 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-shell">
-      <nav className="admin-nav" aria-label="Admin">
-        <NavLink to="/admin" end className={({ isActive }) => (isActive ? 'active' : '')}>
-          Dashboard
-        </NavLink>
-        <NavLink to="/admin/products" className={({ isActive }) => (isActive ? 'active' : '')}>
-          Products
-        </NavLink>
-        <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'active' : '')}>
-          Orders
-        </NavLink>
-        <button
-          type="button"
-          className="btn-link"
-          style={{ marginTop: 'var(--space-5)' }}
-          onClick={handleLogout}
-        >
+      <aside className="admin-sidebar">
+        <p className="eyebrow">Studio admin</p>
+        <Link to="/" className="site-header__wordmark" aria-label="Faceted & Co.">
+          <span aria-hidden="true">FACETED.</span>
+          <span className="site-header__dot" aria-hidden="true" />
+        </Link>
+        <nav className="admin-nav" aria-label="Admin">
+          <NavLink to="/admin" end className={({ isActive }) => (isActive ? 'active' : '')}>
+            Dashboard
+          </NavLink>
+          <NavLink to="/admin/products" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Products
+          </NavLink>
+          <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Orders
+          </NavLink>
+        </nav>
+        <button type="button" className="admin-logout" onClick={handleLogout}>
           Log out
         </button>
-      </nav>
+      </aside>
       <div className="admin-content">
         <Outlet />
       </div>

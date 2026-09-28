@@ -137,38 +137,45 @@ function ImageCard({ image, index, productId, onChange, setError }) {
 
   return (
     <div className="product-images__card">
-      <img className="product-images__thumb" src={image.url} alt={image.alt ?? ''} />
-
-      <div className="form-field">
-        <label htmlFor={`image-role-${image.id}`}>Role</label>
-        <select
-          id={`image-role-${image.id}`}
-          aria-label={`Role for image ${n}`}
-          value={form.role}
-          onChange={handleField('role')}
-        >
-          {ROLES.map((role) => (
-            <option key={role} value={role}>
-              {role}
-            </option>
-          ))}
-        </select>
+      <div className="product-images__thumb-wrap">
+        <img className="product-images__thumb" src={image.url} alt={image.alt ?? ''} />
+        {(image.role === 'main' || image.role === 'banner') && (
+          <span className="product-images__badge">{image.role}</span>
+        )}
       </div>
 
-      <div className="form-field">
-        <label htmlFor={`image-fit-${image.id}`}>Fit</label>
-        <select
-          id={`image-fit-${image.id}`}
-          aria-label={`Fit for image ${n}`}
-          value={form.fit}
-          onChange={handleField('fit')}
-        >
-          {FITS.map((fit) => (
-            <option key={fit} value={fit}>
-              {fit}
-            </option>
-          ))}
-        </select>
+      <div className="product-images__row">
+        <div className="form-field">
+          <label htmlFor={`image-role-${image.id}`}>Role</label>
+          <select
+            id={`image-role-${image.id}`}
+            aria-label={`Role for image ${n}`}
+            value={form.role}
+            onChange={handleField('role')}
+          >
+            {ROLES.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label htmlFor={`image-fit-${image.id}`}>Fit</label>
+          <select
+            id={`image-fit-${image.id}`}
+            aria-label={`Fit for image ${n}`}
+            value={form.fit}
+            onChange={handleField('fit')}
+          >
+            {FITS.map((fit) => (
+              <option key={fit} value={fit}>
+                {fit}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="form-field">
@@ -193,20 +200,25 @@ function ImageCard({ image, index, productId, onChange, setError }) {
       </div>
 
       <div className="product-images__actions">
-        <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
+        <button
+          type="button"
+          className="btn-gold btn-gold--sm"
+          onClick={handleSave}
+          disabled={saving}
+        >
           {saving ? 'Saving…' : 'Save'}
         </button>
         {confirming ? (
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn-outline btn-outline--sm btn-outline--danger"
             onClick={handleDeleteConfirm}
             disabled={deleting}
           >
             {deleting ? 'Deleting…' : 'Confirm delete'}
           </button>
         ) : (
-          <button type="button" className="btn btn-secondary" onClick={handleDeleteClick}>
+          <button type="button" className="btn-outline btn-outline--sm" onClick={handleDeleteClick}>
             Delete
           </button>
         )}

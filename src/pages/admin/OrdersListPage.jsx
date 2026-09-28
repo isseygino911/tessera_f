@@ -59,22 +59,26 @@ export default function OrdersListPage() {
 
   return (
     <div>
-      <div className="toolbar">
+      <div className="admin-head">
+        <p className="eyebrow">Sales</p>
         <h1>Orders</h1>
-        <form onSubmit={handleSearchSubmit} className="form-field" style={{ marginBottom: 0 }}>
+      </div>
+
+      <div className="admin-filters">
+        <form onSubmit={handleSearchSubmit} className="form-field">
           <label htmlFor="order-search">Search orders</label>
-          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <div className="admin-filters__group">
             <input
               id="order-search"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
-            <button type="submit" className="btn btn-secondary">
+            <button type="submit" className="btn-outline">
               Search
             </button>
           </div>
         </form>
-        <div className="form-field" style={{ marginBottom: 0, minWidth: '10rem' }}>
+        <div className="form-field">
           <label htmlFor="status-filter">Status</label>
           <select id="status-filter" value={status} onChange={handleStatusChange}>
             <option value="">All</option>
@@ -96,7 +100,7 @@ export default function OrdersListPage() {
       {!orders && !error && <p>Loading…</p>}
 
       {orders && orders.length === 0 && (
-        <p className="empty-state">{q || status ? 'No orders match.' : 'No orders yet.'}</p>
+        <p className="shop-empty">{q || status ? 'No orders match.' : 'No orders yet.'}</p>
       )}
 
       {orders && orders.length > 0 && <OrdersTable orders={orders} />}
@@ -105,7 +109,7 @@ export default function OrdersListPage() {
         <div className="pager">
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn-outline"
             onClick={() => updateParams({ page: String(page - 1) })}
             disabled={page <= 1}
           >
@@ -116,7 +120,7 @@ export default function OrdersListPage() {
           </span>
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn-outline"
             onClick={() => updateParams({ page: String(page + 1) })}
             disabled={page >= totalPages}
           >

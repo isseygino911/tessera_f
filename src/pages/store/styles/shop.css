@@ -1,8 +1,7 @@
 /* Cart, checkout and thanks. Shared primitives (.btn-outline, .btn-gold,
    .eyebrow, .site-container, form-field/form-grid/form-error, .blend, …)
-   live in styles/primitives.css; admin keeps its own .btn, .container,
-   .cart-summary and .empty-state rules there untouched — the store stops
-   using them from here down. */
+   live in styles/primitives.css and are shared with the admin, which follows
+   the same look (see pages/admin/styles/admin.css). */
 
 .shop {
   max-width: 1180px;

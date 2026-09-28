@@ -31,46 +31,49 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <div className="admin-head">
+        <p className="eyebrow">Overview</p>
+        <h1>Dashboard</h1>
+      </div>
 
       <div className="stat-cards">
-        <Link to="/admin/orders?status=new" className="stat-card">
-          <span className="stat-card__label">New orders</span>
+        <Link to="/admin/orders?status=new" className="stat-card stat-card--link">
+          <span className="stat-card__label eyebrow">New orders</span>
           <span className="stat-card__value">{newOrders}</span>
         </Link>
         <div className="stat-card">
-          <span className="stat-card__label">Revenue this month</span>
+          <span className="stat-card__label eyebrow">Revenue this month</span>
           <span className="stat-card__value">{formatPrice(revenueThisMonthCents)}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-card__label">Low stock</span>
+          <span className="stat-card__label eyebrow">Low stock</span>
           <span className="stat-card__value">{lowStock.length}</span>
         </div>
       </div>
 
       <h2>Low stock</h2>
       {lowStock.length === 0 ? (
-        <p className="empty-state">All products are well stocked</p>
+        <p className="shop-empty">All products are well stocked</p>
       ) : (
-        <ul>
+        <ul className="admin-list">
           {lowStock.map((product) => (
             <li key={product.id}>
-              <Link to={`/admin/products/${product.id}`}>{product.name}</Link> &mdash;{' '}
-              {product.stock} left
+              <Link to={`/admin/products/${product.id}`}>{product.name}</Link>
+              <span>{product.stock} left</span>
             </li>
           ))}
         </ul>
       )}
 
-      <div className="toolbar">
+      <div className="admin-head">
         <h2>Recent orders</h2>
-        <Link to="/admin/orders" className="btn-link">
+        <Link to="/admin/orders" className="admin-link">
           View all orders
         </Link>
       </div>
 
       {recentOrders.length === 0 ? (
-        <p className="empty-state">No orders yet.</p>
+        <p className="shop-empty">No orders yet.</p>
       ) : (
         <OrdersTable orders={recentOrders} />
       )}

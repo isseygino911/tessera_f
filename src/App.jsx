@@ -34,7 +34,7 @@ export default function App() {
           <Route
             path="/admin/*"
             element={
-              <Suspense fallback={<p className="container">Loading…</p>}>
+              <Suspense fallback={<p className="shop">Loading…</p>}>
                 <AdminApp />
               </Suspense>
             }
