@@ -38,6 +38,18 @@ export default function CheckoutPage() {
     return <Navigate to="/login?returnTo=%2Fcheckout" replace />;
   }
 
+  if (user.role === 'admin') {
+    return (
+      <div className="shop">
+        <div className="shop-head">
+          <p className="eyebrow">Your order</p>
+          <h1>Checkout</h1>
+        </div>
+        <p>Admin accounts can&apos;t place orders.</p>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="shop">

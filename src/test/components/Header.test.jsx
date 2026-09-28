@@ -142,6 +142,24 @@ describe('Header', () => {
     await waitFor(() => expect(screen.getByText('Ada')).toBeInTheDocument());
     expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Sign in' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
+  });
+
+  it('shows an "Admin" link to /admin for admins', async () => {
+    vi.mocked(api.authMe).mockResolvedValue({
+      user: {
+        id: 2,
+        email: 'boss@example.com',
+        name: 'Grace Hopper',
+        avatarUrl: null,
+        role: 'admin',
+      },
+    });
+    renderHeader();
+
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin')
+    );
   });
 
   it('"Sign out" calls logout', async () => {

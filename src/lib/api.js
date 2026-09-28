@@ -10,22 +10,27 @@ class ApiError extends Error {
   }
 }
 
-async function request(path, { method = 'GET', body } = {}) {
+async function request(path, { method = 'GET', body, rawBody, contentType } = {}) {
   const init = {
     method,
     credentials: 'include',
     headers: {},
   };
 
-  if (body !== undefined) {
+  if (rawBody !== undefined) {
+    init.headers['Content-Type'] = contentType;
+    init.body = rawBody;
+  } else if (body !== undefined) {
     init.headers['Content-Type'] = 'application/json';
     init.body = JSON.stringify(body);
   }
 
   const res = await fetch(`/api${path}`, init);
 
-  const contentType = res.headers.get('content-type') || '';
-  const data = contentType.includes('application/json') ? await res.json().catch(() => null) : null;
+  const resContentType = res.headers.get('content-type') || '';
+  const data = resContentType.includes('application/json')
+    ? await res.json().catch(() => null)
+    : null;
 
   if (!res.ok) {
     const message = (data && (data.error || data.message)) || `Request failed (${res.status})`;
@@ -51,6 +56,17 @@ export const api = {
   adminUpdateProduct: (id, payload) =>
     request(`/admin/products/${id}`, { method: 'PUT', body: payload }),
   adminDeleteProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
+
+  adminUploadImage: (productId, file) =>
+    request(`/admin/products/${productId}/images`, {
+      method: 'POST',
+      rawBody: file,
+      contentType: file.type,
+    }),
+  adminUpdateImage: (productId, imageId, data) =>
+    request(`/admin/products/${productId}/images/${imageId}`, { method: 'PATCH', body: data }),
+  adminDeleteImage: (productId, imageId) =>
+    request(`/admin/products/${productId}/images/${imageId}`, { method: 'DELETE' }),
 
   adminGetOrders: (status) =>
     request(`/admin/orders${status ? `?status=${encodeURIComponent(status)}` : ''}`),

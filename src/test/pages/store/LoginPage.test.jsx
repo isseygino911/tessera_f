@@ -24,6 +24,7 @@ function renderLoginPage({ initialEntries = ['/login'] } = {}) {
           <Route path="/signup" element={<p>signup page</p>} />
           <Route path="/checkout" element={<p>checkout page</p>} />
           <Route path="/" element={<p>home page</p>} />
+          <Route path="/admin" element={<p>admin page</p>} />
         </Routes>
       </MemoryRouter>
     </AuthProvider>
@@ -104,6 +105,21 @@ describe('LoginPage', () => {
 
     await waitFor(() => expect(screen.getByText('checkout page')).toBeInTheDocument());
     expect(api.authLogin).toHaveBeenCalledWith({ email: 'ada@example.com', password: 'password1' });
+  });
+
+  it('sends an admin to /admin when there is no returnTo', async () => {
+    vi.mocked(api.authLogin).mockResolvedValue({
+      user: { id: 2, email: 'boss@example.com', name: 'Grace', avatarUrl: null, role: 'admin' },
+    });
+
+    renderLoginPage();
+    await waitFor(() => expect(api.authMe).toHaveBeenCalled());
+
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'boss@example.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+
+    await waitFor(() => expect(screen.getByText('admin page')).toBeInTheDocument());
   });
 
   it('shows the API error message in an alert when login fails', async () => {

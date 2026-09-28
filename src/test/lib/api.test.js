@@ -102,3 +102,20 @@ describe('api auth methods', () => {
     await expect(api.authMe()).rejects.toMatchObject({ status: 401 });
   });
 });
+
+describe('api admin image methods', () => {
+  it('adminUploadImage POSTs the file as a raw body to /api/admin/products/:id/images with Content-Type = file.type', async () => {
+    const product = { id: 5, images: [] };
+    fetch.mockResolvedValueOnce(jsonResponse(201, product));
+    const file = new File(['fake-bytes'], 'photo.jpg', { type: 'image/jpeg' });
+
+    const result = await api.adminUploadImage(1, file);
+
+    expect(result).toEqual(product);
+    const [url, init] = fetch.mock.calls[0];
+    expect(url).toBe('/api/admin/products/1/images');
+    expect(init.method).toBe('POST');
+    expect(init.headers['Content-Type']).toBe('image/jpeg');
+    expect(init.body).toBe(file);
+  });
+});

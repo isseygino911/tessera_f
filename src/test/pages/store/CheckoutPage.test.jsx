@@ -27,6 +27,14 @@ const authedUser = {
   role: 'customer',
 };
 
+const adminUser = {
+  id: 2,
+  email: 'admin@example.com',
+  name: 'Admin Ada',
+  avatarUrl: null,
+  role: 'admin',
+};
+
 function renderCheckoutPage({ initialEntries = ['/checkout'] } = {}) {
   return render(
     <AuthProvider>
@@ -134,5 +142,18 @@ describe('CheckoutPage', () => {
       'true'
     );
     expect(screen.getByLabelText('Note (optional)')).not.toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('shows "Admin accounts can\'t place orders." and no form for a signed-in admin', async () => {
+    vi.mocked(api.authMe).mockResolvedValue({ user: adminUser });
+    seedCart([cartItem()]);
+
+    renderCheckoutPage();
+
+    await waitFor(() =>
+      expect(screen.getByText("Admin accounts can't place orders.")).toBeInTheDocument()
+    );
+    expect(screen.queryByLabelText('Full name')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Place order' })).not.toBeInTheDocument();
   });
 });

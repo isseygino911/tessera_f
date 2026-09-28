@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { ApiError } from '@/lib/api.js';
 import { useAuth } from '@/context/AuthContext.jsx';
 import GoogleSignInLink from '@/components/GoogleSignInLink.jsx';
@@ -10,10 +10,14 @@ function safeReturnTo(value) {
 }
 
 export default function LoginPage() {
-  const { status, login } = useAuth();
-  const navigate = useNavigate();
+  const { status, user, login } = useAuth();
   const [searchParams] = useSearchParams();
-  const returnTo = safeReturnTo(searchParams.get('returnTo'));
+  // Admins land on the admin area unless they were sent here from somewhere.
+  const returnTo = searchParams.get('returnTo')
+    ? safeReturnTo(searchParams.get('returnTo'))
+    : user?.role === 'admin'
+      ? '/admin'
+      : '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,8 +43,8 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
+      // Once logged in, the `authed` branch above redirects to returnTo.
       await login(email, password);
-      navigate(returnTo, { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
     } finally {

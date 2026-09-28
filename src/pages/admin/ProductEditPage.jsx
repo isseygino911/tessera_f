@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
-import { mainImage } from '@/lib/productImages.js';
+import ProductImages from './ProductImages.jsx';
+
+function slugify(name) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 const EMPTY = {
   slug: '',
@@ -9,7 +17,7 @@ const EMPTY = {
   hex: '#e0a030',
   tagline: '',
   story: '',
-  priceCents: 4800,
+  priceDollars: '48.00',
   stock: 0,
   sortOrder: 0,
   active: true,
@@ -22,7 +30,7 @@ function toFormState(product) {
     hex: product.hex ?? '#e0a030',
     tagline: product.tagline ?? '',
     story: product.story ?? '',
-    priceCents: product.priceCents ?? 0,
+    priceDollars: ((product.priceCents ?? 0) / 100).toFixed(2),
     stock: product.stock ?? 0,
     sortOrder: product.sortOrder ?? 0,
     active: product.active ?? true,
@@ -36,11 +44,23 @@ export default function ProductEditPage() {
 
   const [form, setForm] = useState(EMPTY);
   const [product, setProduct] = useState(null);
-  const [imageBroken, setImageBroken] = useState(false);
-  const [prevSlug, setPrevSlug] = useState(form.slug);
+  const [slugTouched, setSlugTouched] = useState(false);
   const [loading, setLoading] = useState(!isNew);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [softDeletedMessage, setSoftDeletedMessage] = useState(null);
+  const [prevId, setPrevId] = useState(id);
+
+  // The route re-renders this page in place after a create (id: "new" -> the
+  // new id), rather than unmounting it, so `loading` and `product` have to be
+  // reset as soon as `id` changes, before the fetch effect below even runs.
+  if (id !== prevId) {
+    setPrevId(id);
+    setProduct(null);
+    setLoading(!isNew);
+  }
 
   useEffect(() => {
     if (isNew) return;
@@ -54,16 +74,23 @@ export default function ProductEditPage() {
       .finally(() => setLoading(false));
   }, [id, isNew]);
 
-  if (form.slug !== prevSlug) {
-    setPrevSlug(form.slug);
-    setImageBroken(false);
-  }
-
-  const previewUrl = mainImage(product)?.url;
-
   const handleChange = (field) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleNameChange = (e) => {
+    const name = e.target.value;
+    setForm((prev) => ({
+      ...prev,
+      name,
+      slug: isNew && !slugTouched ? slugify(name) : prev.slug,
+    }));
+  };
+
+  const handleSlugChange = (e) => {
+    setSlugTouched(true);
+    setForm((prev) => ({ ...prev, slug: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -72,24 +99,50 @@ export default function ProductEditPage() {
     setSaving(true);
 
     const payload = {
-      ...form,
-      priceCents: Number(form.priceCents),
+      slug: form.slug,
+      name: form.name,
+      hex: form.hex,
+      tagline: form.tagline,
+      story: form.story,
+      priceCents: Math.round(Number(form.priceDollars) * 100),
       stock: Number(form.stock),
       sortOrder: Number(form.sortOrder),
+      active: form.active,
     };
 
     try {
       if (isNew) {
-        await api.adminCreateProduct(payload);
+        const created = await api.adminCreateProduct(payload);
+        navigate(`/admin/products/${created.id}`);
       } else {
         await api.adminUpdateProduct(id, payload);
+        navigate('/admin/products');
       }
-
-      navigate('/admin/products');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to save product.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteClick = () => setConfirmingDelete(true);
+
+  const handleDeleteConfirm = async () => {
+    setError(null);
+    setDeleting(true);
+    try {
+      const result = await api.adminDeleteProduct(id);
+      if (result.softDeleted) {
+        setSoftDeletedMessage('This product has orders, so it was deactivated instead.');
+        setForm((prev) => ({ ...prev, active: false }));
+      } else {
+        navigate('/admin/products');
+      }
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Failed to delete product.');
+    } finally {
+      setDeleting(false);
+      setConfirmingDelete(false);
     }
   };
 
@@ -107,33 +160,31 @@ export default function ProductEditPage() {
         </p>
       )}
 
+      {softDeletedMessage && (
+        <p className="form-banner" role="alert">
+          {softDeletedMessage}
+        </p>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-field">
-          <label>Photo</label>
-          {previewUrl && !imageBroken ? (
-            <img
-              className="image-upload-preview"
-              src={previewUrl}
-              alt={form.name ? `${form.name} preview` : 'Product preview'}
-              onError={() => setImageBroken(true)}
-            />
+          <label>Photos</label>
+          {isNew ? (
+            <p className="form-hint">Save the product to add photos.</p>
           ) : (
-            <div
-              className="image-upload-preview image-upload-preview--placeholder"
-              aria-hidden="true"
-            />
+            <ProductImages product={product} onChange={setProduct} />
           )}
         </div>
 
         <div className="form-grid">
           <div className="form-field">
             <label htmlFor="name">Name</label>
-            <input id="name" value={form.name} onChange={handleChange('name')} required />
+            <input id="name" value={form.name} onChange={handleNameChange} required />
           </div>
 
           <div className="form-field">
             <label htmlFor="slug">Slug</label>
-            <input id="slug" value={form.slug} onChange={handleChange('slug')} required />
+            <input id="slug" value={form.slug} onChange={handleSlugChange} required />
           </div>
 
           <div className="form-field">
@@ -142,13 +193,14 @@ export default function ProductEditPage() {
           </div>
 
           <div className="form-field">
-            <label htmlFor="priceCents">Price (cents)</label>
+            <label htmlFor="priceDollars">Price ($)</label>
             <input
-              id="priceCents"
+              id="priceDollars"
               type="number"
               min={0}
-              value={form.priceCents}
-              onChange={handleChange('priceCents')}
+              step={0.01}
+              value={form.priceDollars}
+              onChange={handleChange('priceDollars')}
               required
             />
           </div>
@@ -199,6 +251,21 @@ export default function ProductEditPage() {
         </div>
 
         <div className="product__actions" style={{ justifyContent: 'flex-end' }}>
+          {!isNew &&
+            (confirmingDelete ? (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting…' : 'Confirm delete'}
+              </button>
+            ) : (
+              <button type="button" className="btn btn-secondary" onClick={handleDeleteClick}>
+                Delete product
+              </button>
+            ))}
           <button
             type="button"
             className="btn btn-secondary"

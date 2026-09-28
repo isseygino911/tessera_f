@@ -27,6 +27,11 @@ export default function Header() {
       return (
         <>
           <span className="site-header__user">{user.name.split(' ')[0]}</span>
+          {user.role === 'admin' && (
+            <Link to="/admin" className="site-header__admin" onClick={onNavigate}>
+              Admin
+            </Link>
+          )}
           <button
             type="button"
             className="site-header__signout"
