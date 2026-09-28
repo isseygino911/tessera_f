@@ -111,7 +111,7 @@ describe('CheckoutPage', () => {
     // them so every required field is empty, matching validateCheckout({}).
     fireEvent.change(screen.getByLabelText('Full name'), { target: { value: '' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: '' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Submit order request' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Place order' }));
 
     const expectedErrors = validateCheckout({});
     Object.values(expectedErrors).forEach((message) => {
@@ -127,7 +127,7 @@ describe('CheckoutPage', () => {
     renderCheckoutPage();
     await waitFor(() => expect(screen.getByLabelText('Full name')).toHaveValue('Ada Lovelace'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Submit order request' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Place order' }));
 
     expect(screen.getByLabelText('Address line 2 (optional)')).not.toHaveAttribute(
       'aria-invalid',

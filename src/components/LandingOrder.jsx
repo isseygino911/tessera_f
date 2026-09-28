@@ -23,7 +23,7 @@ export default function LandingOrder({ products }) {
       <div className="site-container landing-order__inner">
         <p className="eyebrow">06 / Ordering</p>
         <h2 id={headingId} className="landing-order__title">
-          Order requests only.
+          Order direct from the studio.
         </h2>
 
         <div className="landing-order__how">

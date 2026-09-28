@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     return (
       <div className="shop">
         <div className="shop-head">
-          <p className="eyebrow">Order request</p>
+          <p className="eyebrow">Your order</p>
           <h1>Checkout</h1>
         </div>
         <div className="shop-empty">
@@ -144,11 +144,9 @@ function CheckoutForm({ user }) {
   return (
     <div className="shop">
       <div className="shop-head">
-        <p className="eyebrow">Order request</p>
+        <p className="eyebrow">Your order</p>
         <h1>Checkout</h1>
-        <p>
-          This is an order request — we&apos;ll follow up by email to arrange payment and shipping.
-        </p>
+        <p>We&apos;ll email you to confirm your order and when it ships.</p>
       </div>
 
       {submitError && (
@@ -190,7 +188,7 @@ function CheckoutForm({ user }) {
             Back to cart
           </Link>
           <button type="submit" className="btn-gold" disabled={submitting}>
-            {submitting ? 'Submitting…' : 'Submit order request'}
+            {submitting ? 'Submitting…' : 'Place order'}
           </button>
         </div>
       </form>

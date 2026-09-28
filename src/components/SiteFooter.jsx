@@ -9,7 +9,7 @@ export default function SiteFooter() {
       <div className="site-footer__cta site-container">
         <p className="eyebrow">Ordering</p>
         <h2 className="site-footer__heading">
-          Order requests only. We&apos;ll contact you ourselves to arrange payment and delivery.
+          Hand-faceted crystal bracelets, shipped straight from our studio.
         </h2>
         <a href="/#order" className="site-footer__cta-link">
           Shop the collection <span aria-hidden="true">→</span>
@@ -46,9 +46,7 @@ export default function SiteFooter() {
         </nav>
         <div>
           <h3 className="eyebrow">Ordering</h3>
-          <p>
-            Order requests only. We&apos;ll contact you ourselves to arrange payment and delivery.
-          </p>
+          <p>Order online and we&apos;ll pack and ship your bracelet from the studio.</p>
         </div>
       </div>
 

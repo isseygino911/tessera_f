@@ -72,19 +72,17 @@ export const QUOTES = [
   },
 ];
 
-// Verbatim from SiteFooter's "Our Studio" blurb, CheckoutPage's order-request
-// line, and the SPEC_GROUPS Ordering entry.
 export const HOW_IT_WORKS = [
   {
     title: 'Choose',
     text: 'Crystal bead bracelets, faceted by hand one bead at a time. Three colours, each with a story of its own.',
   },
   {
-    title: 'Request',
-    text: "This is an order request — we'll follow up by email to arrange payment and shipping.",
+    title: 'Order',
+    text: 'Add your bracelets to the cart and check out in a minute.',
   },
   {
-    title: 'We arrange',
-    text: "We'll contact you ourselves to arrange payment and delivery.",
+    title: 'We ship',
+    text: 'Each bracelet is packed by hand and sent straight from our studio.',
   },
 ];

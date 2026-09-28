@@ -21,8 +21,8 @@ export const SPEC_GROUPS = [
   {
     title: 'Ordering',
     items: [
-      { term: 'Requests', detail: 'Order requests only' },
-      { term: 'Payment & delivery', detail: 'Arranged with you personally after you order' },
+      { term: 'How', detail: 'Order online, direct from the studio' },
+      { term: 'Delivery', detail: 'Packed by hand and shipped from our studio' },
     ],
   },
 ];
@@ -38,7 +38,7 @@ export const TRUST = [
     text: 'Beads are sorted and matched one at a time, so each strand keeps a single, even colour.',
   },
   {
-    title: 'Personal ordering',
-    text: "Send an order request and we'll contact you ourselves to arrange payment and delivery.",
+    title: 'Direct from the studio',
+    text: 'Order online and we pack and ship each bracelet ourselves.',
   },
 ];

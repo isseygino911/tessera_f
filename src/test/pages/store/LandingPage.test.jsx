@@ -110,7 +110,7 @@ function renderLanding() {
 }
 
 async function findOrderSection() {
-  const heading = await screen.findByRole('heading', { name: 'Order requests only.' });
+  const heading = await screen.findByRole('heading', { name: 'Order direct from the studio.' });
   return heading.closest('section');
 }
 
