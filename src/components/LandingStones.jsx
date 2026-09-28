@@ -3,31 +3,31 @@ import { Link } from 'react-router-dom';
 import { SPEC_GROUPS } from '@/data/productFacts.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import { ScrollTrigger } from '@/lib/motion.js';
-import { useLabStonesMotion } from '@/hooks/useLabStonesMotion.js';
+import { useLandingStonesMotion } from '@/hooks/useLandingStonesMotion.js';
 import ProductPhoto from './ProductPhoto.jsx';
-import './styles/LabStones.css';
+import './styles/LandingStones.css';
 
 const HEADING = 'Shop by stone';
 
 // Only the Stone + Fit spec rows show in the stage (Ordering is covered by
-// LabOrder further down the page).
+// LandingOrder further down the page).
 const STAGE_SPEC_ROWS = SPEC_GROUPS.filter((group) => group.title !== 'Ordering').flatMap(
   (group) => group.items
 );
 
 // Pinned 3-step stones stage (section map row 2). Every product renders as an
 // <article> in the DOM at all times so tests and non-motion visitors see all
-// of it; useLabStonesMotion (desktop + motion only) pins the whole section at
-// exactly 100vh (header row + heading + two-column stage + index all fit in
+// of it; useLandingStonesMotion (desktop + motion only) pins the whole section
+// at exactly 100vh (header row + heading + two-column stage + index all fit in
 // the viewport together) and drives `active` via onStep, and CSS crossfades
 // the active article. Mobile and reduced-motion fall back to a horizontal
-// scroll-snap row (see LabStones.css).
-export default function LabStones({ products }) {
+// scroll-snap row (see LandingStones.css).
+export default function LandingStones({ products }) {
   const rootRef = useRef(null);
   const scrollRef = useRef(null);
   const [active, setActive] = useState(0);
 
-  useLabStonesMotion(rootRef, products.length, setActive);
+  useLandingStonesMotion(rootRef, products.length, setActive);
 
   function handleScroll() {
     const el = scrollRef.current;
@@ -45,7 +45,7 @@ export default function LabStones({ products }) {
       return;
     }
 
-    const trigger = ScrollTrigger.getById('lab-stones-stage');
+    const trigger = ScrollTrigger.getById('landing-stones-stage');
     if (trigger) {
       const target =
         trigger.start + (trigger.end - trigger.start) * (index / (products.length - 1));
@@ -54,28 +54,33 @@ export default function LabStones({ products }) {
   }
 
   return (
-    <section id="stones" className="lab-stones" aria-labelledby="lab-stones-title" ref={rootRef}>
-      <div className="lab-stones__inner lab-container">
-        <div className="lab-stones__header">
-          <p className="lab-eyebrow">{'02 / Shop by stone'}</p>
+    <section
+      id="stones"
+      className="landing-stones"
+      aria-labelledby="landing-stones-title"
+      ref={rootRef}
+    >
+      <div className="landing-stones__inner site-container">
+        <div className="landing-stones__header">
+          <p className="eyebrow">{'02 / Shop by stone'}</p>
           <p
-            className="lab-stones__counter"
+            className="landing-stones__counter"
             aria-hidden="true"
           >{`${active + 1} / ${products.length}`}</p>
         </div>
 
-        <h2 id="lab-stones-title" className="lab-stones__heading" aria-label={HEADING}>
+        <h2 id="landing-stones-title" className="landing-stones__heading" aria-label={HEADING}>
           <span aria-hidden="true">
             {HEADING.split('').map((char, index) => (
-              <span key={index} className="lab-stones__letter" data-stones-letter>
-                {char === ' ' ? ' ' : char}
+              <span key={index} className="landing-stones__letter" data-stones-letter>
+                {char === ' ' ? '\u00A0' : char}
               </span>
             ))}
           </span>
         </h2>
 
-        <div className="lab-stones__stage">
-          <div className="lab-stones__row" ref={scrollRef} onScroll={handleScroll}>
+        <div className="landing-stones__stage">
+          <div className="landing-stones__row" ref={scrollRef} onScroll={handleScroll}>
             {products.map((product, index) => (
               <StoneCard
                 key={product.id}
@@ -87,12 +92,12 @@ export default function LabStones({ products }) {
           </div>
         </div>
 
-        <div className="lab-stones__index">
+        <div className="landing-stones__index">
           {products.map((product, index) => (
             <button
               key={product.id}
               type="button"
-              className={`lab-stones__index-btn${index === active ? ' lab-stones__index-btn--active' : ''}`}
+              className={`landing-stones__index-btn${index === active ? ' landing-stones__index-btn--active' : ''}`}
               aria-label={`Show ${product.name}`}
               onClick={() => handleIndexClick(index)}
             >
@@ -117,48 +122,52 @@ function StoneCard({ product, index, isActive }) {
 
   return (
     <article
-      className={`lab-stones__card${isActive ? ' lab-stones__card--active' : ''}`}
+      className={`landing-stones__card${isActive ? ' landing-stones__card--active' : ''}`}
       style={{ '--stone': product.hex }}
     >
-      <div className="lab-stones__info" data-stage-item>
-        <div className="lab-stones__meta" data-stage-item>
-          <p className="lab-stones__code">{`No.${String(index + 1).padStart(2, '0')}`}</p>
-          <p className="lab-eyebrow">{stockStatus(product.stock)}</p>
+      <div className="landing-stones__info" data-stage-item>
+        <div className="landing-stones__meta" data-stage-item>
+          <p className="landing-stones__code">{`No.${String(index + 1).padStart(2, '0')}`}</p>
+          <p className="eyebrow">{stockStatus(product.stock)}</p>
         </div>
-        <h3 className="lab-stones__name" data-stage-item>
+        <h3 className="landing-stones__name" data-stage-item>
           {product.name}
-          <span className="lab-stones__dot" aria-hidden="true" />
+          <span className="landing-stones__dot" aria-hidden="true" />
         </h3>
-        <p className="lab-stones__tagline" data-stage-item>
+        <p className="landing-stones__tagline" data-stage-item>
           {product.tagline}
         </p>
-        <p className="lab-stones__body" data-stage-item>
+        <p className="landing-stones__body" data-stage-item>
           {body}
         </p>
-        <div className="lab-stones__rule" aria-hidden="true" />
-        <dl className="lab-stones__specs" data-stage-item>
+        <div className="landing-stones__rule" aria-hidden="true" />
+        <dl className="landing-stones__specs" data-stage-item>
           {STAGE_SPEC_ROWS.map((row) => (
-            <div key={row.term} className="lab-stones__spec-row">
+            <div key={row.term} className="landing-stones__spec-row">
               <dt>{row.term}</dt>
               <dd>{row.detail}</dd>
             </div>
           ))}
         </dl>
-        <div className="lab-stones__total" data-stage-item>
+        <div className="landing-stones__total" data-stage-item>
           <span>{'Price'}</span>
           <span>{formatPrice(product.priceCents)}</span>
         </div>
-        <Link to={`/products/${product.slug}`} className="lab-stones__link" data-stage-item>
+        <Link to={`/products/${product.slug}`} className="landing-stones__link" data-stage-item>
           {`View ${product.name}`}
         </Link>
       </div>
 
-      <div className="lab-stones__visual" aria-hidden="true">
-        <span className="lab-stones__numeral">{String(index + 1).padStart(2, '0')}</span>
-        <div className="lab-stones__photo-wrap">
-          <div className="lab-stones__glow" />
-          <ProductPhoto slug={product.slug} name={product.name} className="lab-stones__photo" />
-          <div className="lab-stones__ring" />
+      <div className="landing-stones__visual" aria-hidden="true">
+        <span className="landing-stones__numeral">{String(index + 1).padStart(2, '0')}</span>
+        <div className="landing-stones__photo-wrap">
+          <div className="landing-stones__glow" />
+          <ProductPhoto
+            slug={product.slug}
+            name={product.name}
+            className="blend landing-stones__photo"
+          />
+          <div className="landing-stones__ring" />
         </div>
       </div>
     </article>

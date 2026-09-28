@@ -1,5 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-import SiteFooter from '@/components/SiteFooter.jsx';
 import './styles/shop.css';
 
 export default function ThanksPage() {
@@ -18,8 +17,6 @@ export default function ThanksPage() {
           Continue browsing
         </Link>
       </div>
-
-      <SiteFooter />
     </div>
   );
 }

@@ -17,7 +17,6 @@ export function useProductMotion(rootRef, slug, setBarVisible) {
           .timeline({ defaults: { ease: 'power3.out', duration: 1 } })
           .from('[data-pd-photo]', { scale: 0.88, opacity: 0, duration: 1.4 })
           .from('[data-pd-line]', { yPercent: 110, opacity: 0 }, 0.15)
-          .from('[data-pd-ornament]', { scaleX: 0, duration: 0.8 }, '-=0.5')
           .from('[data-pd-fade]', { y: 16, opacity: 0, stagger: 0.08, duration: 0.8 }, '-=0.6');
 
         revealEach('[data-reveal]');
@@ -26,11 +25,13 @@ export function useProductMotion(rootRef, slug, setBarVisible) {
       root
     );
 
+    // The footer now lives in StoreLayout, outside this page's root, so it
+    // has to be looked up from the document instead of scoped to root.
+    const footer = document.querySelector('.site-footer');
     const bar = ScrollTrigger.create({
       trigger: root.querySelector('[data-purchase]'),
       start: 'bottom top',
-      endTrigger: root.querySelector('.site-footer'),
-      end: 'top bottom',
+      ...(footer ? { endTrigger: footer, end: 'top bottom' } : { end: 'max' }),
       onToggle: (self) => setBarVisible(self.isActive),
     });
 

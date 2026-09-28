@@ -12,7 +12,7 @@ src/
   App.jsx             routes + StoreLayout
   components/         shared UI
     Header.jsx  SiteFooter.jsx  ProductCard.jsx  TrustStrip.jsx
-    QtyStepper.jsx  ProductPhoto.jsx  BrandMark.jsx  Ornament.jsx
+    QtyStepper.jsx  ProductPhoto.jsx  BrandMark.jsx
     styles/           one CSS file per component, same name (Header.css …)
   pages/
     store/  LandingPage.jsx  ProductPage.jsx  CartPage.jsx  CheckoutPage.jsx  ThanksPage.jsx
@@ -21,10 +21,10 @@ src/
     admin/  AdminApp.jsx … all admin pages
             styles/  admin.css  (imported by AdminLayout.jsx and LoginPage.jsx — LoginPage
                      renders outside AdminLayout, so it needs it directly)
-  hooks/     useLandingMotion.js  useProductMotion.js
+  hooks/     useLanding{Hero,Reveal,Stones,Story}Motion.js  useProductMotion.js
   context/   CartContext.jsx  AdminAuthContext.jsx
   lib/       api.js  formatPrice.js  motion.js  productImage.js  checkoutValidation.js
-  data/      photoManifest.js  productFacts.js
+  data/      landingContent.js  photoManifest.js  productFacts.js
   styles/    index.css (only @imports, in order)  tokens.css  base.css  primitives.css
   test/      setup.js + all tests, mirroring src/ paths
              (test/pages/store/LandingPage.test.jsx tests pages/store/LandingPage.jsx)
@@ -59,12 +59,11 @@ src/
 - `styles/base.css` — reset, element styles, `.app-shell`/`.app-main`, focus
   handling, `.lux`, smooth scroll.
 - `styles/primitives.css` — classes used across areas: `.btn*`, `.btn-outline`,
-  `.btn-gold`, forms, `.container`, `.eyebrow`, `.mono-label`, `.chip`,
-  `.swatch`, `.blend`, `.warm-frame`, `.section-title`, `.toolbar`,
-  `.product__actions`. A BEM-shaped name doesn't guarantee page scope: if a
-  class is used from more than one area (e.g. `.product__actions` styles the
-  store product page's buy row and is reused by the admin product form), it
-  belongs in `primitives.css`, not in either page's CSS.
+  `.btn-gold`, forms, `.container`, `.site-container`, `.eyebrow`, `.blend`,
+  `.toolbar`, `.product__actions`. A BEM-shaped name doesn't guarantee page
+  scope: if a class is used from more than one area (e.g. `.product__actions`
+  styles the store product page's buy row and is reused by the admin product
+  form), it belongs in `primitives.css`, not in either page's CSS.
 - Every component or page imports its own `./styles/X.css` file directly.
 - Class names use BEM: `block__el--mod`.
 - Page CSS is scoped under that page's root class (`.landing`, `.pd`, `.shop`,

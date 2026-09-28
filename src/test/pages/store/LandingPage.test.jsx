@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { api } from '@/lib/api.js';
+import { CartProvider } from '@/context/CartContext.jsx';
+import { CRAFT_TABS, QUOTES } from '@/data/landingContent.js';
+import { formatPrice } from '@/lib/formatPrice.js';
 import LandingPage from '@/pages/store/LandingPage.jsx';
 
 vi.mock('@/lib/api.js');
@@ -24,7 +27,7 @@ const emerald = {
   hex: '#2e5c45',
   tagline: 'Cut to catch the light',
   story: 'Hand-faceted emerald.',
-  priceCents: 4800,
+  priceCents: 5200,
   stock: 5,
 };
 
@@ -35,7 +38,7 @@ const topaz = {
   hex: '#1c4b6b',
   tagline: 'Made to wear daily',
   story: 'Hand-faceted topaz.',
-  priceCents: 4800,
+  priceCents: 3900,
   stock: 0,
 };
 
@@ -43,15 +46,24 @@ const products = [amber, emerald, topaz];
 
 function renderLanding() {
   return render(
-    <MemoryRouter>
-      <LandingPage />
-    </MemoryRouter>
+    <CartProvider>
+      <MemoryRouter>
+        <LandingPage />
+      </MemoryRouter>
+    </CartProvider>
   );
 }
 
-async function findCollectionSection() {
-  const heading = await screen.findByText('The Collection');
+async function findOrderSection() {
+  const heading = await screen.findByRole('heading', { name: 'Order requests only.' });
   return heading.closest('section');
+}
+
+function findOrderCard(orderSection, productName) {
+  const name = within(orderSection).getByText(productName, {
+    selector: '.landing-order__card-serif',
+  });
+  return name.closest('article');
 }
 
 beforeEach(() => {
@@ -59,95 +71,151 @@ beforeEach(() => {
 });
 
 describe('LandingPage', () => {
-  it('renders the hero heading', async () => {
+  it('shows loading text, then the hero heading and each product name in Shop by stone', async () => {
     api.getProducts.mockResolvedValue(products);
 
     renderLanding();
 
-    expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument();
-  });
+    expect(screen.getByText('Loading the collection…')).toBeInTheDocument();
 
-  it('renders a link to each product page inside the collection section', async () => {
-    api.getProducts.mockResolvedValue(products);
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Hand-faceted crystal, cut to hold the light.',
+      })
+    ).toBeInTheDocument();
 
-    renderLanding();
+    const stonesSection = document.getElementById('stones');
+    expect(stonesSection).toBeTruthy();
 
-    const section = await findCollectionSection();
-    expect(section).toBeTruthy();
-
-    const links = await within(section).findAllByRole('link');
-    const hrefs = links.map((link) => link.getAttribute('href'));
-
-    expect(hrefs).toEqual(
-      expect.arrayContaining([
-        '/products/sunlit-amber',
-        '/products/forest-emerald',
-        '/products/ocean-topaz',
-      ])
-    );
-
-    const amberLink = links.find((link) => link.getAttribute('href') === '/products/sunlit-amber');
-    expect(amberLink).toHaveAccessibleName(expect.stringContaining('Sunlit Amber'));
-  });
-
-  it('formats the price as dollars and cents', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderLanding();
-
-    const section = await findCollectionSection();
-    expect(within(section).getAllByText('$48.00').length).toBeGreaterThan(0);
-  });
-
-  it('shows "Sold out" exactly once, for the out-of-stock product', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderLanding();
-
-    const section = await findCollectionSection();
-    const soldOutMatches = await within(section).findAllByText('Sold out');
-    expect(soldOutMatches).toHaveLength(1);
-  });
-
-  it('still renders all product links when prefers-reduced-motion is reported as matching', async () => {
-    const originalMatchMedia = window.matchMedia;
-    window.matchMedia = vi.fn().mockImplementation((query) => ({
-      matches: query === '(prefers-reduced-motion: reduce)',
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
-
-    api.getProducts.mockResolvedValue(products);
-
-    try {
-      renderLanding();
-
-      const section = await findCollectionSection();
-      const links = await within(section).findAllByRole('link');
-      const hrefs = links.map((link) => link.getAttribute('href'));
-
-      expect(hrefs).toEqual(
-        expect.arrayContaining([
-          '/products/sunlit-amber',
-          '/products/forest-emerald',
-          '/products/ocean-topaz',
-        ])
-      );
-    } finally {
-      window.matchMedia = originalMatchMedia;
+    for (const product of products) {
+      expect(
+        within(stonesSection).getByRole('heading', { level: 3, name: product.name })
+      ).toBeInTheDocument();
     }
   });
 
-  it('still renders the hero heading when getProducts rejects', async () => {
+  it('shows an alert with the error message when getProducts rejects, while Craft still renders', async () => {
     api.getProducts.mockRejectedValue(new Error('network down'));
 
-    expect(() => renderLanding()).not.toThrow();
+    renderLanding();
 
-    expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      "The collection couldn't be loaded right now. Please try again in a moment."
+    );
+
+    expect(screen.getByRole('heading', { name: 'Hand-faceted.' })).toBeInTheDocument();
+  });
+
+  it('shows "No stones are available right now." when the product list is empty', async () => {
+    api.getProducts.mockResolvedValue([]);
+
+    renderLanding();
+
+    expect(await screen.findByText('No stones are available right now.')).toBeInTheDocument();
+  });
+
+  it('renders 4 craft tabs in a tablist with the first selected by default', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const tablist = await screen.findByRole('tablist');
+    const tabs = within(tablist).getAllByRole('tab');
+
+    expect(tabs).toHaveLength(4);
+    expect(tabs).toHaveLength(CRAFT_TABS.length);
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+    tabs.slice(1).forEach((tab) => expect(tab).toHaveAttribute('aria-selected', 'false'));
+
+    const firstTab = CRAFT_TABS[0];
+    const panelId = tabs[0].getAttribute('aria-controls');
+    const panel = document.getElementById(panelId);
+    expect(within(panel).getByText(firstTab.title)).toBeInTheDocument();
+    expect(within(panel).getByText(firstTab.text)).toBeInTheDocument();
+  });
+
+  it('selects another craft tab on click and shows its label and title in the tabpanel', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const tablist = await screen.findByRole('tablist');
+    const tabs = within(tablist).getAllByRole('tab');
+    const nextTab = CRAFT_TABS[1];
+
+    fireEvent.click(screen.getByRole('tab', { name: nextTab.label }));
+
+    expect(screen.getByRole('tab', { name: nextTab.label })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'false');
+
+    const panelId = screen.getByRole('tab', { name: nextTab.label }).getAttribute('aria-controls');
+    const panel = document.getElementById(panelId);
+    expect(within(panel).getByText(nextTab.title)).toBeInTheDocument();
+  });
+
+  it('adds a product to the cart and confirms it with a status message', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const addButton = await screen.findByRole('button', { name: 'Add Sunlit Amber to cart' });
+    fireEvent.click(addButton);
+
+    expect(await screen.findByRole('status')).toHaveTextContent('Added to your cart.');
+  });
+
+  it('disables the control for an out-of-stock product and labels it Sold out', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const orderSection = await findOrderSection();
+    const topazCard = findOrderCard(orderSection, 'Ocean Topaz');
+
+    const soldOutButton = within(topazCard).getByRole('button', { name: 'Sold out' });
+    expect(soldOutButton).toBeDisabled();
+    expect(soldOutButton).toHaveTextContent('Sold out');
+  });
+
+  it('shows the product price via formatPrice for the ordering cards', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    await screen.findByRole('button', { name: 'Add Sunlit Amber to cart' });
+    expect(screen.getAllByText(formatPrice(amber.priceCents)).length).toBeGreaterThan(0);
+  });
+
+  it('renders 3 blockquotes, each cited to a stone name from QUOTES', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    await screen.findByRole('heading', { level: 1 });
+
+    const blockquotes = document.querySelectorAll('blockquote');
+    expect(blockquotes).toHaveLength(3);
+    expect(QUOTES).toHaveLength(3);
+
+    QUOTES.forEach((quote) => {
+      const cite = screen.getByText(quote.name, { selector: 'cite' });
+      expect(cite).toBeInTheDocument();
+      expect(cite.closest('blockquote')).toHaveTextContent(quote.text);
+    });
+  });
+
+  it('does not render its own header or footer landmarks (owned by the layout)', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    await screen.findByRole('heading', { level: 1 });
+
+    expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
   });
 });

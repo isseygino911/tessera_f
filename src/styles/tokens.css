@@ -1,14 +1,14 @@
 :root {
   color-scheme: dark;
 
-  /* jewel-on-black palette */
-  --color-bg: #07070a;
-  --color-bg-raised: #101014;
+  /* dark, bone-on-charcoal palette (site-wide design system, from the /lab page) */
+  --color-bg: #111113;
+  --color-bg-raised: #1b1c1f;
   --color-bg-inset: #0c0c10;
-  --color-border: #232329;
+  --color-border: rgb(239 237 230 / 0.15);
   --color-border-strong: #37373f;
-  --color-text: #f1efe9;
-  --color-text-dim: #a7a3ad;
+  --color-text: #efede6;
+  --color-text-dim: #9c9a94;
   --color-text-faint: #6f6c76;
 
   --color-accent-rgb: 201 164 92;
@@ -33,18 +33,10 @@
   --space-8: 4.5rem;
 
   --font-display: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --hairline: rgb(var(--color-accent-rgb) / 0.28);
-  --page-width: 1180px;
-  --font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-
-  --color-bg-rgb: 7 7 10;
-  /* flat charcoal bands the storefront alternates between */
-  --band-0-rgb: 15 15 15;
-  --band-0: #0f0f0f;
-  --band-1: #1a1a1a;
-  --band-2: #232323;
-  --band-hero: #151515;
+  --font-serif: 'Source Serif 4', serif;
+  --font-wide: 'Archivo', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 
   --shadow-glow: 0 0 40px -12px rgb(var(--color-accent-rgb) / 0.35);
   --shadow-card: 0 20px 45px -25px rgba(0, 0, 0, 0.8);
@@ -52,16 +44,4 @@
   --focus-ring: 0 0 0 3px rgb(var(--color-accent-rgb) / 0.55);
 
   font-family: var(--font-body);
-
-  /* -- Lab landing page (/lab): dark rebuild of drinkstill.nz's layout -- */
-  --lab-bg: #111113;
-  --lab-bg-2: #1b1c1f;
-  --lab-text: #efede6;
-  --lab-text-dim: #9c9a94;
-  --lab-line: rgb(239 237 230 / 0.15);
-  --lab-accent: var(--color-accent);
-  --font-lab-wide: 'Archivo', sans-serif;
-  --font-lab-serif: 'Source Serif 4', serif;
-  --font-lab-sans: 'Inter', sans-serif;
-  --lab-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }

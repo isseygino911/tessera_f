@@ -1,20 +1,34 @@
-/* Cart, checkout and thanks. Shared primitives (.lux, .btn-outline, .btn-gold,
-   .eyebrow, .mono-label, form-field/form-grid/form-error, …) live in index.css;
-   admin keeps its own .btn, .container, .cart-summary and .empty-state rules
-   there untouched — the store stops using them from here down. */
+/* Cart, checkout and thanks. Shared primitives (.btn-outline, .btn-gold,
+   .eyebrow, .site-container, form-field/form-grid/form-error, .blend, …)
+   live in styles/primitives.css; admin keeps its own .btn, .container,
+   .cart-summary and .empty-state rules there untouched — the store stops
+   using them from here down. */
 
 .shop {
-  max-width: var(--page-width);
+  max-width: 1180px;
   margin: 0 auto;
-  padding: var(--space-7) var(--space-6) var(--space-8);
+  padding: calc(72px + var(--space-7)) clamp(24px, 6vw, 120px) var(--space-8);
 }
 
 .shop-head {
   margin-bottom: var(--space-6);
 }
 
-.shop-head .eyebrow {
-  margin-bottom: var(--space-2);
+.shop-head h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  color: var(--color-text);
+}
+
+.shop-head p:not(.eyebrow) {
+  max-width: 46ch;
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-dim);
 }
 
 /* -- Empty state -- */
@@ -22,11 +36,13 @@
 .shop-empty {
   padding: var(--space-8) 0;
   text-align: center;
-  color: var(--color-text-faint);
 }
 
 .shop-empty p {
   margin: 0 0 var(--space-5);
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--color-text-dim);
 }
 
 /* -- Cart lines -- */
@@ -50,7 +66,7 @@
 .shop-line__thumb {
   width: 4.5rem;
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .shop-line__info {
@@ -61,18 +77,20 @@
 }
 
 .shop-line__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
   color: var(--color-text);
 }
 
 .shop-line__price {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
   color: var(--color-text-dim);
 }
 
 .shop-line__total {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
   color: var(--color-text);
   text-align: right;
 }
@@ -81,40 +99,40 @@
   background: none;
   border: none;
   padding: 0;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  transition: color 0.2s ease;
+  color: var(--color-text-dim);
+  transition: color 0.2s var(--ease);
 }
 
 .shop-line__remove:hover,
 .shop-line__remove:focus-visible {
-  color: var(--color-accent);
+  color: var(--color-text);
 }
 
 /* -- Total row -- */
 
 .shop-total {
   display: flex;
-  align-items: baseline;
   justify-content: space-between;
-  padding-top: var(--space-4);
-  font-family: var(--font-mono);
+  font-family: var(--font-serif);
 }
 
 .shop-total__label {
-  font-size: 0.66rem;
+  font-size: 0.7rem;
+  font-family: var(--font-body);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-text-faint);
+  color: var(--color-text-dim);
+  align-self: center;
 }
 
 .shop-total__value {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: var(--color-text);
 }
 
@@ -131,40 +149,11 @@
 /* -- Checkout form -- */
 
 .shop-checkout {
-  max-width: 44rem;
+  max-width: none;
 }
 
 .shop-checkout .form-grid {
   margin-top: var(--space-6);
-}
-
-.shop-checkout .form-field label {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-.shop-checkout .form-field input,
-.shop-checkout .form-field textarea {
-  background: transparent;
-  border: 1px solid var(--hairline);
-  border-radius: 0;
-  color: var(--color-text);
-}
-
-.shop-checkout .form-field input:focus-visible,
-.shop-checkout .form-field textarea:focus-visible {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: var(--focus-ring);
-}
-
-.shop-checkout .form-field input[aria-invalid='true'],
-.shop-checkout .form-field textarea[aria-invalid='true'] {
-  border-color: var(--color-danger);
 }
 
 .shop-checkout .shop-total {
@@ -178,21 +167,45 @@
 .shop-thanks {
   max-width: 34rem;
   margin: 0 auto;
-  padding: var(--space-8) var(--space-6);
+  padding: var(--space-8) 0;
   text-align: center;
 }
 
 .shop-thanks .eyebrow {
   margin: 0 0 var(--space-3);
+  font-family: var(--font-wide);
+  font-stretch: 125%;
+  font-weight: 900;
+}
+
+.shop-thanks h1 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  color: var(--color-text);
 }
 
 .shop-thanks p {
-  margin: 0 0 var(--space-6);
+  margin: var(--space-4) 0 var(--space-6);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-dim);
 }
 
-@media (max-width: 640px) {
+.shop-thanks p strong {
+  font-family: var(--font-wide);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
   .shop {
-    padding: var(--space-6) var(--space-4) var(--space-7);
+    padding: calc(72px + var(--space-6)) clamp(20px, 6vw, 48px) var(--space-7);
   }
 
   .shop-line {
@@ -215,6 +228,7 @@
 
   .shop-line :where(.qty-stepper) {
     grid-area: qty;
+    justify-self: start;
   }
 
   .shop-line__total {

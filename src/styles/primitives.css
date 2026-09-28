@@ -120,9 +120,9 @@
 .form-field input,
 .form-field textarea,
 .form-field select {
-  background: var(--color-bg-inset);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
   padding: var(--space-3);
   font-size: 0.95rem;
 }
@@ -157,95 +157,28 @@
 
 .eyebrow {
   margin: 0 0 var(--space-2);
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-family: var(--font-body);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-/* -- Mono micro-labels, spec chips and colour swatches -- */
-
-.mono-label {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-text-faint);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-text-dim);
-  background: rgb(var(--band-0-rgb) / 0.6);
 }
 
-.swatch {
-  display: inline-block;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  background: var(--swatch);
-  border: 1px solid var(--color-border-strong);
+.site-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-inline: clamp(24px, 6vw, 120px);
 }
 
-/* The photos are shot on black; lighten drops that black into the band colour
-   behind it, and a soft radial mask melts the edges. */
+/* The photos are shot on black; lighten drops that black into the page
+   behind it, and a closest-side radial mask fades the edges — the
+   no-background treatment used site-wide (see the homepage's Shop by
+   stone). */
 .blend {
   mix-blend-mode: lighten;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 71%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 71%);
-}
-
-/* Daylight lifestyle/product photos: unlike studio shots (.blend, shot on black),
-   these have warm, bright backgrounds — they need a frame + tonal pull,
-   not a lighten-blend, or the crop edges look like a pasted rectangle. */
-.warm-frame {
-  position: relative;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-}
-
-.warm-frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgb(var(--color-bg-rgb) / 0) 55%, rgb(var(--color-bg-rgb) / 0.55) 100%),
-    linear-gradient(0deg, rgb(var(--color-accent-rgb) / 0.08), transparent 40%);
-  pointer-events: none;
-}
-
-.warm-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.92) contrast(1.02);
-}
-
-.section-title {
-  margin-bottom: var(--space-6);
-}
-
-.section-title--center {
-  text-align: center;
-}
-
-.section-title h2 {
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  line-height: 1.2;
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
 }
 
 /* -- Buttons -- */
@@ -253,39 +186,29 @@
 .btn-outline {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
-  margin-top: var(--space-6);
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--color-accent);
+  padding: 0 1.8rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--color-text);
+  border-radius: 0;
+  background: transparent;
   color: var(--color-text);
   text-decoration: none;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   transition:
-    background 0.3s ease,
-    color 0.3s ease;
-}
-
-.btn-outline::after {
-  content: '→';
-  color: var(--color-accent);
-  transition:
-    transform 0.3s ease,
-    color 0.3s ease;
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
 }
 
 .btn-outline:hover,
 .btn-outline:focus-visible {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-}
-
-.btn-outline:hover::after,
-.btn-outline:focus-visible::after {
-  color: var(--color-on-accent);
-  transform: translateX(4px);
+  background: var(--color-text);
+  color: var(--color-bg);
 }
 
 .btn-outline:focus-visible {
@@ -294,7 +217,8 @@
 }
 
 .btn-outline--sm {
-  padding: 0.6rem 1.2rem;
+  min-height: 2.4rem;
+  padding: 0 1.2rem;
 }
 
 /* -- Gold button (filled sibling of .btn-outline) -- */
@@ -306,16 +230,18 @@
   padding: 0 1.8rem;
   min-height: 2.75rem;
   border: 1px solid var(--color-accent);
+  border-radius: 0;
   background: var(--color-accent);
   color: var(--color-on-accent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   transition:
-    background 0.3s ease,
-    color 0.3s ease;
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
 }
 
 .btn-gold:hover:not(:disabled) {

@@ -2,11 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
 import { useCart } from '@/context/CartContext.jsx';
-import Ornament from '@/components/Ornament.jsx';
 import ProductCard from '@/components/ProductCard.jsx';
 import ProductPhoto from '@/components/ProductPhoto.jsx';
 import QtyStepper from '@/components/QtyStepper.jsx';
-import SiteFooter from '@/components/SiteFooter.jsx';
 import TrustStrip from '@/components/TrustStrip.jsx';
 import { formatPrice } from '@/lib/formatPrice.js';
 import { photoAlt, photoUrl } from '@/data/photoManifest.js';
@@ -23,31 +21,32 @@ function stockMessage(stock) {
 const pad = (n) => String(n).padStart(2, '0');
 
 // Product-page gallery: slot 1 is the studio product shot (dark-background
-// scenes keep .blend; dish.jpg sits on a light dish, so it gets .warm-frame
-// like the lifestyle slots instead). Slots 2-3 are daylight lifestyle shots.
-// Story banner reuses one lifestyle photo per stone, tuned per-photo below.
+// scenes are shown without background; dish.jpg sits on a light dish, so it
+// shows plain like the lifestyle slots instead). Slots 2-3 are daylight
+// lifestyle shots, always shown plain. Story banner reuses one lifestyle
+// photo per stone, tuned per-photo below.
 const GALLERY = {
   'forest-emerald': {
     slots: [
-      { scene: 'slate', group: 'product', treatment: 'blend' },
-      { scene: 'laptop', group: 'lifestyle', treatment: 'warm-frame' },
-      { scene: 'sketch', group: 'lifestyle', treatment: 'warm-frame' },
+      { scene: 'slate', group: 'product', noBg: true },
+      { scene: 'laptop', group: 'lifestyle' },
+      { scene: 'sketch', group: 'lifestyle' },
     ],
     banner: { scene: 'woodslice', group: 'product', objectPosition: '55% 40%' },
   },
   'ocean-topaz': {
     slots: [
-      { scene: 'reflection', group: 'product', treatment: 'blend' },
-      { scene: 'bench', group: 'lifestyle', treatment: 'warm-frame' },
-      { scene: 'dinner', group: 'lifestyle', treatment: 'warm-frame' },
+      { scene: 'reflection', group: 'product', noBg: true },
+      { scene: 'bench', group: 'lifestyle' },
+      { scene: 'dinner', group: 'lifestyle' },
     ],
     banner: { scene: 'coffee', group: 'product', objectPosition: '50% 45%' },
   },
   'sunlit-amber': {
     slots: [
-      { scene: 'dish', group: 'product', treatment: 'warm-frame' },
-      { scene: 'phone', group: 'lifestyle', treatment: 'warm-frame' },
-      { scene: 'railing', group: 'lifestyle', treatment: 'warm-frame', native: true },
+      { scene: 'dish', group: 'product' },
+      { scene: 'phone', group: 'lifestyle' },
+      { scene: 'railing', group: 'lifestyle', native: true },
     ],
     banner: { scene: 'reading', group: 'product', objectPosition: '48% 62%' },
   },
@@ -124,7 +123,7 @@ export default function ProductPage() {
 
   const renderParagraphs = (list, offset) =>
     list.map((text, i) => (
-      <p key={offset + i} className={offset + i === 0 ? 'story__lead' : undefined} data-reveal>
+      <p key={offset + i} className={offset + i === 0 ? 'pd-story__lead' : undefined} data-reveal>
         {text}
       </p>
     ));
@@ -132,33 +131,32 @@ export default function ProductPage() {
   const gallery = GALLERY[product.slug];
 
   return (
-    <div className="pd" ref={rootRef}>
+    <div className="pd" ref={rootRef} style={{ '--stone': product.hex }}>
       <section className="pd-hero" aria-labelledby="pd-title">
-        <div className="pd-hero__media">
-          <div className="pd-hero__photo" data-pd-photo>
-            <ProductPhoto slug={product.slug} name={product.name} className="blend" />
-          </div>
-        </div>
-
         <div className="pd-hero__info">
           <p className="eyebrow" data-pd-fade>
-            The Collection · {pad(index + 1)} / {pad(products.length)}
+            {`The Collection · ${pad(index + 1)} / ${pad(products.length)}`}
           </p>
+          <p className="pd-hero__code" data-pd-fade>{`No.${pad(index + 1)}`}</p>
           <h1 id="pd-title" className="pd-hero__title">
             <span className="pd-hero__line">
-              <span data-pd-line>{product.name}</span>
+              <span data-pd-line>
+                {product.name}
+                <span className="pd-hero__dot" aria-hidden="true" />
+              </span>
             </span>
           </h1>
           <p className="pd-hero__tagline" data-pd-fade>
             {product.tagline}
           </p>
-          <Ornament data-pd-ornament />
 
           <div className="pd-buy" data-purchase data-pd-fade>
-            <p className="pd-buy__price">{formatPrice(product.priceCents)}</p>
-            <p className={`pd-buy__stock${stock.tone ? ` pd-buy__stock--${stock.tone}` : ''}`}>
-              {stock.text}
-            </p>
+            <div className="pd-buy__total">
+              <span className="pd-buy__price">{formatPrice(product.priceCents)}</span>
+              <span className={`pd-buy__stock${stock.tone ? ` pd-buy__stock--${stock.tone}` : ''}`}>
+                {stock.text}
+              </span>
+            </div>
             <div className="pd-buy__actions">
               <QtyStepper value={qty} max={product.stock} onChange={setQty} disabled={soldOut} />
               <button type="button" className="btn-gold" disabled={soldOut} onClick={addToCart}>
@@ -171,22 +169,29 @@ export default function ProductPage() {
               </p>
             )}
           </div>
+        </div>
 
-          <nav className="stones" aria-label="Stones" data-pd-fade>
-            {products.map((p) => (
-              <Link
-                key={p.id}
-                to={`/products/${p.slug}`}
-                className="stones__item"
-                aria-current={p.id === product.id ? 'page' : undefined}
-              >
-                <ProductPhoto slug={p.slug} name="" className="blend" />
-                <span>{p.name}</span>
-              </Link>
-            ))}
-          </nav>
+        <div className="pd-hero__media" data-pd-photo>
+          <div className="pd-hero__glow" aria-hidden="true" />
+          <ProductPhoto slug={product.slug} name={product.name} className="pd-hero__photo blend" />
+          <div className="pd-hero__ring" aria-hidden="true" />
         </div>
       </section>
+
+      <nav className="pd-stones" aria-label="Stones">
+        <div className="site-container pd-stones__inner">
+          {products.map((p, i) => (
+            <Link
+              key={p.id}
+              to={`/products/${p.slug}`}
+              className={`pd-stones__link${p.id === product.id ? ' pd-stones__link--active' : ''}`}
+              aria-current={p.id === product.id ? 'page' : undefined}
+            >
+              {pad(i + 1)}
+            </Link>
+          ))}
+        </div>
+      </nav>
 
       <TrustStrip />
 
@@ -195,14 +200,12 @@ export default function ProductPage() {
           {gallery.slots.map((slot) => (
             <li
               key={slot.scene}
-              className={`pd-gallery__item${slot.treatment === 'warm-frame' ? ' warm-frame' : ''}${
-                slot.native ? ' pd-gallery__item--native' : ''
-              }`}
+              className={`pd-gallery__item${slot.native ? ' pd-gallery__item--native' : ''}`}
             >
               <img
                 src={photoUrl(product.slug, slot.group, slot.scene)}
                 alt={photoAlt(product.slug, slot.group, slot.scene)}
-                className={slot.treatment === 'blend' ? 'blend' : undefined}
+                className={slot.noBg ? 'pd-gallery__photo-nobg blend' : undefined}
               />
             </li>
           ))}
@@ -210,13 +213,13 @@ export default function ProductPage() {
       )}
 
       <section className="pd-specs" aria-labelledby="specs-title">
-        <h2 id="specs-title" className="mono-label">
+        <p className="eyebrow" id="specs-title">
           Specifications
-        </h2>
+        </p>
         <div className="pd-specs__grid">
           {SPEC_GROUPS.map((group) => (
             <div key={group.title} className="pd-specs__group">
-              <h3 className="mono-label">{group.title}</h3>
+              <h3 className="pd-specs__group-title">{group.title}</h3>
               <dl>
                 {group.items.map((item) => (
                   <div key={item.term} className="pd-specs__row">
@@ -230,19 +233,20 @@ export default function ProductPage() {
         </div>
       </section>
 
-      <article className="story" aria-labelledby="story-title">
-        <header className="section-title section-title--center" data-reveal>
+      <article className="pd-story" aria-labelledby="story-title">
+        <header className="pd-story__head" data-reveal>
           <p className="eyebrow">In the maker&apos;s words</p>
-          <h2 id="story-title">The story of {product.name}</h2>
-          <Ornament />
+          <h2 id="story-title" className="pd-story__title">
+            The story of {product.name}
+          </h2>
         </header>
-        <div className="story__body">{renderParagraphs(paragraphs.slice(0, half), 0)}</div>
+        <div className="pd-story__body">{renderParagraphs(paragraphs.slice(0, half), 0)}</div>
 
         {paragraphs.length > 1 && gallery && (
-          <div className="story__banner" data-banner aria-hidden="true">
+          <div className="pd-story__banner" data-banner aria-hidden="true">
             <img
               src={photoUrl(product.slug, gallery.banner.group, gallery.banner.scene)}
-              className="story__banner-img"
+              className="pd-story__banner-img"
               data-banner-img
               style={{ objectPosition: gallery.banner.objectPosition }}
               alt=""
@@ -250,15 +254,16 @@ export default function ProductPage() {
           </div>
         )}
 
-        <div className="story__body">{renderParagraphs(paragraphs.slice(half), half)}</div>
+        <div className="pd-story__body">{renderParagraphs(paragraphs.slice(half), half)}</div>
       </article>
 
       {others.length > 0 && (
         <section className="pd-more" aria-labelledby="more-title">
-          <header className="section-title section-title--center" data-reveal>
+          <header className="pd-more__head" data-reveal>
             <p className="eyebrow">Keep exploring</p>
-            <h2 id="more-title">Also in the collection</h2>
-            <Ornament />
+            <h2 id="more-title" className="pd-more__title">
+              Also in the collection
+            </h2>
           </header>
           <ul className="pd-more__grid">
             {others.map((p) => (
@@ -270,11 +275,9 @@ export default function ProductPage() {
         </section>
       )}
 
-      <SiteFooter />
-
       <div className={`buy-bar${barVisible ? ' is-visible' : ''}`} inert={!barVisible}>
         <div className="buy-bar__inner">
-          <ProductPhoto slug={product.slug} name="" className="blend buy-bar__thumb" />
+          <ProductPhoto slug={product.slug} name="" className="buy-bar__thumb blend" />
           <span className="buy-bar__name">{product.name}</span>
           <span className="buy-bar__price">{formatPrice(product.priceCents)}</span>
           <button

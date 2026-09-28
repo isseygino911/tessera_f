@@ -2,9 +2,6 @@
 // The product API only returns id, slug, name, hex, tagline, story, priceCents, stock —
 // no measurements — so these stay generic across every product. No invented specs.
 
-// Card chips: shown top-left on each ProductCard tile.
-export const CARD_CHIPS = ['Hand-faceted', 'Stretch fit'];
-
 // Product-page spec groups, rendered as <dl> sections under "Stone", "Fit" and "Ordering".
 export const SPEC_GROUPS = [
   {

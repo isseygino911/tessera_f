@@ -2,17 +2,17 @@ import { useLayoutEffect } from 'react';
 import { gsap, ScrollTrigger, MOTION_OK } from '@/lib/motion.js';
 
 const DESKTOP = '(min-width: 768px)';
-const STAGED_CLASS = 'lab-stones--staged';
+const STAGED_CLASS = 'landing-stones--staged';
 
 // Pins the whole stones section — header row, heading, two-column stage and
-// index together — at exactly 100vh (adds `lab-stones--staged`, which locks
-// the section's height so nothing scrolls out from under the pin) for
+// index together — at exactly 100vh (adds `landing-stones--staged`, which
+// locks the section's height so nothing scrolls out from under the pin) for
 // (count - 1) * 100% of scroll, snapping through each step. `onUpdate` sets
 // the active index (never inside an effect body — it runs outside React's
 // render). Also staggers each active article's [data-stage-item] lines and
 // the heading letters once, on mount. A no-op under reduced motion or on
-// mobile/tablet, where LabStones renders a scroll-snap row instead.
-export function useLabStonesMotion(rootRef, count, onStep) {
+// mobile/tablet, where LandingStones renders a scroll-snap row instead.
+export function useLandingStonesMotion(rootRef, count, onStep) {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root || count < 2) return undefined;
@@ -35,7 +35,7 @@ export function useLabStonesMotion(rootRef, count, onStep) {
         });
 
         ScrollTrigger.create({
-          id: 'lab-stones-stage',
+          id: 'landing-stones-stage',
           trigger: root,
           start: 'top top',
           end: `+=${(count - 1) * 100}%`,

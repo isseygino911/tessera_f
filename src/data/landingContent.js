@@ -1,10 +1,10 @@
-// Copy for the /lab landing page. Everything here is ours: it reuses the
-// existing TRUST and SPEC_GROUPS facts and the PHOTO_MANIFEST shoot rather
-// than duplicating text, plus a few verbatim sentences pulled from the
-// product API's own story copy. Nothing is copied from drinkstill.nz.
+// Copy for the homepage. Everything here is ours: it reuses the existing
+// TRUST and SPEC_GROUPS facts and the PHOTO_MANIFEST shoot rather than
+// duplicating text, plus a few verbatim sentences pulled from the product
+// API's own story copy. Nothing is copied from drinkstill.nz.
 import { TRUST, SPEC_GROUPS } from './productFacts.js';
 
-// Hero: lines lifted from LandingPage.jsx.
+// Hero copy.
 export const HERO = {
   eyebrow: '01 / The Collection',
   title: 'Hand-faceted crystal, cut to hold the light.',

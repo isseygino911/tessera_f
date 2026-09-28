@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useCart } from '@/context/CartContext.jsx';
 import ProductPhoto from '@/components/ProductPhoto.jsx';
 import QtyStepper from '@/components/QtyStepper.jsx';
-import SiteFooter from '@/components/SiteFooter.jsx';
 import { formatPrice } from '@/lib/formatPrice.js';
 import './styles/shop.css';
 
@@ -69,8 +68,6 @@ export default function CartPage() {
           </div>
         </>
       )}
-
-      <SiteFooter />
     </div>
   );
 }

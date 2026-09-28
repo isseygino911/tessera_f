@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
 import { useCart } from '@/context/CartContext.jsx';
-import SiteFooter from '@/components/SiteFooter.jsx';
 import { validateCheckout } from '@/lib/checkoutValidation.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import './styles/shop.css';
@@ -87,7 +86,6 @@ export default function CheckoutPage() {
             Browse products
           </Link>
         </div>
-        <SiteFooter />
       </div>
     );
   }
@@ -168,8 +166,6 @@ export default function CheckoutPage() {
           </button>
         </div>
       </form>
-
-      <SiteFooter />
     </div>
   );
 }

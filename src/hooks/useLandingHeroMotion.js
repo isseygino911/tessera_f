@@ -2,7 +2,7 @@ import { useLayoutEffect } from 'react';
 import { gsap, ScrollTrigger, MOTION_OK } from '@/lib/motion.js';
 
 const DESKTOP = '(min-width: 768px)';
-const STAGED_CLASS = 'lab-hero--staged';
+const STAGED_CLASS = 'landing-hero--staged';
 
 // Pins the hero for the full viewport height plus 120% of scroll and scrubs
 // the opaque disc from its collapsed start (small, bottom-centre, half
@@ -16,15 +16,15 @@ const STAGED_CLASS = 'lab-hero--staged';
 // involved. Slides the copy in and fades the wordmark/lines out only in the
 // timeline's last stretch (per still/d-01.jpeg, which has neither). The
 // timeline's total duration is exactly 1 so scrub progress (0–1) lines up
-// directly with each tween's start/duration below. Keeps `lab-header--hidden`
-// on [data-lab-header] for the whole pin. Reverted on unmount; a no-op under
-// reduced motion or on mobile, where LabHero renders its end state as a
-// static stacked layout instead.
-export function useLabHeroMotion(rootRef) {
+// directly with each tween's start/duration below. Keeps `site-header--hidden`
+// on [data-site-header] for the whole pin, and always removes it again on
+// unmount (even under reduced motion or on mobile, where this is a no-op) so
+// navigating away from the homepage never leaves the header hidden.
+export function useLandingHeroMotion(rootRef) {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
-    const header = document.querySelector('[data-lab-header]');
+    const header = document.querySelector('[data-site-header]');
     const mm = gsap.matchMedia();
 
     mm.add(
@@ -64,8 +64,8 @@ export function useLabHeroMotion(rootRef) {
             end: '+=120%',
             scrub: 1,
             pin: true,
-            onToggle: (self) => header?.classList.toggle('lab-header--hidden', self.isActive),
-            onLeave: () => header?.classList.remove('lab-header--hidden'),
+            onToggle: (self) => header?.classList.toggle('site-header--hidden', self.isActive),
+            onLeave: () => header?.classList.remove('site-header--hidden'),
           },
         });
 
@@ -87,7 +87,7 @@ export function useLabHeroMotion(rootRef) {
 
         return () => {
           root.classList.remove(STAGED_CLASS);
-          header?.classList.remove('lab-header--hidden');
+          header?.classList.remove('site-header--hidden');
         };
       },
       root
@@ -95,6 +95,9 @@ export function useLabHeroMotion(rootRef) {
 
     ScrollTrigger.refresh();
 
-    return () => mm.revert();
+    return () => {
+      mm.revert();
+      header?.classList.remove('site-header--hidden');
+    };
   }, [rootRef]);
 }

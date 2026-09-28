@@ -168,16 +168,6 @@ describe('ProductPage', () => {
     expect(hrefs).not.toContain('/products/sunlit-amber');
   });
 
-  it('renders the site footer', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderProductPage();
-
-    await findHero('Sunlit Amber');
-
-    expect(document.querySelector('footer')).toBeInTheDocument();
-  });
-
   it('still renders the product when prefers-reduced-motion is reported as matching', async () => {
     const originalMatchMedia = window.matchMedia;
     window.matchMedia = vi.fn().mockImplementation((query) => ({

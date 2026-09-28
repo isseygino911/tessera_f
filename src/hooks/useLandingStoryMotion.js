@@ -3,7 +3,7 @@ import { gsap, MOTION_OK } from '@/lib/motion.js';
 
 // Scrubs the Story section's vertical "scroll" line from 0 to full height as
 // the section passes through view. Reverts on unmount.
-export function useLabStoryMotion(rootRef, ready) {
+export function useLandingStoryMotion(rootRef, ready) {
   useLayoutEffect(() => {
     const mm = gsap.matchMedia();
 

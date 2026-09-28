@@ -1,62 +1,62 @@
-/* -- Lab quotes: "05 / In the maker's words" -- */
+/* -- Landing quotes: "05 / In the maker's words" -- */
 
-.lab-quotes {
+.landing-quotes {
   padding-block: var(--space-8);
-  background: var(--lab-bg-2);
+  background: var(--color-bg-raised);
 }
 
-.lab-quotes__inner {
+.landing-quotes__inner {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
-.lab-quotes__title {
+.landing-quotes__title {
   margin: 0;
-  font-family: var(--font-lab-wide);
+  font-family: var(--font-wide);
   font-stretch: 125%;
   font-weight: 900;
   font-size: clamp(2.4rem, 6vw, 4rem);
   text-transform: uppercase;
-  color: var(--lab-text);
+  color: var(--color-text);
 }
 
-.lab-quotes__grid {
+.landing-quotes__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-7);
   margin-top: var(--space-6);
 }
 
-.lab-quotes__quote {
+.landing-quotes__quote {
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 
-.lab-quotes__text {
+.landing-quotes__text {
   margin: 0;
-  font-family: var(--font-lab-serif);
+  font-family: var(--font-serif);
   font-style: italic;
   font-weight: 300;
   font-size: 1.75rem;
   line-height: 1.4;
-  color: var(--lab-text);
+  color: var(--color-text);
 }
 
-.lab-quotes__cite {
-  font-family: var(--font-lab-sans);
+.landing-quotes__cite {
+  font-family: var(--font-body);
   font-style: normal;
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--lab-text-dim);
+  color: var(--color-text-dim);
 }
 
 @media (max-width: 767px) {
-  .lab-quotes__grid {
+  .landing-quotes__grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }

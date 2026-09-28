@@ -1,15 +1,15 @@
 import { useId, useRef, useState } from 'react';
-import { CRAFT_TABS } from '@/data/labContent.js';
+import { CRAFT_TABS } from '@/data/landingContent.js';
 import { photoAlt, photoUrl } from '@/data/photoManifest.js';
 import { MOTION_OK } from '@/lib/motion.js';
 import BrandMark from './BrandMark.jsx';
-import './styles/LabCraft.css';
+import './styles/LandingCraft.css';
 
 const AUTOPLAY_MS = 5000;
 
 // "03 · Why it lasts": a pill tablist that auto-advances every 5s (only under
 // MOTION_OK), pausing on hover/focus, with a 3-column stage for the active tab.
-export default function LabCraft() {
+export default function LandingCraft() {
   const headingId = useId();
   const panelId = useId();
   const tablistRef = useRef(null);
@@ -41,22 +41,22 @@ export default function LabCraft() {
   }
 
   return (
-    <section className="lab-craft" id="craft" aria-labelledby={headingId}>
-      <div className="lab-container lab-craft__inner">
-        <p className="lab-eyebrow">03 · Why it lasts</p>
-        <h2 id={headingId} className="lab-craft__title">
+    <section className="landing-craft" id="craft" aria-labelledby={headingId}>
+      <div className="site-container landing-craft__inner">
+        <p className="eyebrow">03 · Why it lasts</p>
+        <h2 id={headingId} className="landing-craft__title">
           Hand-faceted.
         </h2>
 
         <div
-          className="lab-craft__body"
+          className="landing-craft__body"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}
           onBlur={() => setPaused(false)}
         >
           <div
-            className="lab-craft__tablist"
+            className="landing-craft__tablist"
             role="tablist"
             aria-label="Why it lasts"
             ref={tablistRef}
@@ -71,44 +71,44 @@ export default function LabCraft() {
                   id={`craft-tab-${tab.id}`}
                   aria-selected={selected}
                   aria-controls={panelId}
-                  className={`lab-craft__pill${selected ? ' lab-craft__pill--active' : ''}`}
+                  className={`landing-craft__pill${selected ? ' landing-craft__pill--active' : ''}`}
                   onClick={() => handleSelect(index)}
                 >
-                  <span className="lab-craft__pill-label">{tab.label}</span>
+                  <span className="landing-craft__pill-label">{tab.label}</span>
                 </button>
               );
             })}
           </div>
 
           <div
-            className="lab-craft__stage"
+            className="landing-craft__stage"
             role="tabpanel"
             id={panelId}
             aria-labelledby={`craft-tab-${active.id}`}
             key={active.id}
           >
-            <div className="lab-craft__col lab-craft__col--label">
+            <div className="landing-craft__col landing-craft__col--label">
               <BrandMark />
-              <p className="lab-craft__label">{active.label}</p>
+              <p className="landing-craft__label">{active.label}</p>
             </div>
 
-            <div className="lab-craft__col lab-craft__col--photo">
+            <div className="landing-craft__col landing-craft__col--photo">
               <img
-                className="lab-craft__photo"
+                className="landing-craft__photo"
                 src={photoUrl(active.photo.slug, active.photo.group, active.photo.scene)}
                 alt={photoAlt(active.photo.slug, active.photo.group, active.photo.scene)}
               />
             </div>
 
-            <div className="lab-craft__col lab-craft__col--detail">
-              <p className="lab-craft__count">
+            <div className="landing-craft__col landing-craft__col--detail">
+              <p className="landing-craft__count">
                 0{activeIndex + 1} / 0{CRAFT_TABS.length}
               </p>
-              <p className="lab-craft__text">{active.text}</p>
+              <p className="landing-craft__text">{active.text}</p>
               {autoplay && (
-                <span className="lab-craft__progress-track">
+                <span className="landing-craft__progress-track">
                   <span
-                    className="lab-craft__progress"
+                    className="landing-craft__progress"
                     style={{
                       animationDuration: `${AUTOPLAY_MS}ms`,
                       animationPlayState: paused ? 'paused' : 'running',

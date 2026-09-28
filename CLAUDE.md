@@ -92,7 +92,14 @@ current folder, never `../`. Keep the file extension on every import.
 - Colours, spacing and fonts come only from tokens in `styles/tokens.css`,
   never literal values.
 - A class used by more than one area goes in `styles/primitives.css`.
-- Keep the dark, Unimatic-refined look: it was designed on purpose.
+- Design language: dark tokens from `styles/tokens.css` (`--color-bg`,
+  `--color-text`, `--color-accent`, …) — never literal colours.
+- Type: `--font-serif` (Source Serif 4) for headlines and names, `--font-wide`
+  (Archivo) for codes and caps, `--font-body` (Inter) for everything else,
+  including 12px caps eyebrows (`.eyebrow`, form `NN / Label`).
+- Shapes: square corners, 1px hairlines (`--color-border`), and
+  no-background product photos (`.blend` + a `--stone` glow) — no radius, no
+  gem ornaments on new work.
 
 ## Tests
 
@@ -116,12 +123,8 @@ use it as an example. Fix it only when a task asks for it.
   plan is a `getErrorMessage(err, fallback)` helper in `lib/api.js`.
 - Loading and error markup differs from page to page. The plan is a shared
   `StatusMessage` component.
-- Every store page renders `<SiteFooter />` itself, and `App.jsx` wraps each
-  route in `StoreLayout` separately. The plan is to render the footer in the
-  layout through a nested route with `<Outlet>`.
-- `STATUSES`/`formatDate` are duplicated in the two admin order pages, `pad()`
-  is duplicated in `LandingPage`/`ProductPage`, and `GALLERY` data is inline in
-  `ProductPage`.
+- `STATUSES`/`formatDate` are duplicated in the two admin order pages, and
+  `GALLERY` data is inline in `ProductPage`.
 - There are two image systems, `lib/productImage.js` and
   `data/photoManifest.js`, which should become one.
 
