@@ -163,18 +163,6 @@
   object-fit: cover;
 }
 
-.pd .pd-gallery__item--native {
-  display: grid;
-  place-items: center;
-}
-
-.pd .pd-gallery__item--native img {
-  width: auto;
-  height: auto;
-  max-width: 192px;
-  max-height: 100%;
-}
-
 .pd .pd-gallery__photo-nobg {
   object-fit: contain !important;
 }

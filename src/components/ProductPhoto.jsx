@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { productImage } from '@/lib/productImage.js';
+import { mainImage } from '@/lib/productImages.js';
 
 import './styles/ProductPhoto.css';
 
-export default function ProductPhoto({ slug, name, className = '', ...rest }) {
+export default function ProductPhoto({ product, name, className = '', ...rest }) {
   const [broken, setBroken] = useState(false);
-  const [prevSlug, setPrevSlug] = useState(slug);
+  const [prevProductId, setPrevProductId] = useState(product?.id);
 
-  if (slug !== prevSlug) {
-    setPrevSlug(slug);
+  if (product?.id !== prevProductId) {
+    setPrevProductId(product?.id);
     setBroken(false);
   }
 
-  if (broken) {
+  const url = mainImage(product)?.url;
+
+  if (!url || broken) {
     return (
       <div className={`product__media-placeholder ${className}`} aria-hidden="true" {...rest} />
     );
@@ -20,7 +22,7 @@ export default function ProductPhoto({ slug, name, className = '', ...rest }) {
 
   return (
     <img
-      src={productImage(slug)}
+      src={url}
       alt={name}
       className={className || undefined}
       onError={() => setBroken(true)}

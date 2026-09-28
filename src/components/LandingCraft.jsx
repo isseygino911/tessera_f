@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react';
 import { CRAFT_TABS } from '@/data/landingContent.js';
-import { photoAlt, photoUrl } from '@/data/photoManifest.js';
+import { imageByName } from '@/lib/productImages.js';
 import { MOTION_OK } from '@/lib/motion.js';
 import BrandMark from './BrandMark.jsx';
 import './styles/LandingCraft.css';
@@ -9,7 +9,7 @@ const AUTOPLAY_MS = 5000;
 
 // "03 · Why it lasts": a pill tablist that auto-advances every 5s (only under
 // MOTION_OK), pausing on hover/focus, with a 3-column stage for the active tab.
-export default function LandingCraft() {
+export default function LandingCraft({ products }) {
   const headingId = useId();
   const panelId = useId();
   const tablistRef = useRef(null);
@@ -18,6 +18,8 @@ export default function LandingCraft() {
   const [paused, setPaused] = useState(false);
 
   const active = CRAFT_TABS[activeIndex];
+  const activeProduct = products?.find((product) => product.slug === active.photo.slug);
+  const activeImage = imageByName(activeProduct, active.photo.name);
 
   function scrollTabIntoView(index) {
     const strip = tablistRef.current;
@@ -93,11 +95,9 @@ export default function LandingCraft() {
             </div>
 
             <div className="landing-craft__col landing-craft__col--photo">
-              <img
-                className="landing-craft__photo"
-                src={photoUrl(active.photo.slug, active.photo.group, active.photo.scene)}
-                alt={photoAlt(active.photo.slug, active.photo.group, active.photo.scene)}
-              />
+              {activeImage && (
+                <img className="landing-craft__photo" src={activeImage.url} alt={activeImage.alt} />
+              )}
             </div>
 
             <div className="landing-craft__col landing-craft__col--detail">

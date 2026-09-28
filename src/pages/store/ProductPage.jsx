@@ -7,7 +7,7 @@ import ProductPhoto from '@/components/ProductPhoto.jsx';
 import QtyStepper from '@/components/QtyStepper.jsx';
 import TrustStrip from '@/components/TrustStrip.jsx';
 import { formatPrice } from '@/lib/formatPrice.js';
-import { photoAlt, photoUrl } from '@/data/photoManifest.js';
+import { bannerImage, galleryImages } from '@/lib/productImages.js';
 import { SPEC_GROUPS } from '@/data/productFacts.js';
 import { useProductMotion } from '@/hooks/useProductMotion.js';
 import './styles/ProductPage.css';
@@ -19,38 +19,6 @@ function stockMessage(stock) {
 }
 
 const pad = (n) => String(n).padStart(2, '0');
-
-// Product-page gallery: slot 1 is the studio product shot (dark-background
-// scenes are shown without background; dish.jpg sits on a light dish, so it
-// shows plain like the lifestyle slots instead). Slots 2-3 are daylight
-// lifestyle shots, always shown plain. Story banner reuses one lifestyle
-// photo per stone, tuned per-photo below.
-const GALLERY = {
-  'forest-emerald': {
-    slots: [
-      { scene: 'slate', group: 'product', noBg: true },
-      { scene: 'laptop', group: 'lifestyle' },
-      { scene: 'sketch', group: 'lifestyle' },
-    ],
-    banner: { scene: 'woodslice', group: 'product', objectPosition: '55% 40%' },
-  },
-  'ocean-topaz': {
-    slots: [
-      { scene: 'reflection', group: 'product', noBg: true },
-      { scene: 'bench', group: 'lifestyle' },
-      { scene: 'dinner', group: 'lifestyle' },
-    ],
-    banner: { scene: 'coffee', group: 'product', objectPosition: '50% 45%' },
-  },
-  'sunlit-amber': {
-    slots: [
-      { scene: 'dish', group: 'product' },
-      { scene: 'phone', group: 'lifestyle' },
-      { scene: 'railing', group: 'lifestyle', native: true },
-    ],
-    banner: { scene: 'reading', group: 'product', objectPosition: '48% 62%' },
-  },
-};
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -128,7 +96,8 @@ export default function ProductPage() {
       </p>
     ));
 
-  const gallery = GALLERY[product.slug];
+  const gallery = galleryImages(product);
+  const banner = bannerImage(product);
 
   return (
     <div className="pd" ref={rootRef} style={{ '--stone': product.hex }}>
@@ -173,7 +142,7 @@ export default function ProductPage() {
 
         <div className="pd-hero__media" data-pd-photo>
           <div className="pd-hero__glow" aria-hidden="true" />
-          <ProductPhoto slug={product.slug} name={product.name} className="pd-hero__photo blend" />
+          <ProductPhoto product={product} name={product.name} className="pd-hero__photo blend" />
           <div className="pd-hero__ring" aria-hidden="true" />
         </div>
       </section>
@@ -195,17 +164,14 @@ export default function ProductPage() {
 
       <TrustStrip />
 
-      {gallery && (
+      {gallery.length > 0 && (
         <ul className="pd-gallery">
-          {gallery.slots.map((slot) => (
-            <li
-              key={slot.scene}
-              className={`pd-gallery__item${slot.native ? ' pd-gallery__item--native' : ''}`}
-            >
+          {gallery.map((img) => (
+            <li key={img.id} className="pd-gallery__item">
               <img
-                src={photoUrl(product.slug, slot.group, slot.scene)}
-                alt={photoAlt(product.slug, slot.group, slot.scene)}
-                className={slot.noBg ? 'pd-gallery__photo-nobg blend' : undefined}
+                src={img.url}
+                alt={img.alt}
+                className={img.fit === 'contain' ? 'pd-gallery__photo-nobg blend' : undefined}
               />
             </li>
           ))}
@@ -242,13 +208,13 @@ export default function ProductPage() {
         </header>
         <div className="pd-story__body">{renderParagraphs(paragraphs.slice(0, half), 0)}</div>
 
-        {paragraphs.length > 1 && gallery && (
+        {paragraphs.length > 1 && banner && (
           <div className="pd-story__banner" data-banner aria-hidden="true">
             <img
-              src={photoUrl(product.slug, gallery.banner.group, gallery.banner.scene)}
+              src={banner.url}
               className="pd-story__banner-img"
               data-banner-img
-              style={{ objectPosition: gallery.banner.objectPosition }}
+              style={{ objectPosition: banner.focalPoint ?? undefined }}
               alt=""
             />
           </div>
@@ -277,7 +243,7 @@ export default function ProductPage() {
 
       <div className={`buy-bar${barVisible ? ' is-visible' : ''}`} inert={!barVisible}>
         <div className="buy-bar__inner">
-          <ProductPhoto slug={product.slug} name="" className="buy-bar__thumb blend" />
+          <ProductPhoto product={product} name="" className="buy-bar__thumb blend" />
           <span className="buy-bar__name">{product.name}</span>
           <span className="buy-bar__price">{formatPrice(product.priceCents)}</span>
           <button

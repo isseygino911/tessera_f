@@ -163,7 +163,7 @@ function StoneCard({ product, index, isActive }) {
         <div className="landing-stones__photo-wrap">
           <div className="landing-stones__glow" />
           <ProductPhoto
-            slug={product.slug}
+            product={product}
             name={product.name}
             className="blend landing-stones__photo"
           />

@@ -1,5 +1,5 @@
 // Copy for the homepage. Everything here is ours: it reuses the existing
-// TRUST and SPEC_GROUPS facts and the PHOTO_MANIFEST shoot rather than
+// TRUST and SPEC_GROUPS facts and each product's own images rather than
 // duplicating text, plus a few verbatim sentences pulled from the product
 // API's own story copy. Nothing is copied from drinkstill.nz.
 import { TRUST, SPEC_GROUPS } from './productFacts.js';
@@ -24,28 +24,28 @@ export const CRAFT_TABS = [
     label: TRUST[0].title,
     title: TRUST[0].title,
     text: TRUST[0].text,
-    photo: { slug: 'sunlit-amber', group: 'product', scene: 'dish' },
+    photo: { slug: 'sunlit-amber', name: 'dish' },
   },
   {
     id: 'matched-by-eye',
     label: TRUST[1].title,
     title: TRUST[1].title,
     text: TRUST[1].text,
-    photo: { slug: 'forest-emerald', group: 'product', scene: 'slate' },
+    photo: { slug: 'forest-emerald', name: 'slate' },
   },
   {
     id: 'stretch-fit',
     label: 'Stretch fit',
     title: 'Stretch fit',
     text: closure.detail,
-    photo: { slug: 'ocean-topaz', group: 'product', scene: 'reflection' },
+    photo: { slug: 'ocean-topaz', name: 'reflection' },
   },
   {
     id: 'personal-ordering',
     label: TRUST[2].title,
     title: TRUST[2].title,
     text: TRUST[2].text,
-    photo: { slug: 'sunlit-amber', group: 'product', scene: 'reading' },
+    photo: { slug: 'sunlit-amber', name: 'reading' },
   },
 ];
 

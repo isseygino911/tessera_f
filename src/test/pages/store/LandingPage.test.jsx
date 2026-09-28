@@ -18,6 +18,29 @@ const amber = {
   story: 'Hand-faceted amber.',
   priceCents: 4800,
   stock: 20,
+  images: [
+    {
+      id: 1,
+      name: 'main',
+      url: 'https://s3.test/products/sunlit-amber/main.jpg',
+      alt: 'Sunlit Amber cut-out bead',
+      role: 'main',
+    },
+    {
+      id: 2,
+      name: 'dish',
+      url: 'https://s3.test/products/sunlit-amber/dish.jpg',
+      alt: 'Sunlit Amber bracelet on a ceramic dish',
+      role: 'gallery',
+    },
+    {
+      id: 3,
+      name: 'reading',
+      url: 'https://s3.test/products/sunlit-amber/reading.jpg',
+      alt: 'Sunlit Amber bracelet worn while reading',
+      role: 'other',
+    },
+  ],
 };
 
 const emerald = {
@@ -29,6 +52,22 @@ const emerald = {
   story: 'Hand-faceted emerald.',
   priceCents: 5200,
   stock: 5,
+  images: [
+    {
+      id: 4,
+      name: 'main',
+      url: 'https://s3.test/products/forest-emerald/main.jpg',
+      alt: 'Forest Emerald cut-out bead',
+      role: 'main',
+    },
+    {
+      id: 5,
+      name: 'slate',
+      url: 'https://s3.test/products/forest-emerald/slate.jpg',
+      alt: 'Forest Emerald bracelet on a dark slate dish',
+      role: 'gallery',
+    },
+  ],
 };
 
 const topaz = {
@@ -40,6 +79,22 @@ const topaz = {
   story: 'Hand-faceted topaz.',
   priceCents: 3900,
   stock: 0,
+  images: [
+    {
+      id: 6,
+      name: 'main',
+      url: 'https://s3.test/products/ocean-topaz/main.jpg',
+      alt: 'Ocean Topaz cut-out bead',
+      role: 'main',
+    },
+    {
+      id: 7,
+      name: 'reflection',
+      url: 'https://s3.test/products/ocean-topaz/reflection.jpg',
+      alt: 'Ocean Topaz bracelet reflected on a dark glossy surface',
+      role: 'gallery',
+    },
+  ],
 };
 
 const products = [amber, emerald, topaz];
@@ -155,6 +210,34 @@ describe('LandingPage', () => {
     const panelId = screen.getByRole('tab', { name: nextTab.label }).getAttribute('aria-controls');
     const panel = document.getElementById(panelId);
     expect(within(panel).getByText(nextTab.title)).toBeInTheDocument();
+  });
+
+  it('shows the tab photo for the active craft tab, looked up by product slug and image name', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    // CRAFT_TABS[0] is { slug: 'sunlit-amber', name: 'dish' } per landingContent.js.
+    const image = await screen.findByRole('img', {
+      name: 'Sunlit Amber bracelet on a ceramic dish',
+    });
+    expect(image).toHaveAttribute('src', 'https://s3.test/products/sunlit-amber/dish.jpg');
+  });
+
+  it('switches the tab photo when a different craft tab is selected', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    await screen.findByRole('tablist');
+    const nextTab = CRAFT_TABS[1];
+    fireEvent.click(screen.getByRole('tab', { name: nextTab.label }));
+
+    // CRAFT_TABS[1] is { slug: 'forest-emerald', name: 'slate' }.
+    const image = await screen.findByRole('img', {
+      name: 'Forest Emerald bracelet on a dark slate dish',
+    });
+    expect(image).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/slate.jpg');
   });
 
   it('adds a product to the cart and confirms it with a status message', async () => {

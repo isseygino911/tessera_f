@@ -48,7 +48,7 @@ export default function LandingOrder({ products }) {
               <article className="landing-order__card" key={product.slug}>
                 <div className="landing-order__card-media">
                   <ProductPhoto
-                    slug={product.slug}
+                    product={product}
                     name={product.name}
                     className="landing-order__card-photo"
                   />

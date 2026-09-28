@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '@/lib/api.js';
 import { useCart } from '@/context/CartContext.jsx';
 import ProductPhoto from '@/components/ProductPhoto.jsx';
 import QtyStepper from '@/components/QtyStepper.jsx';
@@ -7,6 +9,18 @@ import './styles/shop.css';
 
 export default function CartPage() {
   const { items, setQty, remove, totalCents } = useCart();
+  const [products, setProducts] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getProducts()
+      .then((list) => !cancelled && setProducts(list))
+      .catch(() => !cancelled && setProducts([]));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="shop">
@@ -28,7 +42,7 @@ export default function CartPage() {
             {items.map((item) => (
               <li className="shop-line" key={item.productId}>
                 <ProductPhoto
-                  slug={item.slug}
+                  product={products?.find((product) => product.id === item.productId)}
                   name={item.name}
                   className="blend shop-line__thumb"
                 />

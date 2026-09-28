@@ -9,7 +9,7 @@ export default function ProductCard({ product }) {
     <Link to={`/products/${product.slug}`} className="pcard" style={{ '--stone': product.hex }}>
       <div className="pcard__media">
         <div className="pcard__glow" aria-hidden="true" />
-        <ProductPhoto slug={product.slug} name={product.name} className="pcard__photo blend" />
+        <ProductPhoto product={product} name={product.name} className="pcard__photo blend" />
         {product.stock <= 0 && <span className="pcard__badge">Sold out</span>}
       </div>
       <p className="pcard__name">

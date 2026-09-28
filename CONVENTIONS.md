@@ -24,8 +24,8 @@ src/
             styles/  admin.css  (imported by AdminLayout.jsx)
   hooks/     useLanding{Hero,Reveal,Stones,Story}Motion.js  useProductMotion.js
   context/   CartContext.jsx  AuthContext.jsx
-  lib/       api.js  formatPrice.js  motion.js  productImage.js  checkoutValidation.js
-  data/      landingContent.js  photoManifest.js  productFacts.js
+  lib/       api.js  formatPrice.js  motion.js  productImages.js  checkoutValidation.js
+  data/      landingContent.js  productFacts.js
   styles/    index.css (only @imports, in order)  tokens.css  base.css  primitives.css
   test/      setup.js + all tests, mirroring src/ paths
              (test/pages/store/LandingPage.test.jsx tests pages/store/LandingPage.jsx)

@@ -123,9 +123,6 @@ use it as an example. Fix it only when a task asks for it.
   plan is a `getErrorMessage(err, fallback)` helper in `lib/api.js`.
 - Loading and error markup differs from page to page. The plan is a shared
   `StatusMessage` component.
-- `STATUSES`/`formatDate` are duplicated in the two admin order pages, and
-  `GALLERY` data is inline in `ProductPage`.
-- There are two image systems, `lib/productImage.js` and
-  `data/photoManifest.js`, which should become one.
+- `STATUSES`/`formatDate` are duplicated in the two admin order pages.
 
 Remove each item from this list when it is fixed.

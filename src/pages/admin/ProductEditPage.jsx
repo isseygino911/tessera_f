@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
-import { productImage } from '@/lib/productImage.js';
+import { mainImage } from '@/lib/productImages.js';
 
 const EMPTY = {
   slug: '',
@@ -35,6 +35,7 @@ export default function ProductEditPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState(EMPTY);
+  const [product, setProduct] = useState(null);
   const [imageBroken, setImageBroken] = useState(false);
   const [prevSlug, setPrevSlug] = useState(form.slug);
   const [loading, setLoading] = useState(!isNew);
@@ -45,7 +46,10 @@ export default function ProductEditPage() {
     if (isNew) return;
     api
       .adminGetProduct(id)
-      .then((product) => setForm(toFormState(product)))
+      .then((loaded) => {
+        setForm(toFormState(loaded));
+        setProduct(loaded);
+      })
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load product.'))
       .finally(() => setLoading(false));
   }, [id, isNew]);
@@ -54,6 +58,8 @@ export default function ProductEditPage() {
     setPrevSlug(form.slug);
     setImageBroken(false);
   }
+
+  const previewUrl = mainImage(product)?.url;
 
   const handleChange = (field) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -104,10 +110,10 @@ export default function ProductEditPage() {
       <form onSubmit={handleSubmit}>
         <div className="form-field">
           <label>Photo</label>
-          {form.slug && !imageBroken ? (
+          {previewUrl && !imageBroken ? (
             <img
               className="image-upload-preview"
-              src={productImage(form.slug)}
+              src={previewUrl}
               alt={form.name ? `${form.name} preview` : 'Product preview'}
               onError={() => setImageBroken(true)}
             />
@@ -117,9 +123,6 @@ export default function ProductEditPage() {
               aria-hidden="true"
             />
           )}
-          <p className="form-hint">
-            Photo is served from client/public/products/{form.slug || '<slug>'}.jpg
-          </p>
         </div>
 
         <div className="form-grid">

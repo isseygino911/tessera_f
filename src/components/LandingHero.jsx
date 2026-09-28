@@ -15,6 +15,7 @@ import './styles/LandingHero.css';
 export default function LandingHero({ products }) {
   const rootRef = useRef(null);
   const minPriceCents = Math.min(...products.map((product) => product.priceCents));
+  const heroProduct = products.find((product) => product.slug === 'sunlit-amber');
 
   useLandingHeroMotion(rootRef);
 
@@ -32,7 +33,7 @@ export default function LandingHero({ products }) {
 
         <div className="landing-hero__photo-wrap" data-hero-photo aria-hidden="true">
           <div className="landing-hero__glow" />
-          <ProductPhoto slug="sunlit-amber" name="" className="landing-hero__photo" />
+          <ProductPhoto product={heroProduct} name="" className="landing-hero__photo" />
         </div>
 
         <p

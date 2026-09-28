@@ -9,6 +9,45 @@ vi.mock('@/lib/api.js');
 
 const STORAGE_KEY = 'simple_ecom_cart';
 
+const amberImages = [
+  {
+    id: 1,
+    name: 'main',
+    url: 'https://s3.test/products/sunlit-amber/main.jpg',
+    alt: 'Sunlit Amber cut-out bead',
+    role: 'main',
+    fit: 'cover',
+    focalPoint: null,
+  },
+  {
+    id: 2,
+    name: 'reading',
+    url: 'https://s3.test/products/sunlit-amber/reading.jpg',
+    alt: 'Sunlit Amber bracelet worn while reading',
+    role: 'gallery',
+    fit: 'contain',
+    focalPoint: null,
+  },
+  {
+    id: 3,
+    name: 'dish',
+    url: 'https://s3.test/products/sunlit-amber/dish.jpg',
+    alt: 'Sunlit Amber bracelet on a ceramic dish',
+    role: 'gallery',
+    fit: 'cover',
+    focalPoint: null,
+  },
+  {
+    id: 4,
+    name: 'story',
+    url: 'https://s3.test/products/sunlit-amber/story.jpg',
+    alt: 'Sunlit Amber story banner',
+    role: 'banner',
+    fit: 'cover',
+    focalPoint: '55% 40%',
+  },
+];
+
 const amber = {
   id: 1,
   slug: 'sunlit-amber',
@@ -18,6 +57,7 @@ const amber = {
   story: 'The first paragraph of the amber story.\n\nThe second paragraph of the amber story.',
   priceCents: 4800,
   stock: 20,
+  images: amberImages,
 };
 
 const emerald = {
@@ -29,6 +69,17 @@ const emerald = {
   story: 'Hand-faceted emerald.',
   priceCents: 5200,
   stock: 5,
+  images: [
+    {
+      id: 5,
+      name: 'main',
+      url: 'https://s3.test/products/forest-emerald/main.jpg',
+      alt: 'Forest Emerald cut-out bead',
+      role: 'main',
+      fit: 'cover',
+      focalPoint: null,
+    },
+  ],
 };
 
 const topaz = {
@@ -40,6 +91,7 @@ const topaz = {
   story: 'Hand-faceted topaz.',
   priceCents: 4400,
   stock: 0,
+  images: [],
 };
 
 const products = [amber, emerald, topaz];
@@ -193,5 +245,47 @@ describe('ProductPage', () => {
     } finally {
       window.matchMedia = originalMatchMedia;
     }
+  });
+
+  it('renders one gallery image per gallery-role image, using its alt text', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderProductPage();
+
+    await findHero('Sunlit Amber');
+
+    expect(
+      screen.getByRole('img', { name: 'Sunlit Amber bracelet worn while reading' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: 'Sunlit Amber bracelet on a ceramic dish' })
+    ).toBeInTheDocument();
+    // The main and banner images are not gallery images.
+    expect(
+      screen.queryByRole('img', { name: 'Sunlit Amber cut-out bead' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders no gallery when the product has no gallery images', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderProductPage('/products/forest-emerald');
+
+    await findHero('Forest Emerald');
+
+    expect(document.querySelector('.pd-gallery')).not.toBeInTheDocument();
+  });
+
+  it('renders the story banner image using its focal point as object-position', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderProductPage();
+
+    await findHero('Sunlit Amber');
+
+    const banner = document.querySelector('[data-banner-img]');
+    expect(banner).toBeTruthy();
+    expect(banner).toHaveAttribute('src', 'https://s3.test/products/sunlit-amber/story.jpg');
+    expect(banner.style.objectPosition).toBe('55% 40%');
   });
 });
