@@ -51,7 +51,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="site-footer__bar site-container">
-        <p>© {new Date().getFullYear()} Faceted &amp; Co. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Tessera. All rights reserved.</p>
       </div>
     </footer>
   );

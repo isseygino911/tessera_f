@@ -62,8 +62,8 @@ export default function Header() {
   return (
     <header className="site-header" data-site-header>
       <div className="site-header__bar">
-        <Link to="/" className="site-header__wordmark" aria-label="Faceted & Co.">
-          <span aria-hidden="true">FACETED.</span>
+        <Link to="/" className="site-header__wordmark" aria-label="Tessera">
+          <span aria-hidden="true">TESSERA.</span>
           <span className="site-header__dot" aria-hidden="true" />
         </Link>
 

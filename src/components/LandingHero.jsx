@@ -26,7 +26,7 @@ export default function LandingHero({ products }) {
       <div className="landing-hero__stage">
         <p className="landing-hero__wordmark" data-hero-wordmark aria-hidden="true">
           <span className="landing-hero__wordmark-text">
-            {'FACETED'}
+            {'TESSERA'}
             <span className="landing-hero__dot" />
           </span>
         </p>

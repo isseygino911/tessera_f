@@ -55,12 +55,12 @@ afterEach(() => {
 });
 
 describe('Header', () => {
-  it('links the wordmark to / with the accessible name "Faceted & Co."', async () => {
+  it('links the wordmark to / with the accessible name "Tessera"', async () => {
     vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
     renderHeader();
 
     await waitFor(() => expect(api.authMe).toHaveBeenCalled());
-    expect(screen.getByRole('link', { name: 'Faceted & Co.' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'Tessera' })).toHaveAttribute('href', '/');
   });
 
   it('renders the Main nav with links to the stones, craft, story and order sections, plus Shop →', async () => {

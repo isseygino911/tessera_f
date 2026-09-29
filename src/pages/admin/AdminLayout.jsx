@@ -39,8 +39,8 @@ export default function AdminLayout() {
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <p className="eyebrow">Studio admin</p>
-        <Link to="/" className="site-header__wordmark" aria-label="Faceted & Co.">
-          <span aria-hidden="true">FACETED.</span>
+        <Link to="/" className="site-header__wordmark" aria-label="Tessera">
+          <span aria-hidden="true">TESSERA.</span>
           <span className="site-header__dot" aria-hidden="true" />
         </Link>
         <nav className="admin-nav" aria-label="Admin">
