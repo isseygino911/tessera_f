@@ -20,8 +20,9 @@ const STAGE_SPEC_ROWS = SPEC_GROUPS.filter((group) => group.title !== 'Ordering'
 // of it; useLandingStonesMotion (desktop + motion only) pins the whole section
 // at exactly 100vh (header row + heading + two-column stage + index all fit in
 // the viewport together) and drives `active` via onStep, and CSS crossfades
-// the active article: its text lines fade up in turn, the photo fades in, and
-// the section's ambient tint fades to the active stone's colour. Mobile and reduced-motion fall back to a horizontal
+// the active article: its text lines slide in from the left in turn, the photo
+// slides in from the right, and the section's ambient tint fades to the active
+// stone's colour. Mobile and reduced-motion fall back to a horizontal
 // scroll-snap row (see LandingStones.css).
 export default function LandingStones({ products }) {
   const rootRef = useRef(null);

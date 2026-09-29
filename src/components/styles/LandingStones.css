@@ -76,19 +76,20 @@
   visibility: visible;
 }
 
-/* Step change: the incoming card's text lines fade up one after another and
-   its photo fades in; the outgoing card's drop away without delay. */
+/* Step change: the incoming card's text lines slide in from the left one
+   after another and its photo slides in from the right, both fading in; the
+   outgoing card's slide back out without delay. */
 .landing-stones--staged .landing-stones__info > *,
 .landing-stones--staged .landing-stones__visual {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateX(-48px);
   transition:
     opacity 0.3s var(--ease),
     transform 0.3s var(--ease);
 }
 
 .landing-stones--staged .landing-stones__visual {
-  transform: scale(0.94);
+  transform: translateX(48px);
 }
 
 .landing-stones--staged .landing-stones__card--active .landing-stones__info > *,
