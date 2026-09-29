@@ -431,7 +431,11 @@
     min-height: 0;
   }
 
+  /* A flex column so the visual's `order: -1` puts the photo above the info
+     (the card is otherwise a block, where `order` has no effect). */
   .landing-stones:not(.landing-stones--staged) .landing-stones__card {
+    display: flex;
+    flex-direction: column;
     flex-basis: min(84vw, 84%);
     width: min(84vw, 84%);
     max-width: 420px;
@@ -439,5 +443,38 @@
 
   .landing-stones__name {
     font-size: clamp(36px, 10vw, 48px);
+  }
+
+  /* Photo on top (order: -1 above), then name, tagline, price and link: the
+     story excerpt and spec table live on the product page instead. */
+  .landing-stones__body,
+  .landing-stones__rule,
+  .landing-stones__specs {
+    display: none;
+  }
+
+  /* The centred card sits at full size while its neighbours shrink and dim,
+     driven by each card's own position in the row. Uses `scale` and `filter`
+     rather than `transform`/`opacity`, which the data-m-slide entrance owns. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .landing-stones:not(.landing-stones--staged) .landing-stones__card {
+        animation: landing-stones-focus linear both;
+        animation-timeline: view(inline);
+      }
+    }
+  }
+
+  @keyframes landing-stones-focus {
+    0%,
+    100% {
+      scale: 0.92;
+      filter: brightness(0.55);
+    }
+
+    50% {
+      scale: 1;
+      filter: none;
+    }
   }
 }

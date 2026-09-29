@@ -127,6 +127,7 @@ function StoneCard({ product, index, isActive }) {
     <article
       className={`landing-stones__card${isActive ? ' landing-stones__card--active' : ''}`}
       style={{ '--stone': product.hex }}
+      data-m-slide
     >
       <div className="landing-stones__info">
         <div className="landing-stones__meta">

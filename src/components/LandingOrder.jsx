@@ -7,7 +7,9 @@ import ProductPhoto from './ProductPhoto.jsx';
 import './styles/LandingOrder.css';
 
 // "06 / Ordering": the How-it-works columns, then bordered order cards wired
-// to the real cart (no pack toggle — this store has none).
+// to the real cart (no pack toggle — this store has none). On mobile the steps
+// become a numbered timeline and the cards a swipe row; the timeline marks are
+// hidden on desktop.
 export default function LandingOrder({ products }) {
   const headingId = useId();
   const { add } = useCart();
@@ -26,9 +28,13 @@ export default function LandingOrder({ products }) {
           Order direct from the studio.
         </h2>
 
-        <div className="landing-order__how">
-          {HOW_IT_WORKS.map((step) => (
-            <div className="landing-order__how-col" key={step.title}>
+        <div className="landing-order__how" data-m-group>
+          <span className="landing-order__how-line" data-m-line aria-hidden="true" />
+          {HOW_IT_WORKS.map((step, index) => (
+            <div className="landing-order__how-col" key={step.title} data-m-rise>
+              <span className="landing-order__how-num" aria-hidden="true">
+                0{index + 1}
+              </span>
               <h3 className="landing-order__how-title">{step.title}</h3>
               <p className="landing-order__how-text">{step.text}</p>
             </div>
@@ -45,7 +51,7 @@ export default function LandingOrder({ products }) {
           {products.map((product, index) => {
             const soldOut = product.stock === 0;
             return (
-              <article className="landing-order__card" key={product.slug}>
+              <article className="landing-order__card" key={product.slug} data-m-slide>
                 <div className="landing-order__card-media">
                   <ProductPhoto
                     product={product}

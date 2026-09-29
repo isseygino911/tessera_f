@@ -3,7 +3,7 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { api } from '@/lib/api.js';
 import { CartProvider } from '@/context/CartContext.jsx';
-import { CRAFT_TABS, QUOTES, STORY } from '@/data/landingContent.js';
+import { CRAFT_TABS, STORY } from '@/data/landingContent.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import LandingPage from '@/pages/store/LandingPage.jsx';
 
@@ -150,6 +150,18 @@ describe('LandingPage', () => {
     }
   });
 
+  it('exposes the hero wordmark to assistive tech via an accessible name', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    await screen.findByRole('heading', { level: 1 });
+
+    const wordmark = document.querySelector('[data-hero-wordmark]');
+    expect(wordmark).toBeTruthy();
+    expect(wordmark).toHaveAccessibleName(/tessera/i);
+  });
+
   it('shows an alert with the error message when getProducts rejects, while Craft still renders', async () => {
     api.getProducts.mockRejectedValue(new Error('network down'));
 
@@ -212,6 +224,27 @@ describe('LandingPage', () => {
     expect(within(panel).getByText(nextTab.title)).toBeInTheDocument();
   });
 
+  it('renders an order card for every product, each with its own name, price and add-to-cart control', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const orderSection = await findOrderSection();
+
+    products.forEach((product) => {
+      const card = findOrderCard(orderSection, product.name);
+      expect(within(card).getByText(formatPrice(product.priceCents))).toBeInTheDocument();
+
+      if (product.stock === 0) {
+        expect(within(card).getByRole('button', { name: 'Sold out' })).toBeDisabled();
+      } else {
+        expect(
+          within(card).getByRole('button', { name: `Add ${product.name} to cart` })
+        ).toBeEnabled();
+      }
+    });
+  });
+
   it('adds a product to the cart and confirms it with a status message', async () => {
     api.getProducts.mockResolvedValue(products);
 
@@ -252,51 +285,23 @@ describe('LandingPage', () => {
 
     const heading = await screen.findByRole('heading', { name: 'Our Studio' });
     const section = heading.closest('section');
-    expect(within(section).getByText(STORY.lead)).toBeInTheDocument();
+    expect(section).toHaveTextContent(STORY.lead);
     STORY.paragraphs.forEach((paragraph) =>
       expect(within(section).getByText(paragraph)).toBeInTheDocument()
     );
     expect(within(section).getByText(STORY.signoff)).toBeInTheDocument();
   });
 
-  it('renders 3 blockquotes, each cited to a stone name from QUOTES', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderLanding();
-
-    await screen.findByRole('heading', { level: 1 });
-
-    const blockquotes = document.querySelectorAll('blockquote');
-    expect(blockquotes).toHaveLength(3);
-    expect(QUOTES).toHaveLength(3);
-
-    QUOTES.forEach((quote) => {
-      const cite = screen.getByText(quote.name, { selector: 'cite' });
-      expect(cite).toBeInTheDocument();
-      expect(cite.closest('blockquote')).toHaveTextContent(quote.text);
-    });
-  });
-
   describe('when Sunlit Amber is not on sale', () => {
-    beforeEach(() => {
-      api.getProducts.mockResolvedValue([emerald, topaz]);
-    });
-
     it('shows the next product with a photo in the hero, and counts only the stones on sale', async () => {
+      api.getProducts.mockResolvedValue([emerald, topaz]);
+
       renderLanding();
 
       await screen.findByRole('heading', { level: 1 });
       const heroPhoto = document.querySelector('.landing-hero__photo-wrap img');
       expect(heroPhoto).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/main.jpg');
       expect(screen.getByText('2 stones · Hand-faceted')).toBeInTheDocument();
-    });
-
-    it('leaves out the Sunlit Amber quote', async () => {
-      renderLanding();
-
-      await screen.findByRole('heading', { level: 1 });
-      expect(document.querySelectorAll('blockquote')).toHaveLength(2);
-      expect(screen.queryByText('Sunlit Amber', { selector: 'cite' })).not.toBeInTheDocument();
     });
   });
 

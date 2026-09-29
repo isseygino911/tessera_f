@@ -5,9 +5,8 @@ import LandingHero from '@/components/LandingHero.jsx';
 import LandingStones from '@/components/LandingStones.jsx';
 import LandingCraft from '@/components/LandingCraft.jsx';
 import LandingStory from '@/components/LandingStory.jsx';
-import LandingQuotes from '@/components/LandingQuotes.jsx';
 import LandingOrder from '@/components/LandingOrder.jsx';
-import { useLandingRevealMotion } from '@/hooks/useLandingRevealMotion.js';
+import { useLandingMobileMotion } from '@/hooks/useLandingMobileMotion.js';
 import './styles/LandingPage.css';
 
 // /: a dark, GSAP-animated rebuild of drinkstill.nz's layout, filled with our
@@ -31,7 +30,7 @@ export default function LandingPage() {
   }, []);
 
   const ready = Boolean(products?.length);
-  useLandingRevealMotion(rootRef, ready);
+  useLandingMobileMotion(rootRef, ready);
 
   // Once the products have loaded (and the sections a hash like #order might
   // target are in the DOM), scroll to a deep link from another page — e.g.
@@ -68,8 +67,6 @@ export default function LandingPage() {
       <LandingCraft />
 
       {ready && <LandingStory product={products[0]} />}
-
-      {ready && <LandingQuotes products={products} />}
 
       {ready && <LandingOrder products={products} />}
     </div>

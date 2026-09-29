@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { gsap, ScrollTrigger, MOTION_OK } from '@/lib/motion.js';
+import { gsap, ScrollTrigger, MOTION_OK, MOBILE } from '@/lib/motion.js';
 
 const DESKTOP = '(min-width: 768px)';
 const STAGED_CLASS = 'landing-hero--staged';
@@ -89,6 +89,31 @@ export function useLandingHeroMotion(rootRef) {
           root.classList.remove(STAGED_CLASS);
           header?.classList.remove('site-header--hidden');
         };
+      },
+      root
+    );
+
+    // Phone: no pin. On load the wordmark letters rise in turn, the disc
+    // swells into place behind the photo and the copy fades up; as the hero
+    // scrolls away the photo drifts up and shrinks a little.
+    mm.add(
+      `${MOTION_OK} and ${MOBILE}`,
+      () => {
+        const copy = root.querySelector('[data-hero-copy]');
+        const photo = root.querySelector('[data-hero-photo]');
+
+        gsap
+          .timeline({ defaults: { ease: 'power3.out' } })
+          .from('[data-hero-letter]', { yPercent: 100, opacity: 0, duration: 0.7, stagger: 0.06 })
+          .from('[data-hero-disc]', { scale: 0.85, opacity: 0, duration: 1 }, 0.2)
+          .from(copy.children, { y: 24, opacity: 0, duration: 0.8, stagger: 0.1 }, 0.5);
+
+        gsap.to(photo, {
+          yPercent: -15,
+          scale: 0.88,
+          ease: 'none',
+          scrollTrigger: { trigger: root, start: 'top top', end: 'bottom top', scrub: 0.5 },
+        });
       },
       root
     );

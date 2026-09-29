@@ -54,7 +54,7 @@ export default function LandingCraft() {
       />
       <div className="site-container landing-craft__inner">
         <p className="eyebrow">03 · Why it lasts</p>
-        <h2 id={headingId} className="landing-craft__title">
+        <h2 id={headingId} className="landing-craft__title" data-m-rise>
           Hand-faceted.
         </h2>
 

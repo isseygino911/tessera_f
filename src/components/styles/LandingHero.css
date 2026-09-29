@@ -225,16 +225,21 @@
     font-size: clamp(28px, 11vw, 52px);
   }
 
-  /* The disc is only the desktop scroll reveal's start state; on mobile,
-     where there's no pin, only the photo circle + glow show. */
+  /* No pin on mobile: the disc sits behind the photo as a halo, and the photo
+     is pulled up (by half of both sizes plus the stage gap) to centre in it. */
+  .landing-hero {
+    --hero-disc: min(78vw, 340px);
+    --hero-photo: min(64vw, 280px);
+  }
+
   .landing-hero__disc {
-    display: none;
+    width: var(--hero-disc);
   }
 
   .landing-hero__photo-wrap {
-    width: 70vw;
-    max-width: 320px;
-    margin-top: 0;
+    width: var(--hero-photo);
+    max-width: none;
+    margin-top: calc(-1 * (var(--hero-disc) + var(--hero-photo)) / 2 - var(--space-5));
   }
 
   /* The copy block below already says the same thing, so the corner lines

@@ -9,6 +9,9 @@ export { gsap, ScrollTrigger };
 // everything else renders in its final, static state.
 export const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 
+// The phone layout: every mobile-only tween is gated by `${MOTION_OK} and ${MOBILE}`.
+export const MOBILE = '(max-width: 767px)';
+
 // Call these inside a gsap.matchMedia().add(MOTION_OK, fn, scope) callback so
 // selectors resolve within the page and unmount reverts them.
 export function revealEach(selector) {

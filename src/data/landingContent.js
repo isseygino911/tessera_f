@@ -1,7 +1,6 @@
 // Copy for the homepage. Everything here is ours: it reuses the existing
 // TRUST and SPEC_GROUPS facts and each product's own images rather than
-// duplicating text, plus a few verbatim sentences pulled from the product
-// API's own story copy. Nothing is copied from drinkstill.nz.
+// duplicating text. Nothing is copied from drinkstill.nz.
 import { TRUST, SPEC_GROUPS } from './productFacts.js';
 
 // Hero copy.
@@ -55,25 +54,6 @@ export const STORY = {
   ],
   signoff: 'Made by hand, packed by hand, sent from our studio to you.',
 };
-
-// One verbatim sentence per product story, kept short.
-export const QUOTES = [
-  {
-    slug: 'sunlit-amber',
-    name: 'Sunlit Amber',
-    text: "Amber isn't really one color.",
-  },
-  {
-    slug: 'forest-emerald',
-    name: 'Forest Emerald',
-    text: 'Growth in a forest is almost never a performance.',
-  },
-  {
-    slug: 'ocean-topaz',
-    name: 'Ocean Topaz',
-    text: 'The idea for this one came from wading, not swimming.',
-  },
-];
 
 export const HOW_IT_WORKS = [
   {

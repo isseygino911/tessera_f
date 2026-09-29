@@ -6,6 +6,8 @@ import { useLandingHeroMotion } from '@/hooks/useLandingHeroMotion.js';
 import ProductPhoto from './ProductPhoto.jsx';
 import './styles/LandingHero.css';
 
+const BRAND = 'Tessera';
+
 // Pinned hero (see docs/plans/lab-landing.md, section map row 0). Always
 // renders its full end state in the DOM — copy, stats and photo all visible —
 // so tests, mobile and reduced-motion visitors see everything without motion.
@@ -24,10 +26,21 @@ export default function LandingHero({ products }) {
   return (
     <section id="hero" className="landing-hero" aria-labelledby="landing-hero-title" ref={rootRef}>
       <div className="landing-hero__stage">
-        <p className="landing-hero__wordmark" data-hero-wordmark aria-hidden="true">
+        <p className="landing-hero__wordmark" data-hero-wordmark role="img" aria-label={BRAND}>
           <span className="landing-hero__wordmark-text">
-            {'TESSERA'}
-            <span className="landing-hero__dot" />
+            {BRAND.toUpperCase()
+              .split('')
+              .map((letter, index) => (
+                <span
+                  key={index}
+                  className="landing-hero__letter"
+                  data-hero-letter
+                  aria-hidden="true"
+                >
+                  {letter}
+                </span>
+              ))}
+            <span className="landing-hero__dot" aria-hidden="true" />
           </span>
         </p>
 
