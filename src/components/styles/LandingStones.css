@@ -100,6 +100,11 @@
   transition-delay: calc(var(--i, 0) * 60ms + 120ms);
 }
 
+/* The photo follows 0.25s after the text starts. */
+.landing-stones--staged .landing-stones__card--active .landing-stones__visual {
+  transition-delay: calc(120ms + 700ms);
+}
+
 .landing-stones--staged .landing-stones__info > :nth-child(2) {
   --i: 1;
 }
