@@ -112,6 +112,10 @@
   min-width: 0;
   margin-top: var(--space-6);
   text-align: left;
+}
+
+.landing-craft__col--label,
+.landing-craft__col--detail {
   animation: landing-craft-fade 0.45s var(--ease);
 }
 
@@ -166,6 +170,77 @@
   object-fit: cover;
   border-radius: 0;
   box-shadow: var(--shadow-card);
+}
+
+/* The stone shot sits on black; a radial mask fades that into a soft dark pool, like a
+   spotlight. No blend mode: lighten/screen would wash out dark stones like emerald. */
+.landing-craft__stage-photo {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
+  perspective: 900px;
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.4s var(--ease);
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+.landing-craft__sway {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  animation: landing-craft-sway 9s ease-in-out infinite alternate;
+}
+
+/* A highlight band that sweeps across; soft-light leaves the black alone and only lifts the facets. */
+.landing-craft__sway::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.45) 50%,
+    transparent 65%
+  );
+  mix-blend-mode: soft-light;
+  transform: translateX(-100%);
+  animation: landing-craft-sweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-craft__stone {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+
+.landing-craft__stone--active {
+  opacity: 1;
+}
+
+@keyframes landing-craft-sway {
+  from {
+    transform: rotateY(-11deg) rotateX(3deg);
+  }
+  to {
+    transform: rotateY(11deg) rotateX(-3deg);
+  }
+}
+
+@keyframes landing-craft-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  60%,
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .landing-craft__col--detail {
