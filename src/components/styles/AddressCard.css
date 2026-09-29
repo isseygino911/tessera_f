@@ -1,0 +1,58 @@
+.address-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+}
+
+.address-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.address-card__label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.address-card__badge {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-accent);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.address-card__lines {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-dim);
+}
+
+.address-card__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+.address-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+}

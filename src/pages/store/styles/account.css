@@ -1,0 +1,270 @@
+/* Customer account: the dashboard (/account) and one order
+   (/account/orders/:id). Builds on .shop / .shop-head / .shop-total from
+   shop.css and the form and button primitives. */
+
+.account__section {
+  margin-bottom: var(--space-7);
+}
+
+.account__title {
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--color-text);
+}
+
+.account__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-7);
+}
+
+.account__text {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-dim);
+}
+
+.account__back {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  text-decoration: none;
+}
+
+.account__back:hover,
+.account__back:focus-visible {
+  color: var(--color-text);
+}
+
+/* -- Orders list -- */
+
+.account__orders {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account__order {
+  display: grid;
+  grid-template-columns: 8rem 1fr 6rem 7rem 7rem;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+  text-decoration: none;
+  transition: background 0.2s var(--ease);
+}
+
+.account__order:hover,
+.account__order:focus-visible {
+  background: var(--color-bg-raised);
+}
+
+.account__order-id {
+  font-family: var(--font-wide);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+}
+
+.account__order-total {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.account__status {
+  justify-self: end;
+}
+
+/* -- Saved addresses (cards and form are components/AddressCard, AddressForm) -- */
+
+.account__addresses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--space-4);
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.account__addresses > li {
+  display: flex;
+}
+
+.account__addresses > li > * {
+  flex: 1;
+}
+
+.account__addresses > li:has(> .address-form) {
+  grid-column: 1 / -1;
+}
+
+.account__delete:hover,
+.account__delete:focus-visible {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-text);
+}
+
+/* -- Forms -- */
+
+.account__form {
+  margin-bottom: var(--space-6);
+}
+
+.account__form input[readonly] {
+  color: var(--color-text-dim);
+}
+
+.account__form-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.account__saved {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-success);
+}
+
+/* -- Order status steps -- */
+
+.account__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.account__step {
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--color-border-strong);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.account__step--reached {
+  border-top-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.account__cancelled {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-danger);
+}
+
+/* -- Order items -- */
+
+.account__items {
+  list-style: none;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+}
+
+.account__item {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account__item-photo {
+  width: 4.5rem;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.account__item-name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+.account__item-qty {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+}
+
+.account__item-total {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--color-text);
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  .account__addresses {
+    grid-template-columns: 1fr;
+  }
+
+  .account__grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .account__order {
+    grid-template-columns: 1fr auto;
+    row-gap: var(--space-2);
+    padding-inline: 0;
+  }
+
+  .account__order-total {
+    text-align: left;
+  }
+
+  .account__status {
+    justify-self: start;
+  }
+
+  .account__item {
+    grid-template-columns: 3.5rem 1fr auto;
+  }
+
+  .account__item-photo {
+    width: 3.5rem;
+    grid-row: span 2;
+  }
+
+  .account__item-qty {
+    grid-column: 2;
+  }
+
+  .account__item-total {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .account__steps {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: var(--space-4);
+  }
+}

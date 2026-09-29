@@ -3,22 +3,28 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
 import { useAuth } from '@/context/AuthContext.jsx';
 import { useCart } from '@/context/CartContext.jsx';
+import AddressCard from '@/components/AddressCard.jsx';
+import { ADDRESS_FIELDS } from '@/data/addressFields.js';
 import { validateCheckout } from '@/lib/checkoutValidation.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import './styles/shop.css';
 
+const NEW_ADDRESS = 'new';
+
+// The "New address" inputs; a chosen saved address overrides them on submit.
 function emptyForm(user) {
   return {
     name: user.name,
     email: user.email,
-    phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    region: '',
-    postalCode: '',
-    country: '',
+    ...Object.fromEntries(ADDRESS_FIELDS.map(({ name }) => [name, ''])),
     note: '',
+  };
+}
+
+function addressValues(address) {
+  return {
+    name: address.recipientName,
+    ...Object.fromEntries(ADDRESS_FIELDS.map(({ name }) => [name, address[name] ?? ''])),
   };
 }
 
@@ -74,9 +80,14 @@ export default function CheckoutPage() {
 
 function CheckoutForm({ user }) {
   const { items, totalCents, clear } = useCart();
+  const { addresses, reloadAddresses } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState(() => emptyForm(user));
+  const [shipTo, setShipTo] = useState(() =>
+    String((addresses.find((a) => a.isDefault) ?? addresses[0])?.id ?? NEW_ADDRESS)
+  );
+  const [saveAddress, setSaveAddress] = useState(true);
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -85,11 +96,21 @@ function CheckoutForm({ user }) {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  // Radio values are strings, whatever type the ids are.
+  const selected = addresses.find((a) => String(a.id) === shipTo);
+  const values = selected ? { ...form, ...addressValues(selected) } : form;
+  const saveNew = !selected && saveAddress;
+
+  const handleShipToChange = (e) => {
+    setShipTo(e.target.value);
+    setErrors({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
 
-    const nextErrors = validateCheckout(form);
+    const nextErrors = validateCheckout(values);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -97,21 +118,24 @@ function CheckoutForm({ user }) {
     try {
       const order = await api.createOrder({
         customer: {
-          name: form.name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          addressLine1: form.addressLine1.trim(),
-          addressLine2: form.addressLine2.trim() || undefined,
-          city: form.city.trim(),
-          region: form.region.trim(),
-          postalCode: form.postalCode.trim(),
-          country: form.country.trim(),
-          note: form.note.trim() || undefined,
+          name: values.name.trim(),
+          email: values.email.trim(),
+          phone: values.phone.trim(),
+          addressLine1: values.addressLine1.trim(),
+          addressLine2: values.addressLine2.trim() || undefined,
+          city: values.city.trim(),
+          region: values.region.trim(),
+          postalCode: values.postalCode.trim(),
+          country: values.country.trim(),
+          note: values.note.trim() || undefined,
         },
         items: items.map((item) => ({ productId: item.productId, qty: item.qty })),
+        saveAddress: saveNew,
       });
 
       clear();
+      // The server added the new address to the customer's list.
+      if (saveNew) reloadAddresses();
       navigate(`/thanks/${order.id}`);
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
@@ -131,7 +155,7 @@ function CheckoutForm({ user }) {
   };
 
   const field = (name, label, { type = 'text', full = false, required = true } = {}) => (
-    <div className={`form-field${full ? ' form-field--full' : ''}`}>
+    <div key={name} className={`form-field${full ? ' form-field--full' : ''}`}>
       <label htmlFor={name}>
         {label}
         {!required && ' (optional)'}
@@ -168,16 +192,56 @@ function CheckoutForm({ user }) {
       )}
 
       <form className="shop-checkout" onSubmit={handleSubmit} noValidate>
+        {addresses.length > 0 && (
+          <div className="shop-shipto">
+            <p id="ship-to-label" className="eyebrow">
+              Ship to
+            </p>
+            <div role="radiogroup" aria-labelledby="ship-to-label" className="shop-shipto__options">
+              {addresses.map((address) => (
+                <label key={address.id} className="shop-shipto__option">
+                  <input
+                    type="radio"
+                    name="shipTo"
+                    value={address.id}
+                    checked={selected === address}
+                    onChange={handleShipToChange}
+                  />
+                  {[address.label, address.recipientName, address.addressLine1, address.city]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </label>
+              ))}
+              <label className="shop-shipto__option">
+                <input
+                  type="radio"
+                  name="shipTo"
+                  value={NEW_ADDRESS}
+                  checked={!selected}
+                  onChange={handleShipToChange}
+                />
+                New address
+              </label>
+            </div>
+            {selected && <AddressCard address={selected} />}
+          </div>
+        )}
+
         <div className="form-grid">
-          {field('name', 'Full name')}
+          {!selected && field('name', 'Full name')}
           {field('email', 'Email', { type: 'email' })}
-          {field('phone', 'Phone')}
-          {field('addressLine1', 'Address line 1', { full: true })}
-          {field('addressLine2', 'Address line 2', { full: true, required: false })}
-          {field('city', 'City')}
-          {field('region', 'State / region')}
-          {field('postalCode', 'Postal code')}
-          {field('country', 'Country')}
+          {!selected &&
+            ADDRESS_FIELDS.map(({ name, label, ...options }) => field(name, label, options))}
+          {!selected && (
+            <label className="form-field--full form-check">
+              <input
+                type="checkbox"
+                checked={saveAddress}
+                onChange={(e) => setSaveAddress(e.target.checked)}
+              />
+              Save to my addresses
+            </label>
+          )}
           <div className="form-field form-field--full">
             <label htmlFor="note">Note (optional)</label>
             <textarea

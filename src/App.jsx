@@ -11,6 +11,8 @@ import CheckoutPage from '@/pages/store/CheckoutPage.jsx';
 import ThanksPage from '@/pages/store/ThanksPage.jsx';
 import LoginPage from '@/pages/store/LoginPage.jsx';
 import SignupPage from '@/pages/store/SignupPage.jsx';
+import AccountPage from '@/pages/store/AccountPage.jsx';
+import AccountOrderPage from '@/pages/store/AccountOrderPage.jsx';
 
 const AdminApp = lazy(() => import('@/pages/admin/AdminApp.jsx'));
 
@@ -47,6 +49,8 @@ export default function App() {
             <Route path="/thanks/:id" element={<ThanksPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/account/orders/:id" element={<AccountOrderPage />} />
           </Route>
         </Routes>
       </CartProvider>

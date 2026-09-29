@@ -49,6 +49,16 @@ export const api = {
     request('/auth/login', { method: 'POST', body: { email, password } }),
   authLogout: () => request('/auth/logout', { method: 'POST' }),
   authMe: () => request('/auth/me'),
+  updateMe: ({ name }) => request('/auth/me', { method: 'PATCH', body: { name } }),
+  changePassword: (data) => request('/auth/me/password', { method: 'PUT', body: data }),
+
+  getMyOrders: () => request('/orders'),
+  getMyOrder: (id) => request(`/orders/${id}`),
+
+  getAddresses: () => request('/addresses'),
+  createAddress: (data) => request('/addresses', { method: 'POST', body: data }),
+  updateAddress: (id, data) => request(`/addresses/${id}`, { method: 'PUT', body: data }),
+  deleteAddress: (id) => request(`/addresses/${id}`, { method: 'DELETE' }),
 
   adminGetProducts: () => request('/admin/products'),
   adminGetProduct: (id) => request(`/admin/products/${id}`),

@@ -37,6 +37,21 @@ const adminUser = {
   role: 'admin',
 };
 
+const savedAddress = (overrides = {}) => ({
+  id: 1,
+  label: 'Home',
+  recipientName: 'Ada Lovelace',
+  phone: '555-0100',
+  addressLine1: '1 Analytical Engine Way',
+  addressLine2: null,
+  city: 'London',
+  region: 'LDN',
+  postalCode: 'W1A 1AA',
+  country: 'UK',
+  isDefault: false,
+  ...overrides,
+});
+
 function renderCheckoutPage({ initialEntries = ['/checkout'] } = {}) {
   return render(
     <AuthProvider>
@@ -95,6 +110,8 @@ beforeEach(() => {
   window.localStorage.clear();
   vi.mocked(api.createOrder).mockReset();
   vi.mocked(api.authMe).mockReset();
+  vi.mocked(api.getAddresses).mockReset();
+  vi.mocked(api.getAddresses).mockResolvedValue({ addresses: [] });
 });
 
 describe('CheckoutPage', () => {
@@ -195,5 +212,78 @@ describe('CheckoutPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Place order' }));
 
     await waitFor(() => expect(screen.getAllByText('#3F2A9C1B').length).toBeGreaterThan(0));
+  });
+
+  describe('with no saved addresses', () => {
+    it('shows the address inputs directly, without a "Ship to" picker', async () => {
+      vi.mocked(api.authMe).mockResolvedValue({ user: authedUser });
+      vi.mocked(api.getAddresses).mockResolvedValue({ addresses: [] });
+      seedCart([cartItem()]);
+
+      renderCheckoutPage();
+
+      await waitFor(() => expect(screen.getByLabelText('Full name')).toHaveValue('Ada Lovelace'));
+      expect(screen.queryByRole('radiogroup', { name: 'Ship to' })).not.toBeInTheDocument();
+      expect(screen.getByLabelText('Address line 1')).toBeInTheDocument();
+    });
+  });
+
+  describe('with saved addresses', () => {
+    it('preselects the default address in the "Ship to" radiogroup', async () => {
+      vi.mocked(api.authMe).mockResolvedValue({ user: authedUser });
+      vi.mocked(api.getAddresses).mockResolvedValue({
+        addresses: [
+          savedAddress({ id: 1, label: 'Home', isDefault: true }),
+          savedAddress({ id: 2, label: 'Work', isDefault: false }),
+        ],
+      });
+      seedCart([cartItem()]);
+
+      renderCheckoutPage();
+
+      await waitFor(() =>
+        expect(screen.getByRole('radiogroup', { name: 'Ship to' })).toBeInTheDocument()
+      );
+      expect(screen.getByRole('radio', { name: /Home/ })).toBeChecked();
+      expect(screen.getByRole('radio', { name: /Work/ })).not.toBeChecked();
+    });
+
+    it('choosing "New address" shows the inputs and a checked save checkbox', async () => {
+      vi.mocked(api.authMe).mockResolvedValue({ user: authedUser });
+      vi.mocked(api.getAddresses).mockResolvedValue({
+        addresses: [savedAddress({ id: 1, label: 'Home', isDefault: true })],
+      });
+      seedCart([cartItem()]);
+
+      renderCheckoutPage();
+      await waitFor(() =>
+        expect(screen.getByRole('radiogroup', { name: 'Ship to' })).toBeInTheDocument()
+      );
+
+      fireEvent.click(screen.getByRole('radio', { name: 'New address' }));
+
+      expect(screen.getByLabelText('Address line 1')).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: 'Save to my addresses' })).toBeChecked();
+    });
+
+    it('sends saveAddress: true in the createOrder payload for a new address', async () => {
+      vi.mocked(api.authMe).mockResolvedValue({ user: authedUser });
+      vi.mocked(api.getAddresses).mockResolvedValue({
+        addresses: [savedAddress({ id: 1, label: 'Home', isDefault: true })],
+      });
+      vi.mocked(api.createOrder).mockResolvedValue({ id: ORDER_ID });
+      seedCart([cartItem()]);
+
+      renderCheckoutPage();
+      await waitFor(() =>
+        expect(screen.getByRole('radiogroup', { name: 'Ship to' })).toBeInTheDocument()
+      );
+      fireEvent.click(screen.getByRole('radio', { name: 'New address' }));
+      fillRequiredFields();
+      fireEvent.click(screen.getByRole('button', { name: 'Place order' }));
+
+      await waitFor(() => expect(api.createOrder).toHaveBeenCalled());
+      expect(api.createOrder).toHaveBeenCalledWith(expect.objectContaining({ saveAddress: true }));
+    });
   });
 });

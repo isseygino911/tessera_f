@@ -24,12 +24,19 @@ export default function Header() {
   const authLinks = (onNavigate) => {
     if (status === 'loading') return null;
     if (status === 'authed') {
+      const firstName = user.name.split(' ')[0];
       return (
         <>
-          <span className="site-header__user">{user.name.split(' ')[0]}</span>
-          {user.role === 'admin' && (
-            <Link to="/admin" className="site-header__admin" onClick={onNavigate}>
-              Admin
+          {user.role === 'admin' ? (
+            <>
+              <span className="site-header__user">{firstName}</span>
+              <Link to="/admin" className="site-header__admin" onClick={onNavigate}>
+                Admin
+              </Link>
+            </>
+          ) : (
+            <Link to="/account" className="site-header__user" onClick={onNavigate}>
+              {firstName}
             </Link>
           )}
           <button

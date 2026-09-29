@@ -22,6 +22,28 @@ const user = {
   role: 'customer',
 };
 
+const admin = {
+  id: 2,
+  email: 'admin@example.com',
+  name: 'Admin Ada',
+  avatarUrl: null,
+  role: 'admin',
+};
+
+const address = {
+  id: 1,
+  label: 'Home',
+  recipientName: 'Ada Lovelace',
+  phone: '555-0100',
+  addressLine1: '1 Analytical Engine Way',
+  addressLine2: null,
+  city: 'London',
+  region: 'LDN',
+  postalCode: 'W1A 1AA',
+  country: 'UK',
+  isDefault: true,
+};
+
 // Mirrors how a real caller (LoginPage) uses login/signup: awaits the call
 // inside a handler and catches a rejection instead of leaving it unhandled.
 function TestHarness() {
@@ -41,6 +63,7 @@ function TestHarness() {
     <div>
       <div data-testid="status">{auth.status}</div>
       <div data-testid="user">{auth.user ? auth.user.email : ''}</div>
+      <div data-testid="addresses">{auth.addresses ? auth.addresses.length : ''}</div>
       <div data-testid="error">{error ?? ''}</div>
       <button onClick={handleLogin}>login</button>
       <button
@@ -68,6 +91,8 @@ beforeEach(() => {
   vi.mocked(api.authLogin).mockReset();
   vi.mocked(api.authSignup).mockReset();
   vi.mocked(api.authLogout).mockReset();
+  vi.mocked(api.getAddresses).mockReset();
+  vi.mocked(api.getAddresses).mockResolvedValue({ addresses: [address] });
 });
 
 describe('AuthProvider / useAuth', () => {
@@ -79,15 +104,26 @@ describe('AuthProvider / useAuth', () => {
     expect(screen.getByTestId('status')).toHaveTextContent('loading');
     await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('anon'));
     expect(screen.getByTestId('user')).toHaveTextContent('');
+    expect(api.getAddresses).not.toHaveBeenCalled();
   });
 
-  it('becomes authed with the user when authMe resolves', async () => {
+  it('becomes authed with the user when authMe resolves, and loads addresses', async () => {
     vi.mocked(api.authMe).mockResolvedValue({ user });
 
     renderAuth();
 
     await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('authed'));
     expect(screen.getByTestId('user')).toHaveTextContent('ada@example.com');
+    await waitFor(() => expect(screen.getByTestId('addresses')).toHaveTextContent('1'));
+  });
+
+  it('does not load addresses for an admin', async () => {
+    vi.mocked(api.authMe).mockResolvedValue({ user: admin });
+
+    renderAuth();
+
+    await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('authed'));
+    expect(api.getAddresses).not.toHaveBeenCalled();
   });
 
   it('login() sets status to authed and stores the returned user', async () => {
@@ -102,6 +138,7 @@ describe('AuthProvider / useAuth', () => {
     await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('authed'));
     expect(api.authLogin).toHaveBeenCalledWith({ email: 'ada@example.com', password: 'password1' });
     expect(screen.getByTestId('user')).toHaveTextContent('ada@example.com');
+    await waitFor(() => expect(screen.getByTestId('addresses')).toHaveTextContent('1'));
   });
 
   it('signup() sets status to authed and stores the returned user', async () => {
@@ -121,17 +158,19 @@ describe('AuthProvider / useAuth', () => {
     });
   });
 
-  it('logout() sets status to anon and clears the user', async () => {
+  it('logout() sets status to anon, clears the user and the addresses', async () => {
     vi.mocked(api.authMe).mockResolvedValue({ user });
     vi.mocked(api.authLogout).mockResolvedValue({ ok: true });
 
     renderAuth();
     await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('authed'));
+    await waitFor(() => expect(screen.getByTestId('addresses')).toHaveTextContent('1'));
 
     fireEvent.click(screen.getByText('logout'));
 
     await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('anon'));
     expect(screen.getByTestId('user')).toHaveTextContent('');
+    expect(screen.getByTestId('addresses')).toHaveTextContent('0');
   });
 
   it('a failed login() rejects (caught by the caller) and leaves status anon', async () => {
