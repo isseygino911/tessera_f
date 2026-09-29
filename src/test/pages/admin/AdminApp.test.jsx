@@ -65,7 +65,7 @@ describe('AdminApp', () => {
     );
   });
 
-  it('renders the dashboard at /admin for a signed-in admin, with Dashboard, Products and Orders in the nav', async () => {
+  it('renders the dashboard at /admin for a signed-in admin, with Dashboard, Products, Orders and Email test in the nav', async () => {
     vi.mocked(api.authMe).mockResolvedValue({
       user: { id: 1, email: 'admin@admin.com', name: 'Admin', avatarUrl: null, role: 'admin' },
     });
@@ -78,7 +78,7 @@ describe('AdminApp', () => {
     );
     const nav = screen.getByRole('navigation', { name: 'Admin' });
     const navLinkNames = Array.from(nav.querySelectorAll('a')).map((a) => a.textContent);
-    expect(navLinkNames).toEqual(['Dashboard', 'Products', 'Orders']);
+    expect(navLinkNames).toEqual(['Dashboard', 'Products', 'Orders', 'Email test']);
 
     await waitFor(() => expect(api.adminGetSummary).toHaveBeenCalled());
   });

@@ -53,6 +53,9 @@ export default function AdminLayout() {
           <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'active' : '')}>
             Orders
           </NavLink>
+          <NavLink to="/admin/email-test" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Email test
+          </NavLink>
         </nav>
         <button type="button" className="admin-logout" onClick={handleLogout}>
           Log out

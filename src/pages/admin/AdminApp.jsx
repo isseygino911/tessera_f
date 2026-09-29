@@ -5,6 +5,7 @@ import ProductsListPage from './ProductsListPage.jsx';
 import ProductEditPage from './ProductEditPage.jsx';
 import OrdersListPage from './OrdersListPage.jsx';
 import OrderDetailPage from './OrderDetailPage.jsx';
+import EmailTestPage from './EmailTestPage.jsx';
 
 export default function AdminApp() {
   return (
@@ -15,6 +16,7 @@ export default function AdminApp() {
         <Route path="products/:id" element={<ProductEditPage />} />
         <Route path="orders" element={<OrdersListPage />} />
         <Route path="orders/:id" element={<OrderDetailPage />} />
+        <Route path="email-test" element={<EmailTestPage />} />
       </Route>
     </Routes>
   );

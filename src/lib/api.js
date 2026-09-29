@@ -90,6 +90,8 @@ export const api = {
   adminUpdateOrder: (id, data) => request(`/admin/orders/${id}`, { method: 'PATCH', body: data }),
 
   adminGetSummary: () => request('/admin/summary'),
+
+  adminSendTestEmail: (data) => request('/admin/email/test', { method: 'POST', body: data }),
 };
 
 export { ApiError };
