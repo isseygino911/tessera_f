@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { api } from '@/lib/api.js';
 
 const STORAGE_KEY = 'simple_ecom_cart';
 
@@ -32,6 +33,8 @@ function clamp(qty, stock) {
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState(loadInitialItems);
+  const [products, setProducts] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -99,6 +102,24 @@ export function CartProvider({ children }) {
     );
   }, []);
 
+  // One fetch-and-sync path for the cart page and the drawer: the live
+  // catalogue gives the line photos and refreshes the saved lines. On failure
+  // the lines still render, with placeholder photos.
+  const loadProducts = useCallback(
+    () =>
+      api
+        .getProducts()
+        .then((list) => {
+          setProducts(list);
+          sync(list);
+        })
+        .catch(() => setProducts([])),
+    [sync]
+  );
+
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
   const clear = useCallback(() => {
     setItems([]);
   }, []);
@@ -109,8 +130,34 @@ export function CartProvider({ children }) {
   );
 
   const value = useMemo(
-    () => ({ items, add, setQty, remove, sync, clear, totalCents }),
-    [items, add, setQty, remove, sync, clear, totalCents]
+    () => ({
+      items,
+      add,
+      setQty,
+      remove,
+      sync,
+      clear,
+      totalCents,
+      products,
+      loadProducts,
+      drawerOpen,
+      openDrawer,
+      closeDrawer,
+    }),
+    [
+      items,
+      add,
+      setQty,
+      remove,
+      sync,
+      clear,
+      totalCents,
+      products,
+      loadProducts,
+      drawerOpen,
+      openDrawer,
+      closeDrawer,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

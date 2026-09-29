@@ -44,6 +44,14 @@ const cartItem = (overrides = {}) => ({
   ...overrides,
 });
 
+// Signs out by default so tests that don't care about auth don't have to
+// wait on a resolved user before the header settles.
+async function signedOut() {
+  vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
+  renderHeader();
+  await waitFor(() => expect(api.authMe).toHaveBeenCalled());
+}
+
 beforeEach(() => {
   window.localStorage.clear();
   vi.mocked(api.authMe).mockReset();
@@ -56,18 +64,12 @@ afterEach(() => {
 
 describe('Header', () => {
   it('links the wordmark to / with the accessible name "Tessera"', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
-    renderHeader();
-
-    await waitFor(() => expect(api.authMe).toHaveBeenCalled());
+    await signedOut();
     expect(screen.getByRole('link', { name: 'Tessera' })).toHaveAttribute('href', '/');
   });
 
-  it('renders the Main nav with links to the stones, craft, story and order sections, plus Shop →', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
-    renderHeader();
-
-    await waitFor(() => expect(api.authMe).toHaveBeenCalled());
+  it('renders the Main nav with links to the stones, craft, story and order sections, plus Shop →, in both the bar and the panel', async () => {
+    await signedOut();
     const nav = screen.getByRole('navigation', { name: 'Main' });
 
     expect(within(nav).getByRole('link', { name: 'Stones' })).toHaveAttribute('href', '/#stones');
@@ -75,55 +77,93 @@ describe('Header', () => {
     expect(within(nav).getByRole('link', { name: 'Story' })).toHaveAttribute('href', '/#story');
     expect(within(nav).getByRole('link', { name: 'Order' })).toHaveAttribute('href', '/#order');
 
-    expect(screen.getByRole('link', { name: /Shop/ })).toHaveAttribute('href', '/#order');
+    const shopLinks = screen.getAllByRole('link', { name: /Shop/ });
+    expect(shopLinks.length).toBeGreaterThan(0);
+    for (const link of shopLinks) {
+      expect(link).toHaveAttribute('href', '/#order');
+    }
   });
 
-  it('links the bag to /cart with accessible name "Cart, 0 items" when the cart is empty', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
-    renderHeader();
-
-    await waitFor(() => expect(api.authMe).toHaveBeenCalled());
-    expect(screen.getByRole('link', { name: 'Cart, 0 items' })).toHaveAttribute('href', '/cart');
+  it('renders the bag as a button named "Cart, 0 items" when the cart is empty', async () => {
+    await signedOut();
+    expect(screen.getByRole('button', { name: 'Cart, 0 items' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Cart,/ })).not.toBeInTheDocument();
   });
 
   it('sums the quantities of items already in the cart for the bag accessible name', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
     seedCart([cartItem({ productId: 1, qty: 2 }), cartItem({ productId: 2, qty: 3 })]);
+    await signedOut();
 
-    renderHeader();
-
-    await waitFor(() =>
-      expect(screen.getByRole('link', { name: 'Cart, 5 items' })).toBeInTheDocument()
-    );
+    expect(screen.getByRole('button', { name: 'Cart, 5 items' })).toBeInTheDocument();
   });
 
-  it('toggles aria-expanded on the Menu button and shows the Mobile nav when open', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
-    renderHeader();
-    await waitFor(() => expect(api.authMe).toHaveBeenCalled());
+  it("the hamburger toggles aria-expanded, its label, aria-controls and the Mobile nav's inert state", async () => {
+    await signedOut();
 
-    const menuButton = screen.getByRole('button', { name: 'Menu' });
+    const menuButton = screen.getByRole('button', { name: 'Open menu' });
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+    expect(menuButton).toHaveAttribute('aria-controls', 'site-menu');
+    // The panel is always mounted; closed means inert, not absent.
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).toHaveAttribute('inert');
 
     fireEvent.click(menuButton);
 
-    expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByRole('navigation', { name: 'Mobile' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Close menu' })).toHaveAttribute(
+      'aria-expanded',
+      'true'
+    );
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).not.toHaveAttribute('inert');
 
-    fireEvent.click(menuButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Close menu' }));
 
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByRole('navigation', { name: 'Mobile' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).toHaveAttribute('inert');
   });
 
-  it('shows a "Sign in" link to /login when signed out', async () => {
-    vi.mocked(api.authMe).mockRejectedValue(new ApiError('Not authenticated', 401));
-    renderHeader();
+  it('closes the menu on Escape', async () => {
+    await signedOut();
 
-    await waitFor(() =>
-      expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/login')
+    fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
+    expect(screen.getByRole('button', { name: 'Close menu' })).toHaveAttribute(
+      'aria-expanded',
+      'true'
     );
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).toHaveAttribute('inert');
+  });
+
+  it('closes the menu when a panel link is clicked', async () => {
+    await signedOut();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
+    const mobileNav = screen.getByRole('navigation', { name: 'Mobile' });
+
+    fireEvent.click(within(mobileNav).getByRole('link', { name: 'Stones' }));
+
+    expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+    expect(screen.getByRole('navigation', { name: 'Mobile' })).toHaveAttribute('inert');
+  });
+
+  it('shows a "Sign in" link to /login when signed out, in both the bar and the panel', async () => {
+    await signedOut();
+
+    const signInLinks = screen.getAllByRole('link', { name: 'Sign in' });
+    expect(signInLinks.length).toBeGreaterThan(0);
+    for (const link of signInLinks) {
+      expect(link).toHaveAttribute('href', '/login');
+    }
     expect(screen.queryByRole('button', { name: 'Sign out' })).not.toBeInTheDocument();
   });
 
@@ -139,13 +179,13 @@ describe('Header', () => {
     });
     renderHeader();
 
-    await waitFor(() => expect(screen.getByText('Ada')).toBeInTheDocument());
-    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getAllByText('Ada').length).toBeGreaterThan(0));
+    expect(screen.getAllByRole('button', { name: 'Sign out' }).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: 'Sign in' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
   });
 
-  it('shows an "Admin" link to /admin for admins', async () => {
+  it('shows an "Admin" link to /admin for admins, in both the bar and the panel', async () => {
     vi.mocked(api.authMe).mockResolvedValue({
       user: {
         id: 2,
@@ -158,8 +198,11 @@ describe('Header', () => {
     renderHeader();
 
     await waitFor(() =>
-      expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin')
+      expect(screen.getAllByRole('link', { name: 'Admin' }).length).toBeGreaterThan(0)
     );
+    for (const link of screen.getAllByRole('link', { name: 'Admin' })) {
+      expect(link).toHaveAttribute('href', '/admin');
+    }
   });
 
   it('"Sign out" calls logout', async () => {
@@ -175,10 +218,8 @@ describe('Header', () => {
     vi.mocked(api.authLogout).mockResolvedValue({ ok: true });
     renderHeader();
 
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+    const [signOutButton] = await screen.findAllByRole('button', { name: 'Sign out' });
+    fireEvent.click(signOutButton);
 
     await waitFor(() => expect(api.authLogout).toHaveBeenCalled());
   });

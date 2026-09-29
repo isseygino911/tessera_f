@@ -44,74 +44,6 @@
   color: var(--color-text-dim);
 }
 
-/* -- Cart lines -- */
-
-.shop-lines {
-  list-style: none;
-  margin: 0 0 var(--space-6);
-  padding: 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.shop-line {
-  display: grid;
-  grid-template-columns: 4.5rem 1fr auto auto auto;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.shop-line__thumb {
-  width: 4.5rem;
-  aspect-ratio: 1;
-  object-fit: contain;
-}
-
-.shop-line__info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  min-width: 0;
-}
-
-.shop-line__name {
-  font-family: var(--font-serif);
-  font-size: 1.1rem;
-  color: var(--color-text);
-}
-
-.shop-line__price {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--color-text-dim);
-}
-
-.shop-line__total {
-  font-family: var(--font-serif);
-  font-size: 1.05rem;
-  color: var(--color-text);
-  text-align: right;
-}
-
-.shop-line__remove {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-dim);
-  transition: color 0.2s var(--ease);
-}
-
-.shop-line__remove:hover,
-.shop-line__remove:focus-visible {
-  color: var(--color-text);
-}
-
 /* -- Total row -- */
 
 .shop-total {
@@ -246,39 +178,6 @@
 @media (max-width: 767px) {
   .shop {
     padding: calc(72px + var(--space-6)) clamp(20px, 6vw, 48px) var(--space-7);
-  }
-
-  .shop-line {
-    grid-template-columns: 3.5rem 1fr;
-    grid-template-areas:
-      'thumb info'
-      'thumb qty'
-      'total remove';
-    row-gap: var(--space-2);
-  }
-
-  .shop-line__thumb {
-    grid-area: thumb;
-    width: 3.5rem;
-  }
-
-  .shop-line__info {
-    grid-area: info;
-  }
-
-  .shop-line :where(.qty-stepper) {
-    grid-area: qty;
-    justify-self: start;
-  }
-
-  .shop-line__total {
-    grid-area: total;
-    text-align: left;
-  }
-
-  .shop-line__remove {
-    grid-area: remove;
-    justify-self: end;
   }
 
   .shop-actions {

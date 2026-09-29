@@ -3,6 +3,7 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext.jsx';
 import { CartProvider } from '@/context/CartContext.jsx';
 import Header from '@/components/Header.jsx';
+import CartDrawer from '@/components/CartDrawer.jsx';
 import SiteFooter from '@/components/SiteFooter.jsx';
 import LandingPage from '@/pages/store/LandingPage.jsx';
 import ProductPage from '@/pages/store/ProductPage.jsx';
@@ -20,6 +21,7 @@ function StoreLayout() {
   return (
     <div className="app-shell lux">
       <Header />
+      <CartDrawer />
       <main className="app-main">
         <Outlet />
       </main>
