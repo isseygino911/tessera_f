@@ -65,7 +65,7 @@ export default function LandingPage() {
         </>
       )}
 
-      <LandingCraft products={products} />
+      <LandingCraft />
 
       {ready && <LandingStory product={products[0]} />}
 

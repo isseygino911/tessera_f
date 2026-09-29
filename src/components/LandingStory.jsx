@@ -1,10 +1,10 @@
 import { useId, useRef } from 'react';
-import { STORY_LINE } from '@/data/landingContent.js';
+import { STORY } from '@/data/landingContent.js';
 import { useLandingStoryMotion } from '@/hooks/useLandingStoryMotion.js';
 import './styles/LandingStory.css';
 
-// "04 / Story": a centred sentence from the maker's own story copy, with a
-// scroll line that draws in as the section passes through view.
+// "04 / Story": the studio's story, a serif lead line over a few short
+// paragraphs, with a scroll line that draws in as the section passes through view.
 export default function LandingStory({ product }) {
   const headingId = useId();
   const rootRef = useRef(null);
@@ -17,7 +17,15 @@ export default function LandingStory({ product }) {
         <h2 id={headingId} className="landing-story__title">
           Our Studio
         </h2>
-        <p className="landing-story__line">{STORY_LINE}</p>
+        <p className="landing-story__lead">{STORY.lead}</p>
+        <div className="landing-story__body">
+          {STORY.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="landing-story__text">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+        <p className="landing-story__signoff">{STORY.signoff}</p>
 
         <div className="landing-story__scroll">
           <span className="landing-story__scroll-label">Scroll</span>

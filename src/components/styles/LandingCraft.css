@@ -6,19 +6,38 @@
   padding-top: calc(72px + var(--space-8));
   padding-bottom: var(--space-8);
   scroll-margin-top: 72px;
+  display: flex;
+  align-items: center;
+  min-height: min(100svh, 880px);
   background: var(--color-bg-raised);
 }
 
+.landing-craft__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Darkens the video, most at the top and bottom where the text sits. */
 .landing-craft::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgb(239 237 230 / 0.08), transparent 60%);
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-bg) 85%, transparent),
+    color-mix(in srgb, var(--color-bg) 35%, transparent) 45%,
+    color-mix(in srgb, var(--color-bg) 85%, transparent)
+  );
   pointer-events: none;
 }
 
 .landing-craft__inner {
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -104,7 +123,8 @@
 
 .landing-craft__stage {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-between;
   align-items: center;
   gap: var(--space-7);
   width: 100%;
@@ -155,92 +175,6 @@
   line-height: 1.05;
   text-transform: uppercase;
   color: var(--color-text);
-}
-
-.landing-craft__col--photo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.landing-craft__photo {
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: 0;
-  box-shadow: var(--shadow-card);
-}
-
-/* The stone shot sits on black; a radial mask fades that into a soft dark pool, like a
-   spotlight. No blend mode: lighten/screen would wash out dark stones like emerald. */
-.landing-craft__stage-photo {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 1;
-  perspective: 900px;
-  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform 0.4s var(--ease);
-  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
-}
-
-.landing-craft__sway {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  animation: landing-craft-sway 9s ease-in-out infinite alternate;
-}
-
-/* A highlight band that sweeps across; soft-light leaves the black alone and only lifts the facets. */
-.landing-craft__sway::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    rgb(255 255 255 / 0.45) 50%,
-    transparent 65%
-  );
-  mix-blend-mode: soft-light;
-  transform: translateX(-100%);
-  animation: landing-craft-sweep 6s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.landing-craft__stone {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0;
-  transition: opacity 0.6s var(--ease);
-}
-
-.landing-craft__stone--active {
-  opacity: 1;
-}
-
-@keyframes landing-craft-sway {
-  from {
-    transform: rotateY(-11deg) rotateX(3deg);
-  }
-  to {
-    transform: rotateY(11deg) rotateX(-3deg);
-  }
-}
-
-@keyframes landing-craft-sweep {
-  from {
-    transform: translateX(-100%);
-  }
-  60%,
-  to {
-    transform: translateX(100%);
-  }
 }
 
 .landing-craft__col--detail {

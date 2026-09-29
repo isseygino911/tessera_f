@@ -8,6 +8,4 @@ const galleryImages = (product) => product?.images?.filter((img) => img.role ===
 
 const bannerImage = (product) => product?.images?.find((img) => img.role === 'banner');
 
-const imageByName = (product, name) => product?.images?.find((img) => img.name === name);
-
-export { mainImage, galleryImages, bannerImage, imageByName };
+export { mainImage, galleryImages, bannerImage };

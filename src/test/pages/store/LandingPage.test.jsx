@@ -3,7 +3,7 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { api } from '@/lib/api.js';
 import { CartProvider } from '@/context/CartContext.jsx';
-import { CRAFT_TABS, QUOTES } from '@/data/landingContent.js';
+import { CRAFT_TABS, QUOTES, STORY } from '@/data/landingContent.js';
 import { formatPrice } from '@/lib/formatPrice.js';
 import LandingPage from '@/pages/store/LandingPage.jsx';
 
@@ -212,34 +212,6 @@ describe('LandingPage', () => {
     expect(within(panel).getByText(nextTab.title)).toBeInTheDocument();
   });
 
-  it('shows the tab photo for the active craft tab, looked up by product slug and image name', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderLanding();
-
-    // CRAFT_TABS[0] is { slug: 'sunlit-amber', name: 'dish' } per landingContent.js.
-    const image = await screen.findByRole('img', {
-      name: 'Sunlit Amber bracelet on a ceramic dish',
-    });
-    expect(image).toHaveAttribute('src', 'https://s3.test/products/sunlit-amber/dish.jpg');
-  });
-
-  it('switches the tab photo when a different craft tab is selected', async () => {
-    api.getProducts.mockResolvedValue(products);
-
-    renderLanding();
-
-    await screen.findByRole('tablist');
-    const nextTab = CRAFT_TABS[1];
-    fireEvent.click(screen.getByRole('tab', { name: nextTab.label }));
-
-    // CRAFT_TABS[1] is { slug: 'forest-emerald', name: 'slate' }.
-    const image = await screen.findByRole('img', {
-      name: 'Forest Emerald bracelet on a dark slate dish',
-    });
-    expect(image).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/slate.jpg');
-  });
-
   it('adds a product to the cart and confirms it with a status message', async () => {
     api.getProducts.mockResolvedValue(products);
 
@@ -273,6 +245,20 @@ describe('LandingPage', () => {
     expect(screen.getAllByText(formatPrice(amber.priceCents)).length).toBeGreaterThan(0);
   });
 
+  it('tells the studio story under the "Our Studio" heading', async () => {
+    api.getProducts.mockResolvedValue(products);
+
+    renderLanding();
+
+    const heading = await screen.findByRole('heading', { name: 'Our Studio' });
+    const section = heading.closest('section');
+    expect(within(section).getByText(STORY.lead)).toBeInTheDocument();
+    STORY.paragraphs.forEach((paragraph) =>
+      expect(within(section).getByText(paragraph)).toBeInTheDocument()
+    );
+    expect(within(section).getByText(STORY.signoff)).toBeInTheDocument();
+  });
+
   it('renders 3 blockquotes, each cited to a stone name from QUOTES', async () => {
     api.getProducts.mockResolvedValue(products);
 
@@ -303,16 +289,6 @@ describe('LandingPage', () => {
       const heroPhoto = document.querySelector('.landing-hero__photo-wrap img');
       expect(heroPhoto).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/main.jpg');
       expect(screen.getByText('2 stones · Hand-faceted')).toBeInTheDocument();
-    });
-
-    it("falls back to another product's gallery photo for a craft tab tied to Sunlit Amber", async () => {
-      renderLanding();
-
-      // CRAFT_TABS[0] points at Sunlit Amber's 'dish' photo.
-      const image = await screen.findByRole('img', {
-        name: 'Forest Emerald bracelet on a dark slate dish',
-      });
-      expect(image).toHaveAttribute('src', 'https://s3.test/products/forest-emerald/slate.jpg');
     });
 
     it('leaves out the Sunlit Amber quote', async () => {

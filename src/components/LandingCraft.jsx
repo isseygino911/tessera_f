@@ -1,6 +1,5 @@
 import { useId, useRef, useState } from 'react';
 import { CRAFT_TABS } from '@/data/landingContent.js';
-import { galleryImages, imageByName, mainImage } from '@/lib/productImages.js';
 import { MOTION_OK } from '@/lib/motion.js';
 import BrandMark from './BrandMark.jsx';
 import './styles/LandingCraft.css';
@@ -8,29 +7,17 @@ import './styles/LandingCraft.css';
 const AUTOPLAY_MS = 5000;
 
 // "03 · Why it lasts": a pill tablist that auto-advances every 5s (only under
-// MOTION_OK), pausing on hover/focus, with a 3-column stage for the active tab.
-// On wide, motion-OK screens the photo becomes the stone's product shot, swaying
-// in 3D and tilting towards the pointer.
-export default function LandingCraft({ products }) {
+// MOTION_OK), pausing on hover/focus, over a looping bracelet video. Reduced
+// motion gets the video's still poster instead.
+export default function LandingCraft() {
   const headingId = useId();
   const panelId = useId();
   const tablistRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [autoplay] = useState(() => window.matchMedia(MOTION_OK).matches);
   const [paused, setPaused] = useState(false);
-  const [showStone] = useState(
-    () => window.matchMedia(`${MOTION_OK} and (min-width: 768px)`).matches
-  );
 
   const active = CRAFT_TABS[activeIndex];
-  const activeProduct = products?.find((product) => product.slug === active.photo.slug);
-  // When the tab's product is hidden, fall back to another active product's gallery photo.
-  const fallbackImages = products?.flatMap(galleryImages) ?? [];
-  const activeImage =
-    imageByName(activeProduct, active.photo.name) ??
-    fallbackImages[activeIndex % fallbackImages.length];
-  const stoneProduct = activeProduct ?? products?.[0];
-  const stones = products?.filter(mainImage) ?? [];
 
   function scrollTabIntoView(index) {
     const strip = tablistRef.current;
@@ -45,21 +32,6 @@ export default function LandingCraft({ products }) {
     scrollTabIntoView(index);
   }
 
-  // Pointer tilt goes straight to CSS vars so moving the mouse never re-renders.
-  function handleTilt(event) {
-    const box = event.currentTarget;
-    const rect = box.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    box.style.setProperty('--tilt-x', `${(-y * 12).toFixed(2)}deg`);
-    box.style.setProperty('--tilt-y', `${(x * 12).toFixed(2)}deg`);
-  }
-
-  function resetTilt(event) {
-    event.currentTarget.style.removeProperty('--tilt-x');
-    event.currentTarget.style.removeProperty('--tilt-y');
-  }
-
   function handleAnimationEnd() {
     setActiveIndex((index) => {
       const next = (index + 1) % CRAFT_TABS.length;
@@ -70,6 +42,16 @@ export default function LandingCraft({ products }) {
 
   return (
     <section className="landing-craft" id="craft" aria-labelledby={headingId}>
+      <video
+        className="landing-craft__video"
+        src="/videos/craft.mp4"
+        poster="/videos/craft-poster.jpg"
+        autoPlay={autoplay}
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      />
       <div className="site-container landing-craft__inner">
         <p className="eyebrow">03 · Why it lasts</p>
         <h2 id={headingId} className="landing-craft__title">
@@ -114,48 +96,13 @@ export default function LandingCraft({ products }) {
             id={panelId}
             aria-labelledby={`craft-tab-${active.id}`}
           >
-            {/* The keys fade the text columns in per tab; the photo column stays mounted
-                so the stone photos can crossfade. */}
+            {/* The keys fade the columns in per tab. */}
             <div
               className="landing-craft__col landing-craft__col--label"
               key={`label-${active.id}`}
             >
               <BrandMark />
               <p className="landing-craft__label">{active.label}</p>
-            </div>
-
-            <div className="landing-craft__col landing-craft__col--photo">
-              {showStone ? (
-                <div
-                  className="landing-craft__stage-photo"
-                  onPointerMove={handleTilt}
-                  onPointerLeave={resetTilt}
-                >
-                  <div className="landing-craft__sway">
-                    {stones.map((product) => {
-                      const image = mainImage(product);
-                      const current = product === stoneProduct;
-                      return (
-                        <img
-                          key={product.slug}
-                          className={`landing-craft__stone${current ? ' landing-craft__stone--active' : ''}`}
-                          src={image.url}
-                          alt={current ? image.alt : ''}
-                          aria-hidden={current ? undefined : 'true'}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                activeImage && (
-                  <img
-                    className="landing-craft__photo"
-                    src={activeImage.url}
-                    alt={activeImage.alt}
-                  />
-                )
-              )}
             </div>
 
             <div

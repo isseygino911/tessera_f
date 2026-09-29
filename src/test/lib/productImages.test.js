@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mainImage, galleryImages, bannerImage, imageByName } from '@/lib/productImages.js';
+import { mainImage, galleryImages, bannerImage } from '@/lib/productImages.js';
 
 const mainImg = { id: 1, name: 'main', url: 'https://s3.test/main.jpg', alt: '', role: 'main' };
 const galleryOne = {
@@ -82,24 +82,5 @@ describe('bannerImage', () => {
 
   it('returns undefined for a missing product', () => {
     expect(bannerImage(null)).toBeUndefined();
-  });
-});
-
-describe('imageByName', () => {
-  it('returns the image matching the given name', () => {
-    expect(imageByName(product, 'dish')).toBe(galleryOne);
-  });
-
-  it('returns undefined when no image has that name', () => {
-    expect(imageByName(product, 'missing')).toBeUndefined();
-  });
-
-  it('returns undefined for a missing product', () => {
-    expect(imageByName(null, 'dish')).toBeUndefined();
-    expect(imageByName(undefined, 'dish')).toBeUndefined();
-  });
-
-  it('returns undefined for a product with no images array', () => {
-    expect(imageByName({ id: 3 }, 'dish')).toBeUndefined();
   });
 });

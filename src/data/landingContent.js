@@ -23,34 +23,38 @@ export const CRAFT_TABS = [
     label: TRUST[0].title,
     title: TRUST[0].title,
     text: TRUST[0].text,
-    photo: { slug: 'sunlit-amber', name: 'dish' },
   },
   {
     id: 'matched-by-eye',
     label: TRUST[1].title,
     title: TRUST[1].title,
     text: TRUST[1].text,
-    photo: { slug: 'forest-emerald', name: 'slate' },
   },
   {
     id: 'stretch-fit',
     label: 'Stretch fit',
     title: 'Stretch fit',
     text: closure.detail,
-    photo: { slug: 'ocean-topaz', name: 'reflection' },
   },
   {
     id: 'personal-ordering',
     label: TRUST[2].title,
     title: TRUST[2].title,
     text: TRUST[2].text,
-    photo: { slug: 'sunlit-amber', name: 'reading' },
   },
 ];
 
-// Verbatim sentence from Sunlit Amber's story (via api.getProducts()).
-export const STORY_LINE =
-  "That last hour before dusk does something to a room: it slows everything down, and every surface it touches looks like it's remembering something.";
+// "Our Studio" copy. Built only on what the site already states: cut by hand,
+// matched by eye, packed and shipped by the studio itself.
+export const STORY = {
+  lead: 'Some things are worth doing slowly.',
+  paragraphs: [
+    'Every Tessera bracelet starts as a tray of plain crystal beads. We cut each one by hand, plane by plane, until it stops being a bead and starts holding the light.',
+    'Then we match them by eye, one at a time, so the strand on your wrist reads as a single colour, the way the light does in the last hour of the afternoon.',
+    "It's slow work, and we wouldn't have it any other way. A bracelet you wear every day becomes part of those days: the morning coffee, the long commute, the hand you reach for. It should be made with that kind of care.",
+  ],
+  signoff: 'Made by hand, packed by hand, sent from our studio to you.',
+};
 
 // One verbatim sentence per product story, kept short.
 export const QUOTES = [
