@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { api, ApiError } from '@/lib/api.js';
+import { API_BASE_URL } from '@/lib/baseUrl.js';
 import { AuthProvider } from '@/context/AuthContext.jsx';
 import SignupPage from '@/pages/store/SignupPage.jsx';
 
@@ -53,7 +54,7 @@ describe('SignupPage', () => {
     await waitFor(() => expect(api.authMe).toHaveBeenCalled());
     expect(screen.getByRole('link', { name: 'Continue with Google' })).toHaveAttribute(
       'href',
-      '/api/auth/google?returnTo=%2Fcheckout'
+      `${API_BASE_URL}/auth/google?returnTo=%2Fcheckout`
     );
   });
 

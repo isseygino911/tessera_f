@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { api, ApiError } from '@/lib/api.js';
+import { API_BASE_URL } from '@/lib/baseUrl.js';
 
 function jsonResponse(status, body) {
   return {
@@ -33,7 +34,7 @@ describe('api auth methods', () => {
 
     expect(result).toEqual({ user });
     const [url, init] = fetch.mock.calls[0];
-    expect(url).toBe('/api/auth/signup');
+    expect(url).toBe(`${API_BASE_URL}/auth/signup`);
     expect(init.method).toBe('POST');
     expect(JSON.parse(init.body)).toEqual({
       name: 'Ada',
@@ -56,7 +57,7 @@ describe('api auth methods', () => {
 
     expect(result).toEqual({ user });
     const [url, init] = fetch.mock.calls[0];
-    expect(url).toBe('/api/auth/login');
+    expect(url).toBe(`${API_BASE_URL}/auth/login`);
     expect(init.method).toBe('POST');
   });
 
@@ -75,7 +76,7 @@ describe('api auth methods', () => {
 
     expect(result).toEqual({ ok: true });
     const [url, init] = fetch.mock.calls[0];
-    expect(url).toBe('/api/auth/logout');
+    expect(url).toBe(`${API_BASE_URL}/auth/logout`);
     expect(init.method).toBe('POST');
   });
 
@@ -113,7 +114,7 @@ describe('api admin image methods', () => {
 
     expect(result).toEqual(product);
     const [url, init] = fetch.mock.calls[0];
-    expect(url).toBe('/api/admin/products/1/images');
+    expect(url).toBe(`${API_BASE_URL}/admin/products/1/images`);
     expect(init.method).toBe('POST');
     expect(init.headers['Content-Type']).toBe('image/jpeg');
     expect(init.body).toBe(file);
