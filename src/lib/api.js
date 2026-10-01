@@ -1,6 +1,8 @@
 // Single fetch wrapper for the whole app. Keeps JSON parsing, error
 // shaping, and session cookie credentials in one place.
 
+import { API_BASE_URL } from '@/lib/baseUrl.js';
+
 class ApiError extends Error {
   constructor(message, status, body) {
     super(message);
@@ -25,7 +27,7 @@ async function request(path, { method = 'GET', body, rawBody, contentType } = {}
     init.body = JSON.stringify(body);
   }
 
-  const res = await fetch(`/api${path}`, init);
+  const res = await fetch(`${API_BASE_URL}${path}`, init);
 
   const resContentType = res.headers.get('content-type') || '';
   const data = resContentType.includes('application/json')

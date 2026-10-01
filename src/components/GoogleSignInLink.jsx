@@ -1,11 +1,13 @@
+import { API_BASE_URL } from '@/lib/baseUrl.js';
+
 import './styles/GoogleSignInLink.css';
 
 // Full-page navigation (not a fetch) — the server redirects to Google, then
-// back to `returnTo` on this same origin via the Vite proxy.
+// back to `returnTo`.
 export default function GoogleSignInLink({ returnTo }) {
   return (
     <a
-      href={`/api/auth/google?returnTo=${encodeURIComponent(returnTo)}`}
+      href={`${API_BASE_URL}/auth/google?returnTo=${encodeURIComponent(returnTo)}`}
       className="btn-outline google-link"
     >
       <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
